@@ -25,12 +25,18 @@ render(main, createFilmsWrapperTemplate(), `beforeend`);
 
 const filmsList = document.querySelector(`.films-list`);
 const filmsListContainer = filmsList.querySelector(`.films-list__container`);
-// const filmsListExtra = document.querySelectorAll(`.films-list--extra`);
-// const filmsListExtraContainer = filmsListExtra.querySelectorAll(`.films-list__container`);
+const filmsListsExtra = document.querySelectorAll(`.films-list--extra`);
+
+// функция для рендера дополнительных карточек в блоки filmsListsExtra
+const renderFilmsExtraLists = () => {
+  filmsListsExtra.forEach(function(item) {
+    return  Array(2).fill(``).forEach(() => render(item.querySelector(`.films-list__container`), createFilmCardTemplate(), `beforeend`));
+  });
+}
 
 // Отрисовка карточек
 new Array(5).fill(``).forEach(() => render(filmsListContainer, createFilmCardTemplate(), `beforeend`));
-// new Array(2).fill(``).forEach(() => render(filmsListExtraContainer, createFilmCardTemplate(), `beforeend`));
+renderFilmsExtraLists();
 
 // Отрисовка кнопки и попапа
 render(filmsList, createShowMoreButtonTemplate(), `beforeend`);
