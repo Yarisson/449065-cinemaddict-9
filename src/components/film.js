@@ -1,4 +1,4 @@
-export const createFilmCardTemplate = ({ title, poster, description, rating, year, numberComments, hours, minutes, genre }) => {
+export const createFilmCardTemplate = ({title, poster, description, rating, year, numberComments, hours, minutes, genre}) => {
   return `<article
    class="film-card">
   <h3 class="film-card__title">${title}</h3>
@@ -8,7 +8,7 @@ export const createFilmCardTemplate = ({ title, poster, description, rating, yea
     <span class="film-card__duration">${hours}h ${minutes}m</span>
     <span class="film-card__genre">${genre}</span>
   </p>
-  <img src="${Object.keys(poster).some(index => poster[index])}" alt="" class="film-card__poster">
+  <img src="${poster}" alt="" class="film-card__poster">
   <p class="film-card__description">${description}</p>
   <a class="film-card__comments">${numberComments} comments</a>
   <form class="film-card__controls">
