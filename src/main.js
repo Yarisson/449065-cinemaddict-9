@@ -5,6 +5,7 @@ import {createFilmsWrapperTemplate} from './components/films.js';
 import {createFilmCardTemplate} from './components/film.js';
 import {createShowMoreButtonTemplate} from './components/show-more.js';
 import {createFilmPopupTemplate} from './components/popup.js';
+import {getCard} from './data.js'
 
 /**
  * Функция рендера
@@ -18,11 +19,22 @@ const NUMBER_FILMS_CARD = 5;
 const NUMBER_EXTRA_FILMS_CARD = 2;
 
 /**
+ * Функция для рендера карточек после добавления данных внутрь шаблона
+ */
+const renderFilmCard = (container, count) => {
+  container.insertAdjacentHTML(`beforeend`, new Array(count)
+    .fill(``)
+    .map(getCard)
+    .map(createFilmCardTemplate)
+    .join(``));
+};
+
+/**
  * Функция для рендера дополнительных карточек в блоки filmsListsExtra
  */
 const renderFilmsExtraLists = () => {
   filmsListsExtra.forEach(function (item) {
-    return Array(NUMBER_EXTRA_FILMS_CARD).fill(``).forEach(() => render(item.querySelector(`.films-list__container`), createFilmCardTemplate(), `beforeend`));
+    renderFilmCard(item.querySelector(`.films-list__container`), NUMBER_EXTRA_FILMS_CARD);
   });
 };
 
@@ -46,7 +58,7 @@ const filmsListContainer = filmsList.querySelector(`.films-list__container`);
 const filmsListsExtra = document.querySelectorAll(`.films-list--extra`);
 
 // Отрисовка карточек
-new Array(NUMBER_FILMS_CARD).fill(``).forEach(() => render(filmsListContainer, createFilmCardTemplate(), `beforeend`));
+renderFilmCard(filmsListContainer, NUMBER_FILMS_CARD);
 renderFilmsExtraLists();
 
 // Отрисовка кнопки и попапа
