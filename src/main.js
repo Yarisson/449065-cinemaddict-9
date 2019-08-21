@@ -5,7 +5,8 @@ import {createFilmsWrapperTemplate} from './components/films.js';
 import {createFilmCardTemplate} from './components/film.js';
 import {createShowMoreButtonTemplate} from './components/show-more.js';
 import {createFilmPopupTemplate} from './components/popup.js';
-import {getCard} from './data.js'
+import {getUser} from './data.js';
+import {getCard} from './data.js';
 
 /**
  * Функция рендера
@@ -29,6 +30,14 @@ const renderFilmCard = (container, count) => {
     .join(``));
 };
 
+const renderProfileRating = (container) => {
+  container.insertAdjacentHTML(`beforeend`, new Array(1)
+    .fill(``)
+    .map(getUser)
+    .map(createProfileRatingTemplate)
+    .join(``));
+};
+
 /**
  * Функция для рендера дополнительных карточек в блоки filmsListsExtra
  */
@@ -44,7 +53,8 @@ const main = document.querySelector(`.main`);
 
 // Отрисовка блоков в шапку
 render(header, createSearchTemplate(), `beforeend`);
-render(header, createProfileRatingTemplate(), `beforeend`);
+renderProfileRating(header);
+// render(header, createProfileRatingTemplate(), `beforeend`);
 
 // Отрисовка меню
 render(main, createMenuTemplate(), `beforeend`);

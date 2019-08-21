@@ -12,6 +12,19 @@ const TEXT_DESCRIPTION = [
   `In rutrum ac purus sit amet tempus.`
 ];
 
+const generateUserRating = () => {
+  let numberFilms = Math.round(Math.random() * 100);
+  if (numberFilms === 0) {
+    return ``;
+  } else if (numberFilms < 11) {
+    return `novice`;
+  } else if (numberFilms < 21) {
+    return `fan`;
+  } else {
+    return `movie buff`;
+  }
+};
+
 const getRandomYear = () => {
   const date = new Date();
   return date.getFullYear() - Math.round(Math.random() * 100);
@@ -25,6 +38,44 @@ const getRandomDescription = (arr) => {
   }
   return text;
 };
+
+const getUser = () => ({
+  Status: generateUserRating(),
+});
+
+const getCommentaries = () => ({
+  emoji: [
+    `/images/emoji/angry.png`,
+    `/images/emoji/puke.png`,
+    `/images/emoji/sleeping.png`,
+    `/images/emoji/smile.png`,
+    `/images/emoji/trophy.png`,
+  ][Math.floor(Math.random() * 5)],
+  text: [
+    `Interesting setting and a good cast`,
+    `Booooooooooring`,
+    `Very very old. Meh`,
+    `Almost two hours? Seriously?`,
+    `Fantastic!`,
+    `Amazing cast!`,
+    `This is bad`,
+  ][Math.floor(Math.random() * 7)],
+  author: [
+    `Tim Macoveev`,
+    `John Doe`,
+    `Duncan McLeod`,
+    `Richie Ryan`,
+    `Joe Dawson`,
+    `Jacob Call`,
+    `Connor McLeod`,
+  ][Math.floor(Math.random() * 7)],
+  day: [
+    `2 days ago`,
+    `today`,
+    `yesterday`,
+    `3 days ago`,
+  ][Math.floor(Math.random() * 4)],
+});
 
 const getCard = () => ({
   title: [
@@ -72,4 +123,6 @@ const getCard = () => ({
   ][Math.floor(Math.random() * 7)],
 });
 
+export {getUser};
 export {getCard};
+
