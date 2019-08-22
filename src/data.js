@@ -129,21 +129,21 @@ const getCard = () => ({
 
 const films = [];
 
-
 for (let i=0; i < numberOfFilms; i++) {
   films.push(getCard());
-  console.log(films[i]);
 }
 
-const getFilmsNumber = () => ({
+console.log(films);
+
+const getFilmsNumber = () => {
   return films.length;
-});
+};
 
 const getFilmsAll = () => ({
   allFilms: getFilmsNumber(),
 })
 
-console.log(films);
+console.log(films[2]);
 
 export {getUser};
 export {getCard};
