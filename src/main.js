@@ -65,6 +65,8 @@ const renderFilmsExtraLists = (index1, index2) => {
 // Поиск элементов в ДОМ-API
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
+const popupCloseButton = document.querySelector('.film-details__close-btn');
+let filmCards = document.querySelectorAll('.film-card');
 
 // Отрисовка блоков в шапку
 render(header, createSearchTemplate(), `beforeend`);
@@ -93,3 +95,36 @@ renderFilmsExtraLists(5, 9);
 // Отрисовка кнопки и попапа
 render(filmsList, createShowMoreButtonTemplate(), `beforeend`);
 render(main, createFilmPopupTemplate(), `beforeend`);
+
+const filmDetails = document.querySelector('.film-details');
+const onPopupButtonClick = () => {
+  filmDetails.style.display = "none";
+};
+
+function onShowMoreButtonClick() {
+  filmCards = document.querySelectorAll('.film-card');
+  if (films.length - filmCards.length > 5) {
+    for (let i = filmCards.length; i < (filmCards.length + NUMBER_FILMS_CARD); i++) {
+      render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
+    } 
+  } else if (films.length - filmCards.length > 0) {
+      for (let i = filmCards.length; i < films.length; i++) {
+        render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
+      }
+    } else {
+      filmsListShowMore.style.disabled = "true";
+    }
+} 
+
+const onFilmCardsClick = () => {
+  filmDetails.style.display = "block";
+  popupCloseButton.addEventListener('click', onPopupButtonClick);
+};
+
+const filmsListShowMore = document.querySelector('.films-list__show-more');
+
+filmsListShowMore.addEventListener('click', onShowMoreButtonClick);
+filmDetails.addEventListener('click', onPopupButtonClick);
+for (let i=0; i < filmCards.length; i++) {
+  filmCards[i].addEventListener('click', onFilmCardsClick);
+}

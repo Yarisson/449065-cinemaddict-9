@@ -133,8 +133,6 @@ for (let i=0; i < numberOfFilms; i++) {
   films.push(getCard());
 }
 
-console.log(films);
-
 const getFilmsNumber = () => {
   return films.length;
 };
@@ -142,8 +140,6 @@ const getFilmsNumber = () => {
 const getFilmsAll = () => ({
   allFilms: getFilmsNumber(),
 })
-
-console.log(films[2]);
 
 export {getUser};
 export {getCard};
