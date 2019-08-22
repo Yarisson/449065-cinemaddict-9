@@ -7,6 +7,9 @@ import {createShowMoreButtonTemplate} from './components/show-more.js';
 import {createFilmPopupTemplate} from './components/popup.js';
 import {getUser} from './data.js';
 import {getCard} from './data.js';
+import {films} from './data.js';
+import {getAllFilms} from './data.js';
+import {getFilmsAll} from './data.js';
 
 /**
  * Функция рендера
@@ -25,7 +28,7 @@ const NUMBER_EXTRA_FILMS_CARD = 2;
 const renderFilmCard = (container, count) => {
   container.insertAdjacentHTML(`beforeend`, new Array(count)
     .fill(``)
-    .map(getCard)
+    .map(films[count])
     .map(createFilmCardTemplate)
     .join(``));
 };
@@ -35,6 +38,15 @@ const renderProfileRating = (container) => {
     .fill(``)
     .map(getUser)
     .map(createProfileRatingTemplate)
+    .join(``));
+};
+
+const renderMenu = (container) => {
+  container.insertAdjacentHTML(`beforeend`, new Array(1)
+    .fill(``)
+    .map(getUser)
+    .map(getFilmsAll)
+    .map(createMenuTemplate)
     .join(``));
 };
 
@@ -57,7 +69,8 @@ renderProfileRating(header);
 // render(header, createProfileRatingTemplate(), `beforeend`);
 
 // Отрисовка меню
-render(main, createMenuTemplate(), `beforeend`);
+renderMenu(main);
+// render(main, createMenuTemplate(), `beforeend`);
 
 // Отрисовка оберток для фильмов
 render(main, createFilmsWrapperTemplate(), `beforeend`);

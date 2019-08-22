@@ -1,3 +1,5 @@
+import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from "constants";
+
 const TEXT_DESCRIPTION = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
@@ -11,6 +13,8 @@ const TEXT_DESCRIPTION = [
   `Nunc fermentum tortor ac porta dapibus.`,
   `In rutrum ac purus sit amet tempus.`
 ];
+
+const numberOfFilms = 40;
 
 const generateUserRating = () => {
   let numberFilms = Math.round(Math.random() * 100);
@@ -123,6 +127,25 @@ const getCard = () => ({
   ][Math.floor(Math.random() * 7)],
 });
 
+const films = [];
+
+
+for (let i=0; i < numberOfFilms; i++) {
+  films.push(getCard());
+  console.log(films[i]);
+}
+
+const getFilmsNumber = () => ({
+  return films.length;
+});
+
+const getFilmsAll = () => ({
+  allFilms: getFilmsNumber(),
+})
+
+console.log(films);
+
 export {getUser};
 export {getCard};
-
+export {films};
+export {getFilmsAll};

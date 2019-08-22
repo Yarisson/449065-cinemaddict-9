@@ -1,4 +1,4 @@
-export const createMenuTemplate = () => {
+export const createMenuTemplate = ({Status}, {getFilmsAll}) => {
   return `<nav
    class="main-navigation">
   <a href="#all" class="main-navigation__item">All movies</a>
@@ -12,7 +12,7 @@ export const createMenuTemplate = () => {
   <p class="statistic__rank">
     Your rank
     <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-    <span class="statistic__rank-label">Sci-Fighter</span>
+    <span class="statistic__rank-label">${Status}</span>
   </p>
 
   <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -37,7 +37,7 @@ export const createMenuTemplate = () => {
   <ul class="statistic__text-list">
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">You watched</h4>
-      <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+      <p class="statistic__item-text">${getFilmsAll}<span class="statistic__item-description">movies</span></p>
     </li>
     <li class="statistic__text-item">
       <h4 class="statistic__item-title">Total duration</h4>

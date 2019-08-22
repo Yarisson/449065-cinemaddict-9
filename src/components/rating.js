@@ -1,6 +1,6 @@
 import {getUser} from '../data.js';
 
-export const createProfileRatingTemplate = (Status) => {
+export const createProfileRatingTemplate = ({Status}) => {
   return ` <section
    class="header__profile profile">
   <p class="profile__rating">${Status}</p>
