@@ -25,10 +25,11 @@ const NUMBER_EXTRA_FILMS_CARD = 2;
 /**
  * Функция для рендера карточек после добавления данных внутрь шаблона
  */
-const renderFilmCard = (container, count) => {
-  container.insertAdjacentHTML(`beforeend`, new Array(count)
-    .fill(``)
-    .map(films[count])
+const renderFilmCard = (container, count, index) => {
+  container.insertAdjacentHTML(`beforeend`,
+   new Array(count)
+    .fill(films[index])
+//    .map(films[count])
     .map(createFilmCardTemplate)
     .join(``));
 };
@@ -53,9 +54,11 @@ const renderMenu = (container) => {
 /**
  * Функция для рендера дополнительных карточек в блоки filmsListsExtra
  */
-const renderFilmsExtraLists = () => {
+const renderFilmsExtraLists = (index1, index2) => {
   filmsListsExtra.forEach(function (item) {
-    renderFilmCard(item.querySelector(`.films-list__container`), NUMBER_EXTRA_FILMS_CARD);
+    render(item.querySelector(`.films-list__container`), createFilmCardTemplate(films[index1]), `beforeend`);
+    render(item.querySelector(`.films-list__container`), createFilmCardTemplate(films[index2]), `beforeend`);
+//    renderFilmCard(item.querySelector(`.films-list__container`), NUMBER_EXTRA_FILMS_CARD);
   });
 };
 
@@ -81,8 +84,11 @@ const filmsListContainer = filmsList.querySelector(`.films-list__container`);
 const filmsListsExtra = document.querySelectorAll(`.films-list--extra`);
 
 // Отрисовка карточек
-renderFilmCard(filmsListContainer, NUMBER_FILMS_CARD);
-renderFilmsExtraLists();
+for (let i = 0; i < NUMBER_FILMS_CARD; i++) {
+  render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
+}
+renderFilmsExtraLists(5, 9);
+
 
 // Отрисовка кнопки и попапа
 render(filmsList, createShowMoreButtonTemplate(), `beforeend`);
