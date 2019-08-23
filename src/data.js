@@ -14,7 +14,7 @@ const TEXT_DESCRIPTION = [
   `In rutrum ac purus sit amet tempus.`
 ];
 
-const numberOfFilms = 40;
+const numberOfFilms = 42;
 
 const generateUserRating = () => {
   let numberFilms = Math.round(Math.random() * 100);
@@ -34,6 +34,16 @@ const getRandomYear = () => {
   return date.getFullYear() - Math.round(Math.random() * 100);
 };
 
+const getRandomMonth = () => {
+  const date = new Date();
+  return date.getMonth();
+};
+
+const getRandomDay = () => {
+  const date = new Date();
+  return date.getDate();
+};
+
 const getRandomDescription = (arr) => {
   let numberElements = arr.length;
   let text = ``;
@@ -44,7 +54,7 @@ const getRandomDescription = (arr) => {
 };
 
 const getUser = () => ({
-  Status: generateUserRating(),
+  status: generateUserRating(),
 });
 
 const getCommentaries = () => ({
@@ -113,6 +123,8 @@ const getCard = () => ({
   ],
   rating: ((Math.random() * (10 - 0)) + 0).toFixed(1),
   year: getRandomYear(),
+  month: getRandomMonth(),
+  day: getRandomDay(),
   numberComments: Math.round(Math.random() * 100),
   hours: Math.round(Math.random() * 1) + 1,
   minutes: Math.round(Math.random() * 60),
@@ -141,7 +153,27 @@ const getFilmsAll = () => ({
   allFilms: getFilmsNumber(),
 })
 
+const getMenu = () => ({
+  numberAllFilms: getFilmsAll().allFilms,
+  status: getUser().status,
+})
+
+//const getPopup = () => ({
+//  title: ,
+//  poster: ,
+//  description: ,
+//  rating: ,
+//  year: ,
+//  month: ,
+//  day: ,
+//  numberComments: ,
+//  hours: ,
+//  minutes: ,
+//  genre: ,
+//})
+
 export {getUser};
 export {getCard};
 export {films};
 export {getFilmsAll};
+export {getMenu};
