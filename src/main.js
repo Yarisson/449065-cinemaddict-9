@@ -57,8 +57,9 @@ const renderMenu = (container) => {
     .join(``));
 };
 
-const renderChange = (container, template, place) => {
-  container.replaceWith(place, template);
+const renderChange = (container, template1, template2, place) => {
+  container.place.replace(template2, template1);
+  console.log(container.place.replaceWith(template));
 };
 
 /**
@@ -112,7 +113,7 @@ const renderFirtsCards = () => {
 
 const setLisenerOnCards = () => {
   for (let i = 0; i < filmCards.length; i++) {
-    filmCards[i].addEventListener('click', onFilmCardsClick);
+    filmCards[i].addEventListener('click', onFilmCardsClick(i));
   }
 }
 
@@ -149,10 +150,10 @@ function onShowMoreButtonClick() {
   setLisenerOnCards();
 } 
 
-const onFilmCardsClick = () => {
+const onFilmCardsClick = (index) => {
 
   filmDetails.style.display = "block";
-  renderChange(main, createFilmPopupTemplate(films[3]), `beforeend`)
+  renderChange(main, createFilmPopupTemplate(films[0]), createFilmPopupTemplate(films[1]), `beforeend`)
   popupCloseButton.addEventListener('click', onPopupButtonClick);
 };
 
