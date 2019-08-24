@@ -5,6 +5,7 @@ import {createFilmsWrapperTemplate} from './components/films.js';
 import {createFilmCardTemplate} from './components/film.js';
 import {createShowMoreButtonTemplate} from './components/show-more.js';
 import {createFilmPopupTemplate} from './components/popup.js';
+import {createFooterTemplate} from './components/footer.js';
 import {getUser} from './data.js';
 import {films} from './data.js';
 import {getMenu} from './data.js';
@@ -53,6 +54,7 @@ const renderFilmsExtraLists = (index1, index2) => {
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
 const popupCloseButton = document.querySelector(`.film-details__close-btn`);
+const footer = document.querySelector(`.footer`);
 let filmCards = document.querySelectorAll(`.film-card`);
 
 // Отрисовка блоков в шапку
@@ -66,6 +68,9 @@ renderMenu(main);
 
 // Отрисовка оберток для фильмов
 render(main, createFilmsWrapperTemplate(), `beforeend`);
+
+// Отрисовка подвала
+render(footer, createFooterTemplate(getMenu()), `beforeend`);
 
 // Поиск элементов в ДОМ-API из отрисованных оберток фильмов
 const filmsList = document.querySelector(`.films-list`);
