@@ -21,7 +21,7 @@ const render = (container, template, place) => {
 
 // Константы
 const NUMBER_FILMS_CARD = 5;
-const NUMBER_EXTRA_FILMS_CARD = 2;
+// const NUMBER_EXTRA_FILMS_CARD = 2;
 
 let checkRenderCards = 0;
 
@@ -30,9 +30,9 @@ let checkRenderCards = 0;
  */
 const renderFilmCard = (container, count, index) => {
   container.insertAdjacentHTML(`beforeend`,
-   new Array(count)
+      new Array(count)
     .fill(films[index])
-//    .map(films[count])
+    //    .map(films[count])
     .map(createFilmCardTemplate)
     .join(``));
 };
@@ -59,7 +59,6 @@ const renderMenu = (container) => {
 
 const renderChange = (container, template1, template2, place) => {
   container.place.replace(template2, template1);
-  console.log(container.place.replaceWith(template));
 };
 
 /**
@@ -69,15 +68,15 @@ const renderFilmsExtraLists = (index1, index2) => {
   filmsListsExtra.forEach(function (item) {
     render(item.querySelector(`.films-list__container`), createFilmCardTemplate(films[index1]), `beforeend`);
     render(item.querySelector(`.films-list__container`), createFilmCardTemplate(films[index2]), `beforeend`);
-//    renderFilmCard(item.querySelector(`.films-list__container`), NUMBER_EXTRA_FILMS_CARD);
+    //    renderFilmCard(item.querySelector(`.films-list__container`), NUMBER_EXTRA_FILMS_CARD);
   });
 };
 
 // Поиск элементов в ДОМ-API
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
-const popupCloseButton = document.querySelector('.film-details__close-btn');
-let filmCards = document.querySelectorAll('.film-card');
+const popupCloseButton = document.querySelector(`.film-details__close-btn`);
+let filmCards = document.querySelectorAll(`.film-card`);
 
 // Отрисовка блоков в шапку
 render(header, createSearchTemplate(), `beforeend`);
@@ -106,59 +105,60 @@ const filmsListsExtra = document.querySelectorAll(`.films-list--extra`);
 const renderFirtsCards = () => {
   for (let i = 0; i < NUMBER_FILMS_CARD; i++) {
     render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
-    filmCards = document.querySelectorAll('.film-card');
+    filmCards = document.querySelectorAll(`.film-card`);
     checkRenderCards = checkRenderCards + 1;
   }
-}
+};
 
 const setLisenerOnCards = () => {
   for (let i = 0; i < filmCards.length; i++) {
-    filmCards[i].addEventListener('click', onFilmCardsClick(i));
+    filmCards[i].addEventListener(`click`, onFilmCardsClick);
   }
-}
+};
 
 // Отрисовка карточек
-renderFirtsCards()
+renderFirtsCards();
 renderFilmsExtraLists(5, 9);
 
 // Отрисовка кнопки и попапа
 render(filmsList, createShowMoreButtonTemplate(), `beforeend`);
 render(main, createFilmPopupTemplate(films[0]), `beforeend`);
 
-const filmDetails = document.querySelector('.film-details');
+const filmDetails = document.querySelector(`.film-details`);
 const onPopupButtonClick = () => {
-  filmDetails.style.display = "none";
+  filmDetails.style.display = `none`;
 };
 
 function onShowMoreButtonClick() {
   const checkRenderCards = filmCards.length - 4;
   let storedCard = films.length - checkRenderCards;
   if (storedCard === 0) {
-    filmsListShowMore.style.display = "none";
-  } else if ( storedCard < 4 ) {
-    filmsListShowMore.style.display = "none";
+    filmsListShowMore.style.display = `none`;
+  } else if (storedCard < 4) {
+    filmsListShowMore.style.display = `none`;
     for (let i = checkRenderCards; i < (films.length); i++) {
       render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
-      filmCards = document.querySelectorAll('.film-card');
-    } 
+      filmCards = document.querySelectorAll(`.film-card`);
+    }
   } else {
     for (let i = checkRenderCards; i < (checkRenderCards + NUMBER_FILMS_CARD); i++) {
       render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
-      filmCards = document.querySelectorAll('.film-card');
-    } 
+      filmCards = document.querySelectorAll(`.film-card`);
+    }
   }
   setLisenerOnCards();
-} 
+}
 
-const onFilmCardsClick = (index) => {
-
-  filmDetails.style.display = "block";
-  renderChange(main, createFilmPopupTemplate(films[0]), createFilmPopupTemplate(films[1]), `beforeend`)
-  popupCloseButton.addEventListener('click', onPopupButtonClick);
+const onFilmCardsClick = (evt) => {
+  let value = evt.target.value;
+  console.log(value);
+  filmDetails.style.display = `block`;
+  // renderChange(main, createFilmPopupTemplate(films[0]), createFilmPopupTemplate(films[1]), `beforeend`);
+  popupCloseButton.addEventListener(`click`, onPopupButtonClick);
 };
 
-const filmsListShowMore = document.querySelector('.films-list__show-more');
+const filmsListShowMore = document.querySelector(`.films-list__show-more`);
 
-filmsListShowMore.addEventListener('click', onShowMoreButtonClick);
-filmDetails.addEventListener('click', onPopupButtonClick);
+filmsListShowMore.addEventListener(`click`, onShowMoreButtonClick);
+filmDetails.addEventListener(`click`, onPopupButtonClick);
 setLisenerOnCards();
