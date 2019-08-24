@@ -4,6 +4,7 @@ import {createProfileRatingTemplate} from './components/rating.js';
 import {createFilmsWrapperTemplate} from './components/films.js';
 import {createFilmCardTemplate} from './components/film.js';
 import {createShowMoreButtonTemplate} from './components/show-more.js';
+import {createWrapperPopupTemplate} from './components/popup-wrapper.js';
 import {createFilmPopupTemplate} from './components/popup.js';
 import {createFooterTemplate} from './components/footer.js';
 import {getUser} from './data.js';
@@ -59,7 +60,8 @@ let filmCards = document.querySelectorAll(`.film-card`);
 
 // Отрисовка блоков в шапку
 render(header, createSearchTemplate(), `beforeend`);
-renderProfileRating(header);
+render(header, createProfileRatingTemplate(getUser()), `beforeend`);
+//renderProfileRating(header);
 // render(header, createProfileRatingTemplate(), `beforeend`);
 
 // Отрисовка меню
@@ -100,10 +102,14 @@ renderFilmsExtraLists(5, 9);
 
 // Отрисовка кнопки и попапа
 render(filmsList, createShowMoreButtonTemplate(), `beforeend`);
+render(main, createWrapperPopupTemplate(), `beforeend`);
+
+const filmDetails = document.querySelector(`.film-details`);
 
 const onPopupButtonClick = () => {
-  const filmDetails = document.querySelector(`.film-details`);
-  filmDetails.parentNode.removeChild(filmDetails);
+  const filmDetailsInner = filmDetails.querySelector(`.film-details__inner`);
+  main.parentNode.removeChild(filmDetails);
+  filmDetails.removeEventListener(`click`, onPopupButtonClick);
 };
 
 function onShowMoreButtonClick() {
@@ -127,10 +133,9 @@ function onShowMoreButtonClick() {
 }
 
 const onFilmCardsClick = (index) => {
-  render(main, createFilmPopupTemplate(films[index]), `beforeend`);
-  const filmDetails = document.querySelector(`.film-details`);
+  render(filmDetails, createFilmPopupTemplate(films[index]), `beforeend`);
   filmDetails.addEventListener(`click`, onPopupButtonClick);
-  popupCloseButton.addEventListener(`click`, onPopupButtonClick);
+  // popupCloseButton.addEventListener(`click`, onPopupButtonClick);
 };
 
 const filmsListShowMore = document.querySelector(`.films-list__show-more`);
