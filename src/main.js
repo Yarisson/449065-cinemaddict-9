@@ -6,10 +6,7 @@ import {createFilmCardTemplate} from './components/film.js';
 import {createShowMoreButtonTemplate} from './components/show-more.js';
 import {createFilmPopupTemplate} from './components/popup.js';
 import {getUser} from './data.js';
-import {getCard} from './data.js';
 import {films} from './data.js';
-import {getAllFilms} from './data.js';
-import {getFilmsAll} from './data.js';
 import {getMenu} from './data.js';
 
 /**
