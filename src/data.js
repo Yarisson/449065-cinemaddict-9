@@ -1,5 +1,9 @@
 import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from "constants";
 
+const NOVICE = 11;
+const  FAN = 21
+const NUMBER_OF_FILMS = 42;
+
 const TEXT_DESCRIPTION = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
   `Cras aliquet varius magna, non porta ligula feugiat eget.`,
@@ -14,15 +18,13 @@ const TEXT_DESCRIPTION = [
   `In rutrum ac purus sit amet tempus.`
 ];
 
-const numberOfFilms = 42;
-
 const generateUserRating = () => {
   let numberFilms = Math.round(Math.random() * 100);
   if (numberFilms === 0) {
     return ``;
-  } else if (numberFilms < 11) {
+  } else if (numberFilms < NOVICE) {
     return `novice`;
-  } else if (numberFilms < 21) {
+  } else if (numberFilms < FAN) {
     return `fan`;
   } else {
     return `movie buff`;
@@ -141,7 +143,7 @@ const getCard = () => ({
 
 const films = [];
 
-for (let i=0; i < numberOfFilms; i++) {
+for (let i=0; i < NUMBER_OF_FILMS; i++) {
   films.push(getCard());
 }
 
@@ -157,20 +159,6 @@ const getMenu = () => ({
   numberAllFilms: getFilmsAll().allFilms,
   status: getUser().status,
 })
-
-//const getPopup = () => ({
-//  title: ,
-//  poster: ,
-//  description: ,
-//  rating: ,
-//  year: ,
-//  month: ,
-//  day: ,
-//  numberComments: ,
-//  hours: ,
-//  minutes: ,
-//  genre: ,
-//})
 
 export {getUser};
 export {getCard};

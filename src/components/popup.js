@@ -42,7 +42,7 @@ export const createFilmPopupTemplate = ({title, poster, description, rating, yea
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${hours} ${minutes}</td>
+              <td class="film-details__cell">${hours}h ${minutes}m</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>

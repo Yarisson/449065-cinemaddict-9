@@ -20,7 +20,8 @@ const render = (container, template, place) => {
 
 // Константы
 const NUMBER_FILMS_CARD = 5;
-// const NUMBER_EXTRA_FILMS_CARD = 2;
+const NUMBER_EXTRA_FILMS_CARD = 4;
+const NUMBER_MORE_RENDER_CARDS = 5;
 
 let checkRenderCards = 0;
 
@@ -92,7 +93,7 @@ const renderFirtsCards = () => {
 
 const setLisenerOnCards = () => {
   for (let i = 0; i < filmCards.length; i++) {
-    filmCards[i].addEventListener(`click`, onFilmCardsClick(i));
+    filmCards[i].addEventListener(`click`, onFilmCardsClick(i, films));
   }
 };
 
@@ -113,11 +114,11 @@ const onPopupButtonClick = () => {
 };
 
 function onShowMoreButtonClick() {
-  const checkRenderCards = filmCards.length - 4;
+  const checkRenderCards = filmCards.length - NUMBER_EXTRA_FILMS_CARD;
   let storedCard = films.length - checkRenderCards;
   if (storedCard === 0) {
     filmsListShowMore.style.display = `none`;
-  } else if (storedCard < 4) {
+  } else if (storedCard < NUMBER_MORE_RENDER_CARDS - 1) {
     filmsListShowMore.style.display = `none`;
     for (let i = checkRenderCards; i < (films.length); i++) {
       render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
@@ -132,13 +133,13 @@ function onShowMoreButtonClick() {
   setLisenerOnCards();
 }
 
-const onFilmCardsClick = (index) => {
-  render(filmDetails, createFilmPopupTemplate(films[index]), `beforeend`);
+const onFilmCardsClick = (index, array) => {
+  render(filmDetails, createFilmPopupTemplate(array[index]), `beforeend`);
   filmDetails.addEventListener(`click`, onPopupButtonClick);
-  // popupCloseButton.addEventListener(`click`, onPopupButtonClick);
 };
 
 const filmsListShowMore = document.querySelector(`.films-list__show-more`);
 
 filmsListShowMore.addEventListener(`click`, onShowMoreButtonClick);
 setLisenerOnCards();
+onPopupButtonClick();
