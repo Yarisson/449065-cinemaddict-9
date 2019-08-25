@@ -39,18 +39,6 @@ const renderMenu = (container) => {
     .join(``));
 };
 
-/**
- * Функция для рендера дополнительных карточек в блоки filmsListsExtra
- */
-const renderFilmsExtraLists = () => {
-  filmsListsExtra.forEach(function (item) {
-    for (let i = 0; i < extraFilmsIndex.length; i++) {
-      render(item.querySelector(`.films-list__container`), createFilmCardTemplate(extraFilms[i]), `beforeend`);
-      filmCards[i].classList.add(`film-card-extra`);
-    }
-  });
-};
-
 // Поиск элементов в ДОМ-API
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
@@ -89,6 +77,21 @@ const renderFirtsCards = (number) => {
 };
 
 /**
+ * Функция для рендера дополнительных карточек в блоки filmsListsExtra
+ */
+const renderFilmsExtraLists = () => {
+  filmsListsExtra.forEach(function (item) {
+    for (let i = 0; i < extraFilmsIndex.length; i++) {
+      render(item.querySelector(`.films-list__container`), createFilmCardTemplate(extraFilms[i]), `beforeend`);
+    }
+  });
+};
+
+// Отрисовка карточек
+renderFirtsCards(NUMBER_FILMS_CARD);
+renderFilmsExtraLists();
+
+/**
  * Функция обработчиков событий для карточек
  */
 
@@ -98,17 +101,15 @@ const setLisenerOnCards = () => {
     filmCards[i].querySelector(`img`).setAttribute(`id`, i);
   }
 
-  for (let i = 0; i < filmCardsExtra.length; i++) {
-    filmCardsExtra[i].addEventListener(`click`, onFilmCardsExtraClick);
-    filmCardsExtra[i].querySelector(`img`).setAttribute(`id`, i);
+  for (let i = 0; i < filmsListsExtra.length; i++) {
+    const cards = filmsListsExtra[i].querySelectorAll(`.film-card`);
+    console.log(cards);
+    cards.forEach(function (element, index) {
+      element.addEventListener(`click`, onFilmCardsExtraClick);
+      element.querySelector(`img`).setAttribute(`id`, index);
+    });
   }
 };
-
-// Отрисовка карточек
-renderFirtsCards(NUMBER_FILMS_CARD);
-renderFilmsExtraLists();
-
-const filmCardsExtra = document.querySelectorAll(`.film-card-extra`);
 
 // Отрисовка кнопки и попапа
 render(filmsList, createShowMoreButtonTemplate(), `beforeend`);
