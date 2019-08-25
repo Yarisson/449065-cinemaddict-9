@@ -51,9 +51,6 @@ const renderFilmsExtraLists = () => {
     for (let i = 0; i < extraFilmsIndex.length; i++) {
       render(item.querySelector(`.films-list__container`), createFilmCardTemplate(extraFilms[i]), `beforeend`);
     }
-    //item.querySelector(`.film-card`).addEventListener(`click`, onFilmCardsClick);
-    //item.querySelector(`.film-card`).querySelector(`img`).setAttribute('id', getExtraCards().number);
-    //renderFilmCard(item.querySelector(`.films-list__container`), NUMBER_EXTRA_FILMS_CARD);
   });
 };
 
@@ -96,10 +93,10 @@ const renderFirtsCards = (number) => {
   }
 };
 
-const setLisenerOnCards = () => {
-  for (let i = 0; i < filmCards.length; i++) {
-    filmCards[i].addEventListener(`click`, onFilmCardsClick);
-    filmCards[i].querySelector(`img`).setAttribute('id', i);
+const setLisenerOnCards = (arr) => {
+  for (let i = 0; i < arr.length; i++) {
+    arr[i].addEventListener(`click`, onFilmCardsClick);
+    arr[i].querySelector(`img`).setAttribute('id', i);
   }
 };
 
@@ -141,7 +138,7 @@ function onShowMoreButtonClick() {
     }
   }
   console.log(checkRenderCards);
-  setLisenerOnCards();
+  setLisenerOnCards(filmCards);
 }
 
 const onFilmCardsClick = (evt) => {
@@ -153,6 +150,7 @@ const onFilmCardsClick = (evt) => {
 const filmsListShowMore = document.querySelector(`.films-list__show-more`);
 
 filmsListShowMore.addEventListener(`click`, onShowMoreButtonClick);
-setLisenerOnCards();
+setLisenerOnCards(filmCards);
+//setLisenerOnCards(extraFilms);
 onPopupButtonClick();
 console.log(checkRenderCards);
