@@ -1,5 +1,5 @@
 const NOVICE = 11;
-const  FAN = 21
+const FAN = 21;
 const NUMBER_OF_FILMS = 42;
 const NUMBER_OF_EXTRA_FILMS = 2;
 
@@ -142,21 +142,19 @@ const getCard = () => ({
 
 const films = [];
 
-for (let i=0; i < NUMBER_OF_FILMS; i++) {
+for (let i = 0; i < NUMBER_OF_FILMS; i++) {
   films.push(getCard());
 }
-
-console.log(films);
 
 const extraFilms = [];
 const extraFilmsIndex = [];
 
 const generateIndexExtraFilms = () => {
-  for (let i=0; i < NUMBER_OF_EXTRA_FILMS; i++) {
+  for (let i = 0; i < NUMBER_OF_EXTRA_FILMS; i++) {
     extraFilmsIndex.push(Math.round(Math.random() * NUMBER_OF_FILMS));
   }
 
-  extraFilmsIndex.forEach(element => {
+  extraFilmsIndex.forEach(function (element) {
     extraFilms.push(films[element]);
   });
 };
@@ -166,9 +164,7 @@ generateIndexExtraFilms();
 const getExtraCards = () => ({
   films: extraFilms,
   number: extraFilmsIndex,
-})
-
-console.log(getExtraCards().films[0]);
+});
 
 const getFilmsNumber = () => {
   return films.length;
@@ -176,12 +172,12 @@ const getFilmsNumber = () => {
 
 const getFilmsAll = () => ({
   allFilms: getFilmsNumber(),
-})
+});
 
 const getMenu = () => ({
   numberAllFilms: getFilmsAll().allFilms,
   status: getUser().status,
-})
+});
 
 export {getUser};
 export {getCard};
