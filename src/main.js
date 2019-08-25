@@ -46,6 +46,7 @@ const renderFilmsExtraLists = () => {
   filmsListsExtra.forEach(function (item) {
     for (let i = 0; i < extraFilmsIndex.length; i++) {
       render(item.querySelector(`.films-list__container`), createFilmCardTemplate(extraFilms[i]), `beforeend`);
+      filmCards[i].classList.add(`film-card-extra`);
     }
   });
 };
@@ -97,11 +98,18 @@ const setLisenerOnCards = () => {
     filmCards[i].addEventListener(`click`, onFilmCardsClick);
     filmCards[i].querySelector(`img`).setAttribute(`id`, i);
   }
+
+  for (let i = 0; i < filmCardsExtra.length; i++) {
+    filmCardsExtra[i].addEventListener(`click`, onFilmCardsExtraClick);
+    filmCardsExtra[i].querySelector(`img`).setAttribute(`id`, i);
+  }
 };
 
 // Отрисовка карточек
 renderFirtsCards(NUMBER_FILMS_CARD);
 renderFilmsExtraLists();
+
+const filmCardsExtra = document.querySelectorAll(`.film-card-extra`);
 
 // Отрисовка кнопки и попапа
 render(filmsList, createShowMoreButtonTemplate(), `beforeend`);
@@ -152,6 +160,13 @@ function onShowMoreButtonClick() {
 
 const onFilmCardsClick = (evt) => {
   render(filmDetails, createFilmPopupTemplate(films[evt.target.id]), `beforeend`);
+  filmDetails.style.display = `block`;
+  filmDetails.addEventListener(`click`, onPopupButtonClick);
+  // popupCloseButton.addEventListener(`click`, onPopupButtonClick);
+};
+
+const onFilmCardsExtraClick = (evt) => {
+  render(filmDetails, createFilmPopupTemplate(extraFilms[evt.target.id]), `beforeend`);
   filmDetails.style.display = `block`;
   filmDetails.addEventListener(`click`, onPopupButtonClick);
   // popupCloseButton.addEventListener(`click`, onPopupButtonClick);
