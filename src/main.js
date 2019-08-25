@@ -92,18 +92,19 @@ renderFirtsCards(NUMBER_FILMS_CARD);
 renderFilmsExtraLists();
 
 /**
- * Функция обработчиков событий для карточек
+ * Функции обработчиков событий для карточек
  */
 
-const setLisenerOnCards = () => {
+const setListenerOnCards = () => {
   for (let i = 0; i < filmCards.length; i++) {
     filmCards[i].addEventListener(`click`, onFilmCardsClick);
     filmCards[i].querySelector(`img`).setAttribute(`id`, i);
   }
+};
 
+const setListenerOnExtraCards = () => {
   for (let i = 0; i < filmsListsExtra.length; i++) {
     const cards = filmsListsExtra[i].querySelectorAll(`.film-card`);
-    console.log(cards);
     cards.forEach(function (element, index) {
       element.addEventListener(`click`, onFilmCardsExtraClick);
       element.querySelector(`img`).setAttribute(`id`, index);
@@ -151,7 +152,7 @@ function onShowMoreButtonClick() {
       checkRenderCards = checkRenderCards + 1;
     }
   }
-  setLisenerOnCards();
+
 }
 
 /**
@@ -175,5 +176,6 @@ const onFilmCardsExtraClick = (evt) => {
 const filmsListShowMore = document.querySelector(`.films-list__show-more`);
 
 filmsListShowMore.addEventListener(`click`, onShowMoreButtonClick);
-setLisenerOnCards();
+setListenerOnCards();
+setListenerOnExtraCards();
 onPopupButtonClick();
