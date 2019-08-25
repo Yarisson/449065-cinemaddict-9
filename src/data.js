@@ -1,8 +1,7 @@
-import { SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION } from "constants";
-
 const NOVICE = 11;
 const  FAN = 21
 const NUMBER_OF_FILMS = 42;
+const NUMBER_OF_EXTRA_FILMS = 2;
 
 const TEXT_DESCRIPTION = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
@@ -147,6 +146,30 @@ for (let i=0; i < NUMBER_OF_FILMS; i++) {
   films.push(getCard());
 }
 
+console.log(films);
+
+const extraFilms = [];
+const extraFilmsIndex = [];
+
+const generateIndexExtraFilms = () => {
+  for (let i=0; i < NUMBER_OF_EXTRA_FILMS; i++) {
+    extraFilmsIndex.push(Math.round(Math.random() * NUMBER_OF_FILMS));
+  }
+
+  extraFilmsIndex.forEach(element => {
+    extraFilms.push(films[element]);
+  });
+};
+
+generateIndexExtraFilms();
+
+const getExtraCards = () => ({
+  films: extraFilms,
+  number: extraFilmsIndex,
+})
+
+console.log(getExtraCards().films[0]);
+
 const getFilmsNumber = () => {
   return films.length;
 };
@@ -163,5 +186,8 @@ const getMenu = () => ({
 export {getUser};
 export {getCard};
 export {films};
+export {extraFilms};
+export {extraFilmsIndex};
+export {getExtraCards};
 export {getFilmsAll};
 export {getMenu};

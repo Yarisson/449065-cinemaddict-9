@@ -10,7 +10,9 @@ import {createFooterTemplate} from './components/footer.js';
 import {getUser} from './data.js';
 import {films} from './data.js';
 import {getMenu} from './data.js';
-
+import {extraFilms} from './data.js';
+import {extraFilmsIndex} from './data.js';
+import {getExtraCards} from './data.js';
 /**
  * Функция рендера
  */
@@ -44,11 +46,14 @@ const renderMenu = (container) => {
 /**
  * Функция для рендера дополнительных карточек в блоки filmsListsExtra
  */
-const renderFilmsExtraLists = (index1, index2) => {
+const renderFilmsExtraLists = () => {
   filmsListsExtra.forEach(function (item) {
-    render(item.querySelector(`.films-list__container`), createFilmCardTemplate(films[index1]), `beforeend`);
-    render(item.querySelector(`.films-list__container`), createFilmCardTemplate(films[index2]), `beforeend`);
-    //    renderFilmCard(item.querySelector(`.films-list__container`), NUMBER_EXTRA_FILMS_CARD);
+    for (let i = 0; i < extraFilmsIndex.length; i++) {
+      render(item.querySelector(`.films-list__container`), createFilmCardTemplate(extraFilms[i]), `beforeend`);
+    }
+    //item.querySelector(`.film-card`).addEventListener(`click`, onFilmCardsClick);
+    //item.querySelector(`.film-card`).querySelector(`img`).setAttribute('id', getExtraCards().number);
+    //renderFilmCard(item.querySelector(`.films-list__container`), NUMBER_EXTRA_FILMS_CARD);
   });
 };
 
@@ -83,8 +88,8 @@ const filmsListsExtra = document.querySelectorAll(`.films-list--extra`);
 /**
  * Функция рендера стартовых карточек
  */
-const renderFirtsCards = () => {
-  for (let i = 0; i < NUMBER_FILMS_CARD; i++) {
+const renderFirtsCards = (number) => {
+  for (let i = 0; i < number; i++) {
     render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
     filmCards = document.querySelectorAll(`.film-card`);
     checkRenderCards = checkRenderCards + 1;
@@ -99,8 +104,8 @@ const setLisenerOnCards = () => {
 };
 
 // Отрисовка карточек
-renderFirtsCards();
-renderFilmsExtraLists(5, 9);
+renderFirtsCards(NUMBER_FILMS_CARD);
+renderFilmsExtraLists();
 
 // Отрисовка кнопки и попапа
 render(filmsList, createShowMoreButtonTemplate(), `beforeend`);
@@ -117,22 +122,25 @@ const onPopupButtonClick = () => {
 };
 
 function onShowMoreButtonClick() {
-  const checkRenderCards = filmCards.length - NUMBER_EXTRA_FILMS_CARD;
-  let storedCard = films.length - checkRenderCards;
+  const currentNumberCards = checkRenderCards;
+  let storedCard = films.length - currentNumberCards;
   if (storedCard === 0) {
     filmsListShowMore.style.display = `none`;
   } else if (storedCard < NUMBER_MORE_RENDER_CARDS - 1) {
     filmsListShowMore.style.display = `none`;
-    for (let i = checkRenderCards; i < (films.length); i++) {
+    for (let i = currentNumberCards; i < (films.length); i++) {
       render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
       filmCards = document.querySelectorAll(`.film-card`);
+      checkRenderCards = checkRenderCards + 1;
     }
   } else {
-    for (let i = checkRenderCards; i < (checkRenderCards + NUMBER_FILMS_CARD); i++) {
+    for (let i = currentNumberCards; i < (currentNumberCards + NUMBER_FILMS_CARD); i++) {
       render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
       filmCards = document.querySelectorAll(`.film-card`);
+      checkRenderCards = checkRenderCards + 1;
     }
   }
+  console.log(checkRenderCards);
   setLisenerOnCards();
 }
 
@@ -147,3 +155,4 @@ const filmsListShowMore = document.querySelector(`.films-list__show-more`);
 filmsListShowMore.addEventListener(`click`, onShowMoreButtonClick);
 setLisenerOnCards();
 onPopupButtonClick();
+console.log(checkRenderCards);
