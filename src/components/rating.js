@@ -1,5 +1,3 @@
-import {getUser} from '../data.js';
-
 export const createProfileRatingTemplate = ({status}) => {
   return ` <section
    class="header__profile profile">
