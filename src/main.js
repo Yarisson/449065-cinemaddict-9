@@ -54,7 +54,6 @@ const renderFilmsExtraLists = () => {
 // Поиск элементов в ДОМ-API
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
-// const popupCloseButton = document.querySelector(`.film-details__close-btn`);
 const footer = document.querySelector(`.footer`);
 let filmCards = document.querySelectorAll(`.film-card`);
 
@@ -161,18 +160,19 @@ function onShowMoreButtonClick() {
 const onFilmCardsClick = (evt) => {
   render(filmDetails, createFilmPopupTemplate(films[evt.target.id]), `beforeend`);
   filmDetails.style.display = `block`;
-  filmDetails.addEventListener(`click`, onPopupButtonClick);
-  // popupCloseButton.addEventListener(`click`, onPopupButtonClick);
+  const popupCloseButton = filmDetails.querySelector(`.film-details__close-btn`);
+  popupCloseButton.addEventListener(`click`, onPopupButtonClick);
 };
 
 const onFilmCardsExtraClick = (evt) => {
   render(filmDetails, createFilmPopupTemplate(extraFilms[evt.target.id]), `beforeend`);
   filmDetails.style.display = `block`;
-  filmDetails.addEventListener(`click`, onPopupButtonClick);
-  // popupCloseButton.addEventListener(`click`, onPopupButtonClick);
+  const popupCloseButton = filmDetails.querySelector(`.film-details__close-btn`);
+  popupCloseButton.addEventListener(`click`, onPopupButtonClick);
 };
 
 const filmsListShowMore = document.querySelector(`.films-list__show-more`);
 
 filmsListShowMore.addEventListener(`click`, onShowMoreButtonClick);
 setLisenerOnCards();
+onPopupButtonClick();
