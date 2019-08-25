@@ -54,7 +54,7 @@ const renderFilmsExtraLists = () => {
 // Поиск элементов в ДОМ-API
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
-const popupCloseButton = document.querySelector(`.film-details__close-btn`);
+// const popupCloseButton = document.querySelector(`.film-details__close-btn`);
 const footer = document.querySelector(`.footer`);
 let filmCards = document.querySelectorAll(`.film-card`);
 

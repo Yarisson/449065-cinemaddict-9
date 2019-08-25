@@ -58,6 +58,7 @@ const getUser = () => ({
   status: generateUserRating(),
 });
 
+/**
 const getCommentaries = () => ({
   emoji: [
     `/images/emoji/angry.png`,
@@ -91,6 +92,7 @@ const getCommentaries = () => ({
     `3 days ago`,
   ][Math.floor(Math.random() * 4)],
 });
+ */
 
 const getCard = () => ({
   title: [
