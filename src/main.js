@@ -2,24 +2,49 @@ import {createSearchTemplate} from './components/search.js';
 import {createMenuTemplate} from './components/menu.js';
 import {createProfileRatingTemplate} from './components/rating.js';
 import {createFilmsWrapperTemplate} from './components/films.js';
+import {Film} from './components/film.js';
 import {createFilmCardTemplate} from './components/film.js';
 import {createShowMoreButtonTemplate} from './components/show-more.js';
 import {createWrapperPopupTemplate} from './components/popup-wrapper.js';
 import {createFilmPopupTemplate} from './components/popup.js';
 import {createFooterTemplate} from './components/footer.js';
+import {getCard} from './data.js';
 import {getUser} from './data.js';
 import {films} from './data.js';
 import {getMenu} from './data.js';
 import {extraFilms} from './data.js';
 import {extraFilmsIndex} from './data.js';
 
+import {position} from './utils.js';
+import {render} from './utils.js';
+import {unrender} from './utils.js';
 /**
  * Функция рендера
  */
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
+// const render = (container, template, place) => {
+//  container.insertAdjacentHTML(place, template);
+// };
+
+const renderFilm = (filmMock) => {
+  const film = new Film(filmMock);
+
+  render(filmsListContainer, film.getElement(), position.BEFOREEND);
 };
+
+const filmMocks = new Array(NUMBER_FILMS_CARD).fill(``).map(getCard);
+
+filmMocks.forEach((filmMock) => renderFilm(filmMock));
+
+const renderMenu = (menuMock) => {
+  const menu = new Film(menuMock);
+
+  render(main, menu.getElement(), position.BEFOREEND);
+};
+
+const menuMocks = new Array(1).fill(``).map(getMenu);
+
+menuMocks.forEach((menuMock) => renderFilm(menuMock));
 
 // Константы
 const NUMBER_FILMS_CARD = 5;
@@ -31,13 +56,13 @@ let checkRenderCards = 0;
  * Функция рендера меню
  */
 
-const renderMenu = (container) => {
-  container.insertAdjacentHTML(`beforeend`, new Array(1)
-    .fill(``)
-    .map(getMenu)
-    .map(createMenuTemplate)
-    .join(``));
-};
+//const renderMenu = (container) => {
+//  container.insertAdjacentHTML(`beforeend`, new Array(1)
+//    .fill(``)
+//    .map(getMenu)
+//    .map(createMenuTemplate)
+//    .join(``));
+//};
 
 // Поиск элементов в ДОМ-API
 const header = document.querySelector(`.header`);
