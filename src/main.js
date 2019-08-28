@@ -96,14 +96,13 @@ footerMocks.forEach((footerMock) => renderFooter(footerMock));
 
 // Поиск элементов в ДОМ-API из отрисованных оберток фильмов
 const filmsList = document.querySelector(`.films-list`);
-const filmsListContainer = filmsList.querySelector(`.films-list__container`);
 const filmsListsExtra = document.querySelectorAll(`.films-list--extra`);
 
 /**
  * Функция рендера карточки
  */
 
-const renderFilm = (filmMock) => {
+const renderFilm = (filmMock, container) => {
   const film = new Film(filmMock);
   const popup = new Popup(filmMock);
 
@@ -160,7 +159,8 @@ const renderFilm = (filmMock) => {
     document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
-  render(filmsListContainer, film.getElement(), position.BEFOREEND);
+  render(container, film.getElement(), position.BEFOREEND);
+  // render(filmsListContainer, film.getElement(), position.BEFOREEND);
 };
 
 /**
@@ -170,74 +170,17 @@ const renderFilm = (filmMock) => {
 const renderFilmCards = (number) => {
   const startIndex = checkRenderCards;
   for (let i = startIndex; i < (startIndex + number); i++) {
-    renderFilm(filmMocks[i]);
+    renderFilm(filmMocks[i], filmsList.querySelector(`.films-list__container`));
     checkRenderCards = checkRenderCards + 1;
   }
 };
 
-/**
- * Функция для рендера дополнительных карточек в блоки filmsListsExtra
- */
-
-const renderExtraFilm = (extraFilmMock, container) => {
-  const film = new Film(extraFilmMock);
-  const popup = new Film(extraFilmMock);
-
-  const onEscKeyDown = (evt) => {
-    if (evt.key === `Escape` || evt.key === `Esc`) {
-      unrender(popup.getElement());
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  film.getElement()
-  .querySelector(`.film-card__poster`)
-  .addEventListener(`click`, () => {
-    if (popup.getElement().querySelector(`.film-details`)) {
-      unrender(popup.getElement());
-      render(main, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`keydown`, onEscKeyDown);
-    } else {
-      render(main, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`keydown`, onEscKeyDown);
+const renderExtraCards = () => {
+  filmsListsExtra.forEach(function (item) {
+    for (let i = 0; i < extraFilms.length; i++) {
+      renderFilm(extraFilmMocks[i], item.querySelector(`.films-list__container`));
     }
   });
-
-  film.getElement()
-  .querySelector(`.film-card__title`)
-  .addEventListener(`click`, () => {
-    if (popup.getElement().querySelector(`.film-details`)) {
-      unrender(popup.getElement());
-      render(main, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`keydown`, onEscKeyDown);
-    } else {
-      render(main, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`keydown`, onEscKeyDown);
-    }
-  });
-
-  film.getElement()
-  .querySelector(`.film-card__comments`)
-  .addEventListener(`click`, () => {
-    if (popup.getElement().querySelector(`.film-details`)) {
-      unrender(popup.getElement());
-      render(main, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`keydown`, onEscKeyDown);
-    } else {
-      render(main, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`keydown`, onEscKeyDown);
-    }
-  });
-
-  //  popup.getElement()
-  //  .querySelector(`.film-details__close-btn`)
-  //  .addEventListener(`click`, () => {
-  //    unrender(popup.getElement());
-  //    document.removeEventListener(`keydown`, onEscKeyDown);
-  //  });
-  // на 234 строке ошибка в консоли, не находится элемент в API
-
-  render(container, film.getElement(), position.BEFOREEND);
 };
 
 /**
@@ -264,39 +207,9 @@ const renderShowMore = (showMoreMock) => {
   render(filmsList, showMore.getElement(), position.BEFOREEND);
 };
 
-/**
- * Функция для рендера попапа
- */
-
-// const renderPopup = (popupMock) => {
-//  const popup = new Popup(popupMock);
-//
-//  const onEscKeyDown = (evt) => {
-//    if (evt.key === `Escape` || evt.key === `Esc`) {
-//      unrender(popup.getElement());
-//      document.removeEventListener(`keydown`, onEscKeyDown);
-//    }
-//  };
-//
-//  popup.getElement()
-//  .querySelector(`.film-details__close-btn`)
-//  .addEventListener(`click`, () => {
-//    unrender(popup.getElement());
-//    document.removeEventListener(`keydown`, onEscKeyDown);
-//  });
-//
-//  render(main, popup.getElement(), position.BEFOREEND);
-//  document.addEventListener(`keydown`, onEscKeyDown);
-// };
-
 // Отрисовка карточек
 renderFilmCards(NUMBER_FILMS_CARD);
-
-filmsListsExtra.forEach(function (item) {
-  for (let i = 0; i < extraFilms.length; i++) {
-    renderExtraFilm(extraFilmMocks[i], item.querySelector(`.films-list__container`));
-  }
-});
+renderExtraCards();
 
 // Отрисовка кнопки show more
 renderShowMore();

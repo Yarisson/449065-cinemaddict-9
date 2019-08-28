@@ -181,8 +181,6 @@ const getMenu = () => ({
   status: getUser().status,
 });
 
-console.log(films);
-
 export {getUser};
 export {films};
 export {extraFilms};
