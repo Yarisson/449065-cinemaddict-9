@@ -4,8 +4,6 @@ import {Rating} from './components/rating.js';
 import {FilmsWrapper} from './components/films.js';
 import {Film} from './components/film.js';
 import {ShowMore} from './components/show-more.js';
-import {PopupWrapper} from './components/popup-wrapper.js';
-import {createWrapperPopupTemplate} from './components/popup-wrapper.js';
 import {Popup} from './components/popup.js';
 import {createFilmPopupTemplate} from './components/popup.js';
 import {Footer} from './components/footer.js';
@@ -143,27 +141,46 @@ const renderExtraFilm = (extraFilmMock, container) => {
 const renderShowMore = (showMoreMock) => {
   const showMore = new ShowMore(showMoreMock);
 
+  showMore.getElement()
+  .addEventListener(`click`, () => {
+    const currentNumberCards = checkRenderCards;
+    let storedCard = films.length - currentNumberCards;
+    if (storedCard === 0) {
+      showMore.getElement().style.display = `none`;
+    } else if (storedCard < NUMBER_MORE_RENDER_CARDS) {
+      renderFilmCards(storedCard);
+      showMore.getElement().style.display = `none`;
+    } else {
+      renderFilmCards(NUMBER_MORE_RENDER_CARDS);
+    }
+  });
+
   render(filmsList, showMore.getElement(), position.BEFOREEND);
-};
-
-/**
- * Функция для рендера обертки попапа
- */
-
-const renderPopupWrapper = (popupWrapperMock) => {
-  const popupWrapper = new PopupWrapper(popupWrapperMock);
-
-  render(main, popupWrapper.getElement(), position.BEFOREEND);
 };
 
 /**
  * Функция для рендера попапа
  */
 
-const renderPopup = (popupMock, container) => {
+const renderPopup = (popupMock) => {
   const popup = new Popup(popupMock);
 
-  render(container, popup.getElement(), position.BEFOREEND);
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      unrender(popup.getElement());
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  popup.getElement()
+  .querySelector(`.film-details__close-btn`)
+  .addEventListener(`click`, () => {
+    unrender(popup.getElement());
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
+
+  render(main, popup.getElement(), position.BEFOREEND);
+  document.addEventListener(`keydown`, onEscKeyDown);
 };
 
 // Отрисовка карточек
@@ -177,31 +194,11 @@ filmsListsExtra.forEach(function (item) {
 
 // Отрисовка кнопки show more и попапа
 renderShowMore();
-renderPopupWrapper();
-const filmDetails = document.querySelector(`.film-details`);
-renderPopup(popupMocks, filmDetails);
-
-const filmsListShowMore = document.querySelector(`.films-list__show-more`);
+renderPopup(popupMocks);
 
 /**
  * Функция показа дополнительных карточек
  */
-
-const onShowMoreButtonClick = () => {
-  const currentNumberCards = checkRenderCards;
-  let storedCard = films.length - currentNumberCards;
-  if (storedCard === 0) {
-    filmsListShowMore.style.display = `none`;
-  } else if (storedCard < NUMBER_MORE_RENDER_CARDS) {
-    renderFilmCards(storedCard);
-    filmsListShowMore.style.display = `none`;
-  } else {
-    renderFilmCards(NUMBER_MORE_RENDER_CARDS);
-  }
-};
-
-// Поиск кнопки show more в ДОМ-API
-filmsListShowMore.addEventListener(`click`, onShowMoreButtonClick);
 
 /**
  * Функции обработчиков событий для карточек
@@ -237,10 +234,6 @@ filmsListShowMore.addEventListener(`click`, onShowMoreButtonClick);
 //  filmDetails.style.display = `none`;
 //  filmDetails.removeEventListener(`click`, onPopupButtonClick);
 // };
-
-/**
- * Функция показа дополнительных карточек
- */
 
 /**
  * Функция обработки клика на каточку
