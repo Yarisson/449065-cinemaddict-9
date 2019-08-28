@@ -5,7 +5,6 @@ import {FilmsWrapper} from './components/films.js';
 import {Film} from './components/film.js';
 import {ShowMore} from './components/show-more.js';
 import {Popup} from './components/popup.js';
-import {createFilmPopupTemplate} from './components/popup.js';
 import {Footer} from './components/footer.js';
 
 import {getFilmsAll} from './data.js';
@@ -32,13 +31,11 @@ const extraFilmMocks = extraFilms;
 const menuMocks = new Array(1).fill(``).map(getMenu);
 const ratingMocks = new Array(1).fill(``).map(getUser);
 const footerMocks = new Array(1).fill(``).map(getFilmsAll);
-const popupMocks = films[0];
 
 // Поиск элементов в ДОМ-API
 const header = document.querySelector(`.header`);
 const main = document.querySelector(`.main`);
 const footer = document.querySelector(`.footer`);
-let filmCards = document.querySelectorAll(`.film-card`);
 
 /**
  * Функция рендера поиска
@@ -108,6 +105,60 @@ const filmsListsExtra = document.querySelectorAll(`.films-list--extra`);
 
 const renderFilm = (filmMock) => {
   const film = new Film(filmMock);
+  const popup = new Popup(filmMock);
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      unrender(popup.getElement());
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  film.getElement()
+  .querySelector(`.film-card__poster`)
+  .addEventListener(`click`, () => {
+    if (popup.getElement()) {
+      unrender(popup.getElement());
+      render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+    } else {
+      render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+    }
+  });
+
+  film.getElement()
+  .querySelector(`.film-card__title`)
+  .addEventListener(`click`, () => {
+    if (popup.getElement()) {
+      unrender(popup.getElement());
+      render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+    } else {
+      render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+    }
+  });
+
+  film.getElement()
+  .querySelector(`.film-card__comments`)
+  .addEventListener(`click`, () => {
+    if (popup.getElement()) {
+      unrender(popup.getElement());
+      render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+    } else {
+      render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+    }
+  });
+
+  popup.getElement()
+  .querySelector(`.film-details__close-btn`)
+  .addEventListener(`click`, () => {
+    unrender(popup.getElement());
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
 
   render(filmsListContainer, film.getElement(), position.BEFOREEND);
 };
@@ -130,6 +181,61 @@ const renderFilmCards = (number) => {
 
 const renderExtraFilm = (extraFilmMock, container) => {
   const film = new Film(extraFilmMock);
+  const popup = new Film(extraFilmMock);
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      unrender(popup.getElement());
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  film.getElement()
+  .querySelector(`.film-card__poster`)
+  .addEventListener(`click`, () => {
+    if (popup.getElement().querySelector(`.film-details`)) {
+      unrender(popup.getElement());
+      render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+    } else {
+      render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+    }
+  });
+
+  film.getElement()
+  .querySelector(`.film-card__title`)
+  .addEventListener(`click`, () => {
+    if (popup.getElement().querySelector(`.film-details`)) {
+      unrender(popup.getElement());
+      render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+    } else {
+      render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+    }
+  });
+
+  film.getElement()
+  .querySelector(`.film-card__comments`)
+  .addEventListener(`click`, () => {
+    if (popup.getElement().querySelector(`.film-details`)) {
+      unrender(popup.getElement());
+      render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+    } else {
+      render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+    }
+  });
+
+  //  popup.getElement()
+  //  .querySelector(`.film-details__close-btn`)
+  //  .addEventListener(`click`, () => {
+  //    unrender(popup.getElement());
+  //    document.removeEventListener(`keydown`, onEscKeyDown);
+  //  });
+  // на 234 строке ошибка в консоли, не находится элемент в API
 
   render(container, film.getElement(), position.BEFOREEND);
 };
@@ -162,26 +268,26 @@ const renderShowMore = (showMoreMock) => {
  * Функция для рендера попапа
  */
 
-const renderPopup = (popupMock) => {
-  const popup = new Popup(popupMock);
-
-  const onEscKeyDown = (evt) => {
-    if (evt.key === `Escape` || evt.key === `Esc`) {
-      unrender(popup.getElement());
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
-
-  popup.getElement()
-  .querySelector(`.film-details__close-btn`)
-  .addEventListener(`click`, () => {
-    unrender(popup.getElement());
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
-  render(main, popup.getElement(), position.BEFOREEND);
-  document.addEventListener(`keydown`, onEscKeyDown);
-};
+// const renderPopup = (popupMock) => {
+//  const popup = new Popup(popupMock);
+//
+//  const onEscKeyDown = (evt) => {
+//    if (evt.key === `Escape` || evt.key === `Esc`) {
+//      unrender(popup.getElement());
+//      document.removeEventListener(`keydown`, onEscKeyDown);
+//    }
+//  };
+//
+//  popup.getElement()
+//  .querySelector(`.film-details__close-btn`)
+//  .addEventListener(`click`, () => {
+//    unrender(popup.getElement());
+//    document.removeEventListener(`keydown`, onEscKeyDown);
+//  });
+//
+//  render(main, popup.getElement(), position.BEFOREEND);
+//  document.addEventListener(`keydown`, onEscKeyDown);
+// };
 
 // Отрисовка карточек
 renderFilmCards(NUMBER_FILMS_CARD);
@@ -192,67 +298,5 @@ filmsListsExtra.forEach(function (item) {
   }
 });
 
-// Отрисовка кнопки show more и попапа
+// Отрисовка кнопки show more
 renderShowMore();
-renderPopup(popupMocks);
-
-/**
- * Функция показа дополнительных карточек
- */
-
-/**
- * Функции обработчиков событий для карточек
- */
-
-// const setListenerOnCards = () => {
-//  for (let i = 0; i < filmCards.length; i++) {
-//    filmCards[i].addEventListener(`click`, onFilmCardsClick);
-//    filmCards[i].querySelector(`img`).setAttribute(`id`, i);
-//  }
-// };
-
-// const setListenerOnExtraCards = () => {
-//  for (let i = 0; i < filmsListsExtra.length; i++) {
-//    const cards = filmsListsExtra[i].querySelectorAll(`.film-card`);
-//    cards.forEach(function (element, index) {
-//      element.addEventListener(`click`, onFilmCardsExtraClick);
-//      element.querySelector(`img`).setAttribute(`id`, index);
-//    });
-//  }
-// };
-
-// Отрисовка кнопки и попапа
-
-
-/**
- * Функция обработки клика на кнопку для закрытия попапа
- */
-
-// const onPopupButtonClick = () => {
-//  const filmDetailsInner = filmDetails.querySelector(`.film-details__inner`);
-//  filmDetails.removeChild(filmDetailsInner);
-//  filmDetails.style.display = `none`;
-//  filmDetails.removeEventListener(`click`, onPopupButtonClick);
-// };
-
-/**
- * Функция обработки клика на каточку
- */
-
-// const onFilmCardsClick = (evt) => {
-//  render(filmDetails, createFilmPopupTemplate(films[evt.target.id]), `beforeend`);
-//  filmDetails.style.display = `block`;
-//  const popupCloseButton = filmDetails.querySelector(`.film-details__close-btn`);
-//  popupCloseButton.addEventListener(`click`, onPopupButtonClick);
-// };
-
-// const onFilmCardsExtraClick = (evt) => {
-//  render(filmDetails, createFilmPopupTemplate(extraFilms[evt.target.id]), `beforeend`);
-//  filmDetails.style.display = `block`;
-//  const popupCloseButton = filmDetails.querySelector(`.film-details__close-btn`);
-//  popupCloseButton.addEventListener(`click`, onPopupButtonClick);
-// };
-
-// setListenerOnCards();
-// setListenerOnExtraCards();
-// onPopupButtonClick();
