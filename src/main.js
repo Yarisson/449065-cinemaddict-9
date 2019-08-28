@@ -1,68 +1,40 @@
-import {createSearchTemplate} from './components/search.js';
-import {createMenuTemplate} from './components/menu.js';
-import {createProfileRatingTemplate} from './components/rating.js';
-import {createFilmsWrapperTemplate} from './components/films.js';
+import {Search} from './components/search.js';
+import {Menu} from './components/menu.js';
+import {Rating} from './components/rating.js';
+import {FilmsWrapper} from './components/films.js';
 import {Film} from './components/film.js';
-import {createFilmCardTemplate} from './components/film.js';
-import {createShowMoreButtonTemplate} from './components/show-more.js';
+import {ShowMore} from './components/show-more.js';
+import {PopupWrapper} from './components/popup-wrapper.js';
 import {createWrapperPopupTemplate} from './components/popup-wrapper.js';
+import {Popup} from './components/popup.js';
 import {createFilmPopupTemplate} from './components/popup.js';
-import {createFooterTemplate} from './components/footer.js';
-import {getCard} from './data.js';
+import {Footer} from './components/footer.js';
+
+import {getFilmsAll} from './data.js';
 import {getUser} from './data.js';
 import {films} from './data.js';
 import {getMenu} from './data.js';
 import {extraFilms} from './data.js';
-import {extraFilmsIndex} from './data.js';
 
 import {position} from './utils.js';
 import {render} from './utils.js';
 import {unrender} from './utils.js';
-/**
- * Функция рендера
- */
-
-// const render = (container, template, place) => {
-//  container.insertAdjacentHTML(place, template);
-// };
-
-const renderFilm = (filmMock) => {
-  const film = new Film(filmMock);
-
-  render(filmsListContainer, film.getElement(), position.BEFOREEND);
-};
-
-const filmMocks = new Array(NUMBER_FILMS_CARD).fill(``).map(getCard);
-
-filmMocks.forEach((filmMock) => renderFilm(filmMock));
-
-const renderMenu = (menuMock) => {
-  const menu = new Film(menuMock);
-
-  render(main, menu.getElement(), position.BEFOREEND);
-};
-
-const menuMocks = new Array(1).fill(``).map(getMenu);
-
-menuMocks.forEach((menuMock) => renderFilm(menuMock));
 
 // Константы
 const NUMBER_FILMS_CARD = 5;
 const NUMBER_MORE_RENDER_CARDS = 5;
 
+// счетчик количества отрендеренных карточек
 let checkRenderCards = 0;
 
-/**
- * Функция рендера меню
- */
 
-//const renderMenu = (container) => {
-//  container.insertAdjacentHTML(`beforeend`, new Array(1)
-//    .fill(``)
-//    .map(getMenu)
-//    .map(createMenuTemplate)
-//    .join(``));
-//};
+// моковые данные для рандер функций
+const filmMocks = films;
+const extraFilmMocks = extraFilms;
+const menuMocks = new Array(1).fill(``).map(getMenu);
+const ratingMocks = new Array(1).fill(``).map(getUser);
+const footerMocks = new Array(1).fill(``).map(getFilmsAll);
+const popupMocks = films[0];
 
 // Поиск элементов в ДОМ-API
 const header = document.querySelector(`.header`);
@@ -70,19 +42,62 @@ const main = document.querySelector(`.main`);
 const footer = document.querySelector(`.footer`);
 let filmCards = document.querySelectorAll(`.film-card`);
 
-// Отрисовка блоков в шапку
-render(header, createSearchTemplate(), `beforeend`);
-render(header, createProfileRatingTemplate(getUser()), `beforeend`);
+/**
+ * Функция рендера поиска
+ */
 
-// Отрисовка меню
-renderMenu(main);
-// render(main, createMenuTemplate(), `beforeend`);
+const renderSearch = (searchMock) => {
+  const search = new Search(searchMock);
 
-// Отрисовка оберток для фильмов
-render(main, createFilmsWrapperTemplate(), `beforeend`);
+  render(header, search.getElement(), position.BEFOREEND);
+};
 
-// Отрисовка подвала
-render(footer, createFooterTemplate(getMenu()), `beforeend`);
+/**
+ * Функция рендера блока рейтинга пользователя
+ */
+
+const renderRating = (ratingMock) => {
+  const rating = new Rating(ratingMock);
+
+  render(header, rating.getElement(), position.BEFOREEND);
+};
+
+/**
+ * Функция рендера меню
+ */
+
+const renderMenu = (menuMock) => {
+  const menu = new Menu(menuMock);
+
+  render(main, menu.getElement(), position.BEFOREEND);
+};
+
+/**
+ * Функция рендера обертки фильмов
+ */
+
+const renderFilmsWrapper = (filmsWrapperMock) => {
+  const filmsWrapper = new FilmsWrapper(filmsWrapperMock);
+
+  render(main, filmsWrapper.getElement(), position.BEFOREEND);
+};
+
+/**
+ * Функция рендера подвала
+ */
+
+const renderFooter = (footerMock) => {
+  const footerClass = new Footer(footerMock);
+
+  render(footer, footerClass.getElement(), position.BEFOREEND);
+};
+
+// рендер больших блоков, на основе функций рендера описанных выше
+renderSearch();
+ratingMocks.forEach((ratingMock) => renderRating(ratingMock));
+menuMocks.forEach((menuMock) => renderMenu(menuMock));
+renderFilmsWrapper();
+footerMocks.forEach((footerMock) => renderFooter(footerMock));
 
 // Поиск элементов в ДОМ-API из отрисованных оберток фильмов
 const filmsList = document.querySelector(`.films-list`);
@@ -90,13 +105,23 @@ const filmsListContainer = filmsList.querySelector(`.films-list__container`);
 const filmsListsExtra = document.querySelectorAll(`.films-list--extra`);
 
 /**
- * Функция рендера стартовых карточек
+ * Функция рендера карточки
  */
 
-const renderFirtsCards = (number) => {
-  for (let i = 0; i < number; i++) {
-    render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
-    filmCards = document.querySelectorAll(`.film-card`);
+const renderFilm = (filmMock) => {
+  const film = new Film(filmMock);
+
+  render(filmsListContainer, film.getElement(), position.BEFOREEND);
+};
+
+/**
+ * Функция рендера нескольких карточек
+ */
+
+const renderFilmCards = (number) => {
+  const startIndex = checkRenderCards;
+  for (let i = startIndex; i < (startIndex + number); i++) {
+    renderFilm(filmMocks[i]);
     checkRenderCards = checkRenderCards + 1;
   }
 };
@@ -104,103 +129,137 @@ const renderFirtsCards = (number) => {
 /**
  * Функция для рендера дополнительных карточек в блоки filmsListsExtra
  */
-const renderFilmsExtraLists = () => {
-  filmsListsExtra.forEach(function (item) {
-    for (let i = 0; i < extraFilmsIndex.length; i++) {
-      render(item.querySelector(`.films-list__container`), createFilmCardTemplate(extraFilms[i]), `beforeend`);
-    }
-  });
+
+const renderExtraFilm = (extraFilmMock, container) => {
+  const film = new Film(extraFilmMock);
+
+  render(container, film.getElement(), position.BEFOREEND);
+};
+
+/**
+ * Функция для рендера кнопки show more
+ */
+
+const renderShowMore = (showMoreMock) => {
+  const showMore = new ShowMore(showMoreMock);
+
+  render(filmsList, showMore.getElement(), position.BEFOREEND);
+};
+
+/**
+ * Функция для рендера обертки попапа
+ */
+
+const renderPopupWrapper = (popupWrapperMock) => {
+  const popupWrapper = new PopupWrapper(popupWrapperMock);
+
+  render(main, popupWrapper.getElement(), position.BEFOREEND);
+};
+
+/**
+ * Функция для рендера попапа
+ */
+
+const renderPopup = (popupMock, container) => {
+  const popup = new Popup(popupMock);
+
+  render(container, popup.getElement(), position.BEFOREEND);
 };
 
 // Отрисовка карточек
-renderFirtsCards(NUMBER_FILMS_CARD);
-renderFilmsExtraLists();
+renderFilmCards(NUMBER_FILMS_CARD);
 
-/**
- * Функции обработчиков событий для карточек
- */
-
-const setListenerOnCards = () => {
-  for (let i = 0; i < filmCards.length; i++) {
-    filmCards[i].addEventListener(`click`, onFilmCardsClick);
-    filmCards[i].querySelector(`img`).setAttribute(`id`, i);
+filmsListsExtra.forEach(function (item) {
+  for (let i = 0; i < extraFilms.length; i++) {
+    renderExtraFilm(extraFilmMocks[i], item.querySelector(`.films-list__container`));
   }
-};
+});
 
-const setListenerOnExtraCards = () => {
-  for (let i = 0; i < filmsListsExtra.length; i++) {
-    const cards = filmsListsExtra[i].querySelectorAll(`.film-card`);
-    cards.forEach(function (element, index) {
-      element.addEventListener(`click`, onFilmCardsExtraClick);
-      element.querySelector(`img`).setAttribute(`id`, index);
-    });
-  }
-};
-
-// Отрисовка кнопки и попапа
-render(filmsList, createShowMoreButtonTemplate(), `beforeend`);
-render(main, createWrapperPopupTemplate(), `beforeend`);
+// Отрисовка кнопки show more и попапа
+renderShowMore();
+renderPopupWrapper();
 const filmDetails = document.querySelector(`.film-details`);
-render(filmDetails, createFilmPopupTemplate(films[0]), `beforeend`);
+renderPopup(popupMocks, filmDetails);
 
-/**
- * Функция обработки клика на кнопку для закрытия попапа
- */
-
-const onPopupButtonClick = () => {
-  const filmDetailsInner = filmDetails.querySelector(`.film-details__inner`);
-  filmDetails.removeChild(filmDetailsInner);
-  filmDetails.style.display = `none`;
-  filmDetails.removeEventListener(`click`, onPopupButtonClick);
-};
+const filmsListShowMore = document.querySelector(`.films-list__show-more`);
 
 /**
  * Функция показа дополнительных карточек
  */
 
-function onShowMoreButtonClick() {
+const onShowMoreButtonClick = () => {
   const currentNumberCards = checkRenderCards;
   let storedCard = films.length - currentNumberCards;
   if (storedCard === 0) {
     filmsListShowMore.style.display = `none`;
-  } else if (storedCard < NUMBER_MORE_RENDER_CARDS - 1) {
+  } else if (storedCard < NUMBER_MORE_RENDER_CARDS) {
+    renderFilmCards(storedCard);
     filmsListShowMore.style.display = `none`;
-    for (let i = currentNumberCards; i < (films.length); i++) {
-      render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
-      filmCards = document.querySelectorAll(`.film-card`);
-      checkRenderCards = checkRenderCards + 1;
-    }
   } else {
-    for (let i = currentNumberCards; i < (currentNumberCards + NUMBER_FILMS_CARD); i++) {
-      render(filmsListContainer, createFilmCardTemplate(films[i]), `beforeend`);
-      filmCards = document.querySelectorAll(`.film-card`);
-      checkRenderCards = checkRenderCards + 1;
-    }
+    renderFilmCards(NUMBER_MORE_RENDER_CARDS);
   }
+};
 
-}
+// Поиск кнопки show more в ДОМ-API
+filmsListShowMore.addEventListener(`click`, onShowMoreButtonClick);
+
+/**
+ * Функции обработчиков событий для карточек
+ */
+
+// const setListenerOnCards = () => {
+//  for (let i = 0; i < filmCards.length; i++) {
+//    filmCards[i].addEventListener(`click`, onFilmCardsClick);
+//    filmCards[i].querySelector(`img`).setAttribute(`id`, i);
+//  }
+// };
+
+// const setListenerOnExtraCards = () => {
+//  for (let i = 0; i < filmsListsExtra.length; i++) {
+//    const cards = filmsListsExtra[i].querySelectorAll(`.film-card`);
+//    cards.forEach(function (element, index) {
+//      element.addEventListener(`click`, onFilmCardsExtraClick);
+//      element.querySelector(`img`).setAttribute(`id`, index);
+//    });
+//  }
+// };
+
+// Отрисовка кнопки и попапа
+
+
+/**
+ * Функция обработки клика на кнопку для закрытия попапа
+ */
+
+// const onPopupButtonClick = () => {
+//  const filmDetailsInner = filmDetails.querySelector(`.film-details__inner`);
+//  filmDetails.removeChild(filmDetailsInner);
+//  filmDetails.style.display = `none`;
+//  filmDetails.removeEventListener(`click`, onPopupButtonClick);
+// };
+
+/**
+ * Функция показа дополнительных карточек
+ */
 
 /**
  * Функция обработки клика на каточку
  */
 
-const onFilmCardsClick = (evt) => {
-  render(filmDetails, createFilmPopupTemplate(films[evt.target.id]), `beforeend`);
-  filmDetails.style.display = `block`;
-  const popupCloseButton = filmDetails.querySelector(`.film-details__close-btn`);
-  popupCloseButton.addEventListener(`click`, onPopupButtonClick);
-};
+// const onFilmCardsClick = (evt) => {
+//  render(filmDetails, createFilmPopupTemplate(films[evt.target.id]), `beforeend`);
+//  filmDetails.style.display = `block`;
+//  const popupCloseButton = filmDetails.querySelector(`.film-details__close-btn`);
+//  popupCloseButton.addEventListener(`click`, onPopupButtonClick);
+// };
 
-const onFilmCardsExtraClick = (evt) => {
-  render(filmDetails, createFilmPopupTemplate(extraFilms[evt.target.id]), `beforeend`);
-  filmDetails.style.display = `block`;
-  const popupCloseButton = filmDetails.querySelector(`.film-details__close-btn`);
-  popupCloseButton.addEventListener(`click`, onPopupButtonClick);
-};
+// const onFilmCardsExtraClick = (evt) => {
+//  render(filmDetails, createFilmPopupTemplate(extraFilms[evt.target.id]), `beforeend`);
+//  filmDetails.style.display = `block`;
+//  const popupCloseButton = filmDetails.querySelector(`.film-details__close-btn`);
+//  popupCloseButton.addEventListener(`click`, onPopupButtonClick);
+// };
 
-const filmsListShowMore = document.querySelector(`.films-list__show-more`);
-
-filmsListShowMore.addEventListener(`click`, onShowMoreButtonClick);
-setListenerOnCards();
-setListenerOnExtraCards();
-onPopupButtonClick();
+// setListenerOnCards();
+// setListenerOnExtraCards();
+// onPopupButtonClick();

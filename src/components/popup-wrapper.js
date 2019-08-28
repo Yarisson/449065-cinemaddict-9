@@ -5,7 +5,7 @@ export const createWrapperPopupTemplate = () => {
 
 import {createElement} from '../utils.js';
 
-class popupWrapper {
+class PopupWrapper {
   constructor() {
     this._element = null;
   }
@@ -23,3 +23,5 @@ class popupWrapper {
     </section>`;
   }
 }
+
+export {PopupWrapper};

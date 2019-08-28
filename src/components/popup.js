@@ -170,7 +170,7 @@ export const createFilmPopupTemplate = ({title, poster, description, rating, yea
 
 import {createElement} from '../utils.js';
 
-class popup {
+class Popup {
   constructor({title, poster, description, rating, year, month, day, hours, minutes, genre}) {
     this._title = title;
     this._poster = poster;
@@ -363,3 +363,5 @@ class popup {
   </form>`;
   }
 }
+
+export {Popup};

@@ -1,10 +1,6 @@
-export const createShowMoreButtonTemplate = () => {
-  return `<button class="films-list__show-more">Show more</button>`;
-};
-
 import {createElement} from '../utils.js';
 
-class showMore {
+class ShowMore {
   constructor() {
     this._element = null;
   }
@@ -21,3 +17,5 @@ class showMore {
     return `<button class="films-list__show-more">Show more</button>`;
   }
 }
+
+export {ShowMore};

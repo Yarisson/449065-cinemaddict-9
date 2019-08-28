@@ -1,16 +1,8 @@
-export const createFooterTemplate = ({numberAllFilms}) => {
-  return `<section
-   class="footer__logo logo logo--smaller">Cinemaddict</section>
-  <section class="footer__statistics">
-    <p>${numberAllFilms} movies inside</p>
-  </section>`;
-};
-
 import {createElement} from '../utils.js';
 
-class footer {
-  constructor({numberAllFilms}) {
-    this._numberAllFilms = numberAllFilms;
+class Footer {
+  constructor({allFilms}) {
+    this._allFilms = allFilms;
     this._element = null;
   }
 
@@ -26,7 +18,9 @@ class footer {
     return `<section
     class="footer__logo logo logo--smaller">Cinemaddict</section>
    <section class="footer__statistics">
-     <p>${this._numberAllFilms} movies inside</p>
+     <p>${this._allFilms} movies inside</p>
    </section>`;
   }
 }
+
+export {Footer};
