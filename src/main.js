@@ -122,31 +122,29 @@ const renderFilm = (filmMock, container) => {
     });
   };
 
+  const popupRender = () => {
+    unrender(popup.getElement());
+    render(main, popup.getElement(), position.BEFOREEND);
+    document.addEventListener(`keydown`, onEscKeyDown);
+    document.addEventListener(`click`, closePopup);
+  };
+
   film.getElement()
   .querySelector(`.film-card__poster`)
   .addEventListener(`click`, () => {
-    unrender(popup.getElement());
-    render(main, popup.getElement(), position.BEFOREEND);
-    document.addEventListener(`click`, closePopup);
-    document.addEventListener(`keydown`, onEscKeyDown);
+    popupRender();
   });
 
   film.getElement()
   .querySelector(`.film-card__title`)
   .addEventListener(`click`, () => {
-    unrender(popup.getElement());
-    render(main, popup.getElement(), position.BEFOREEND);
-    document.addEventListener(`keydown`, onEscKeyDown);
-    document.addEventListener(`click`, closePopup);
+    popupRender();
   });
 
   film.getElement()
   .querySelector(`.film-card__comments`)
   .addEventListener(`click`, () => {
-    unrender(popup.getElement());
-    render(main, popup.getElement(), position.BEFOREEND);
-    document.addEventListener(`keydown`, onEscKeyDown);
-    document.addEventListener(`click`, closePopup);
+    popupRender();
   });
 
   render(container, film.getElement(), position.BEFOREEND);
