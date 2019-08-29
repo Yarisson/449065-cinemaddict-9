@@ -113,16 +113,27 @@ const renderFilm = (filmMock, container) => {
     }
   };
 
+  const closePopup = () => {
+    popup.getElement()
+    .querySelector(`.film-details__close-btn`)
+    .addEventListener(`click`, () => {
+      unrender(popup.getElement());
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+  };
+
   film.getElement()
   .querySelector(`.film-card__poster`)
   .addEventListener(`click`, () => {
     if (popup.getElement()) {
       unrender(popup.getElement());
       render(main, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`click`, closePopup);
       document.addEventListener(`keydown`, onEscKeyDown);
     } else {
       render(main, popup.getElement(), position.BEFOREEND);
       document.addEventListener(`keydown`, onEscKeyDown);
+      document.addEventListener(`click`, closePopup);
     }
   });
 
@@ -133,9 +144,11 @@ const renderFilm = (filmMock, container) => {
       unrender(popup.getElement());
       render(main, popup.getElement(), position.BEFOREEND);
       document.addEventListener(`keydown`, onEscKeyDown);
+      document.addEventListener(`click`, closePopup);
     } else {
       render(main, popup.getElement(), position.BEFOREEND);
       document.addEventListener(`keydown`, onEscKeyDown);
+      document.addEventListener(`click`, closePopup);
     }
   });
 
@@ -146,21 +159,15 @@ const renderFilm = (filmMock, container) => {
       unrender(popup.getElement());
       render(main, popup.getElement(), position.BEFOREEND);
       document.addEventListener(`keydown`, onEscKeyDown);
+      document.addEventListener(`click`, closePopup);
     } else {
       render(main, popup.getElement(), position.BEFOREEND);
       document.addEventListener(`keydown`, onEscKeyDown);
+      document.addEventListener(`click`, closePopup);
     }
   });
 
-  popup.getElement()
-  .querySelector(`.film-details__close-btn`)
-  .addEventListener(`click`, () => {
-    unrender(popup.getElement());
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
-
   render(container, film.getElement(), position.BEFOREEND);
-  // render(filmsListContainer, film.getElement(), position.BEFOREEND);
 };
 
 /**
