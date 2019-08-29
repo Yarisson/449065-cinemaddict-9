@@ -1,24 +1,42 @@
-export const createFilmsWrapperTemplate = () => {
-  return `<section
-   class="films">
-    <section class="films-list">
-      <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+import {createElement} from '../utils.js';
 
-      <div class="films-list__container">
-      </div>
-    </section>
-    <section class="films-list--extra">
-      <h2 class="films-list__title">Top rated</h2>
+class FilmsWrapper {
+  constructor() {
+    this._element = null;
+  }
 
-      <div class="films-list__container">
-      </div>
-    </section>
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
 
-    <section class="films-list--extra">
-      <h2 class="films-list__title">Most commented</h2>
+    return this._element;
+  }
 
-      <div class="films-list__container">
-      </div>
-    </section>
-  </section>`;
-};
+  getTemplate() {
+    return `<section
+    class="films">
+     <section class="films-list">
+       <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+
+       <div class="films-list__container">
+       </div>
+     </section>
+     <section class="films-list--extra">
+       <h2 class="films-list__title">Top rated</h2>
+
+       <div class="films-list__container">
+       </div>
+     </section>
+
+     <section class="films-list--extra">
+       <h2 class="films-list__title">Most commented</h2>
+
+       <div class="films-list__container">
+       </div>
+     </section>
+   </section>`;
+  }
+}
+
+export {FilmsWrapper};

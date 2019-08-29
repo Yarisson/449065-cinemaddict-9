@@ -182,7 +182,6 @@ const getMenu = () => ({
 });
 
 export {getUser};
-export {getCard};
 export {films};
 export {extraFilms};
 export {extraFilmsIndex};
