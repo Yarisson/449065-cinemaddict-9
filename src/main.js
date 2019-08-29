@@ -125,46 +125,28 @@ const renderFilm = (filmMock, container) => {
   film.getElement()
   .querySelector(`.film-card__poster`)
   .addEventListener(`click`, () => {
-    if (popup.getElement()) {
-      unrender(popup.getElement());
-      render(main, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`click`, closePopup);
-      document.addEventListener(`keydown`, onEscKeyDown);
-    } else {
-      render(main, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`keydown`, onEscKeyDown);
-      document.addEventListener(`click`, closePopup);
-    }
+    unrender(popup.getElement());
+    render(main, popup.getElement(), position.BEFOREEND);
+    document.addEventListener(`click`, closePopup);
+    document.addEventListener(`keydown`, onEscKeyDown);
   });
 
   film.getElement()
   .querySelector(`.film-card__title`)
   .addEventListener(`click`, () => {
-    if (popup.getElement()) {
-      unrender(popup.getElement());
-      render(main, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`keydown`, onEscKeyDown);
-      document.addEventListener(`click`, closePopup);
-    } else {
-      render(main, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`keydown`, onEscKeyDown);
-      document.addEventListener(`click`, closePopup);
-    }
+    unrender(popup.getElement());
+    render(main, popup.getElement(), position.BEFOREEND);
+    document.addEventListener(`keydown`, onEscKeyDown);
+    document.addEventListener(`click`, closePopup);
   });
 
   film.getElement()
   .querySelector(`.film-card__comments`)
   .addEventListener(`click`, () => {
-    if (popup.getElement()) {
-      unrender(popup.getElement());
-      render(main, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`keydown`, onEscKeyDown);
-      document.addEventListener(`click`, closePopup);
-    } else {
-      render(main, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`keydown`, onEscKeyDown);
-      document.addEventListener(`click`, closePopup);
-    }
+    unrender(popup.getElement());
+    render(main, popup.getElement(), position.BEFOREEND);
+    document.addEventListener(`keydown`, onEscKeyDown);
+    document.addEventListener(`click`, closePopup);
   });
 
   render(container, film.getElement(), position.BEFOREEND);
