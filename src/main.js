@@ -6,6 +6,8 @@ import {Film} from './components/film.js';
 import {ShowMore} from './components/show-more.js';
 import {Popup} from './components/popup.js';
 import {Footer} from './components/footer.js';
+import {NoFilms} from './components/no-films.js';
+
 
 import {getFilmsAll} from './data.js';
 import {getUser} from './data.js';
@@ -102,6 +104,12 @@ const filmsListsExtra = document.querySelectorAll(`.films-list--extra`);
  * Функция рендера карточки
  */
 
+const renderNoFilms = (container) => {
+  const noFilms = new NoFilms();
+
+  render(container, noFilms.getElement(), position.BEFOREEND);
+};
+
 const renderFilm = (filmMock, container) => {
   const film = new Film(filmMock);
   const popup = new Popup(filmMock);
@@ -121,6 +129,16 @@ const renderFilm = (filmMock, container) => {
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
   };
+
+  popup.getElement().querySelector(`.film-details__comment-input`)
+  .addEventListener(`focus`, () => {
+    document.removeEventListener(`keydown`, onEscKeyDown);
+  });
+
+  popup.getElement().querySelector(`.film-details__comment-input`)
+  .addEventListener(`blur`, () => {
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
 
   const popupRender = () => {
     unrender(popup.getElement());
@@ -156,18 +174,26 @@ const renderFilm = (filmMock, container) => {
 
 const renderFilmCards = (number) => {
   const startIndex = checkRenderCards;
-  for (let i = startIndex; i < (startIndex + number); i++) {
-    renderFilm(filmMocks[i], filmsList.querySelector(`.films-list__container`));
-    checkRenderCards = checkRenderCards + 1;
+  if (filmMocks.length === 0) {
+    renderNoFilms(filmsList.querySelector(`.films-list__container`));
+  } else {
+    for (let i = startIndex; i < (startIndex + number); i++) {
+      renderFilm(filmMocks[i], filmsList.querySelector(`.films-list__container`));
+      checkRenderCards = checkRenderCards + 1;
+    }
   }
 };
 
 const renderExtraCards = () => {
-  filmsListsExtra.forEach(function (item) {
-    for (let i = 0; i < extraFilms.length; i++) {
-      renderFilm(extraFilmMocks[i], item.querySelector(`.films-list__container`));
-    }
-  });
+  if (filmMocks.length === 0) {
+    return;
+  } else {
+    filmsListsExtra.forEach(function (item) {
+      for (let i = 0; i < extraFilms.length; i++) {
+        renderFilm(extraFilmMocks[i], item.querySelector(`.films-list__container`));
+      }
+    });
+  }
 };
 
 /**
