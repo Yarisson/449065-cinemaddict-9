@@ -19,6 +19,8 @@ import {position} from './utils.js';
 import {render} from './utils.js';
 import {unrender} from './utils.js';
 
+import {PageController} from './controllers/page-controller.js';
+
 // Константы
 const NUMBER_FILMS_CARD = 5;
 const NUMBER_MORE_RENDER_CARDS = 5;
@@ -110,63 +112,63 @@ const renderNoFilms = (container) => {
   render(container, noFilms.getElement(), position.BEFOREEND);
 };
 
-const renderFilm = (filmMock, container) => {
-  const film = new Film(filmMock);
-  const popup = new Popup(filmMock);
+// const renderFilm = (filmMock, container) => {
+//  const film = new Film(filmMock);
+//  const popup = new Popup(filmMock);
 
-  const onEscKeyDown = (evt) => {
-    if (evt.key === `Escape` || evt.key === `Esc`) {
-      unrender(popup.getElement());
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    }
-  };
+//  const onEscKeyDown = (evt) => {
+//    if (evt.key === `Escape` || evt.key === `Esc`) {
+//      unrender(popup.getElement());
+//      document.removeEventListener(`keydown`, onEscKeyDown);
+//    }
+//  };
 
-  const closePopup = () => {
-    popup.getElement()
-    .querySelector(`.film-details__close-btn`)
-    .addEventListener(`click`, () => {
-      unrender(popup.getElement());
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-  };
+//  const closePopup = () => {
+//    popup.getElement()
+//    .querySelector(`.film-details__close-btn`)
+//    .addEventListener(`click`, () => {
+//      unrender(popup.getElement());
+//      document.removeEventListener(`keydown`, onEscKeyDown);
+//    });
+//  };
 
-  popup.getElement().querySelector(`.film-details__comment-input`)
-  .addEventListener(`focus`, () => {
-    document.removeEventListener(`keydown`, onEscKeyDown);
-  });
+//  popup.getElement().querySelector(`.film-details__comment-input`)
+//  .addEventListener(`focus`, () => {
+//    document.removeEventListener(`keydown`, onEscKeyDown);
+//  });
 
-  popup.getElement().querySelector(`.film-details__comment-input`)
-  .addEventListener(`blur`, () => {
-    document.addEventListener(`keydown`, onEscKeyDown);
-  });
+//  popup.getElement().querySelector(`.film-details__comment-input`)
+//  .addEventListener(`blur`, () => {
+//    document.addEventListener(`keydown`, onEscKeyDown);
+//  });
 
-  const popupRender = () => {
-    unrender(popup.getElement());
-    render(main, popup.getElement(), position.BEFOREEND);
-    document.addEventListener(`keydown`, onEscKeyDown);
-    document.addEventListener(`click`, closePopup);
-  };
+//  const popupRender = () => {
+//    unrender(popup.getElement());
+//    render(main, popup.getElement(), position.BEFOREEND);
+//    document.addEventListener(`keydown`, onEscKeyDown);
+//    document.addEventListener(`click`, closePopup);
+//  };
 
-  film.getElement()
-  .querySelector(`.film-card__poster`)
-  .addEventListener(`click`, () => {
-    popupRender();
-  });
+//  film.getElement()
+//  .querySelector(`.film-card__poster`)
+//  .addEventListener(`click`, () => {
+//    popupRender();
+//  });
 
-  film.getElement()
-  .querySelector(`.film-card__title`)
-  .addEventListener(`click`, () => {
-    popupRender();
-  });
+//  film.getElement()
+//  .querySelector(`.film-card__title`)
+//  .addEventListener(`click`, () => {
+//    popupRender();
+//  });
 
-  film.getElement()
-  .querySelector(`.film-card__comments`)
-  .addEventListener(`click`, () => {
-    popupRender();
-  });
+//  film.getElement()
+//  .querySelector(`.film-card__comments`)
+//  .addEventListener(`click`, () => {
+//    popupRender();
+//  });
 
-  render(container, film.getElement(), position.BEFOREEND);
-};
+//  render(container, film.getElement(), position.BEFOREEND);
+// };
 
 /**
  * Функция рендера нескольких карточек
@@ -178,7 +180,9 @@ const renderFilmCards = (number) => {
     renderNoFilms(filmsList.querySelector(`.films-list__container`));
   } else {
     for (let i = startIndex; i < (startIndex + number); i++) {
-      renderFilm(filmMocks[i], filmsList.querySelector(`.films-list__container`));
+      const pageController = new PageController(filmsList.querySelector(`.films-list__container`), main, filmMocks[i]);
+      pageController.init();
+      // renderFilm(filmMocks[i], filmsList.querySelector(`.films-list__container`));
       checkRenderCards = checkRenderCards + 1;
     }
   }
@@ -190,7 +194,9 @@ const renderExtraCards = () => {
   } else {
     filmsListsExtra.forEach(function (item) {
       for (let i = 0; i < extraFilms.length; i++) {
-        renderFilm(extraFilmMocks[i], item.querySelector(`.films-list__container`));
+        const pageControllerExtra = new PageController(item.querySelector(`.films-list__container`), main, extraFilmMocks[i]);
+        pageControllerExtra.init();
+        // renderFilm(extraFilmMocks[i], item.querySelector(`.films-list__container`));
       }
     });
   }
