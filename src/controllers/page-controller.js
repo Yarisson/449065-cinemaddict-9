@@ -31,14 +31,20 @@ class PageController {
 
   init() {
 
+    // Отрисовка блоков поиска, рейтинга пользователя, меню, обертки для фильмов и подвала
     render(this._containerHeader, this._search.getElement(), position.BEFOREEND);
     render(this._containerHeader, this._rating.getElement(), position.BEFOREEND);
     render(this._containerMain, this._menu.getElement(), position.BEFOREEND);
     render(this._containerMain, this._filmsWrapper.getElement(), position.BEFOREEND);
     render(this._containerFooter, this._footerClass.getElement(), position.BEFOREEND);
 
+    // Поиск элементов в ДОМ-API
     const filmsList = this._filmsWrapper.getElement().querySelector(`.films-list`);
     const filmsListsExtra = this._filmsWrapper.getElement().querySelectorAll(`.films-list--extra`);
+
+    /**
+      * Функция рендера карточки фильма
+    */
 
     const renderFilm = (filmMock, container) => {
       const film = new Film(filmMock);
@@ -72,7 +78,7 @@ class PageController {
 
       const popupRender = () => {
         unrender(popup.getElement());
-        render(this._containerMain, popup.getElement(), popup.BEFOREEND);
+        render(this._containerMain, popup.getElement(), position.BEFOREEND);
         document.addEventListener(`keydown`, onEscKeyDown);
         document.addEventListener(`click`, closePopup);
       };
@@ -98,6 +104,10 @@ class PageController {
       render(container, film.getElement(), position.BEFOREEND);
     };
 
+    /**
+      * Функция рендера нескольких карточек
+    */
+
     const renderFilmCards = (number) => {
       const startIndex = this._checkRenderCards;
       if (this._filmMocks.length === 0) {
@@ -109,6 +119,10 @@ class PageController {
         }
       }
     };
+
+    /**
+      * Функция рендера extra карточек
+    */
 
     const renderExtraCards = () => {
       if (this._filmMocks.length === 0) {
@@ -122,6 +136,10 @@ class PageController {
         });
       }
     };
+
+    /**
+      * Функция для рендера кнопки show more
+    */
 
     const renderShowMore = () => {
 
@@ -142,6 +160,7 @@ class PageController {
       render(filmsList, this._showMore.getElement(), position.BEFOREEND);
     };
 
+    // Отрисовка карточек фильмов и кнопки show more
     renderFilmCards(this._NUMBER_MORE_RENDER_CARDS);
     renderExtraCards();
     renderShowMore();
