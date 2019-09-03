@@ -71,7 +71,7 @@ class PageController {
       });
 
       const popupRender = () => {
-        // unrender(popup.getElement());
+        unrender(popup.getElement());
         render(this._containerMain, popup.getElement(), popup.BEFOREEND);
         document.addEventListener(`keydown`, onEscKeyDown);
         document.addEventListener(`click`, closePopup);
