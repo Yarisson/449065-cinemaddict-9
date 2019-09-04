@@ -49,6 +49,7 @@ class PageController {
     const renderFilm = (filmMock, container) => {
       const film = new Film(filmMock);
       const popup = new Popup(filmMock);
+      const popupRenderElements = [];
 
       const onEscKeyDown = (evt) => {
         if (evt.key === `Escape` || evt.key === `Esc`) {
@@ -83,22 +84,14 @@ class PageController {
         document.addEventListener(`click`, closePopup);
       };
 
-      film.getElement()
-      .querySelector(`.film-card__poster`)
-      .addEventListener(`click`, () => {
-        popupRender();
-      });
+      popupRenderElements.push(film.getElement().querySelector(`.film-card__poster`));
+      popupRenderElements.push(film.getElement().querySelector(`.film-card__title`));
+      popupRenderElements.push(film.getElement().querySelector(`.film-card__comments`));
 
-      film.getElement()
-      .querySelector(`.film-card__title`)
-      .addEventListener(`click`, () => {
-        popupRender();
-      });
-
-      film.getElement()
-      .querySelector(`.film-card__comments`)
-      .addEventListener(`click`, () => {
-        popupRender();
+      popupRenderElements.forEach(function (item) {
+        item.addEventListener(`click`, () => {
+          popupRender();
+        });
       });
 
       render(container, film.getElement(), position.BEFOREEND);
