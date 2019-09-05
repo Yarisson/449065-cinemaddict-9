@@ -18,6 +18,8 @@ const render = (container, element, place) => {
     case position.BEFOREEND:
       container.append(element);
       break;
+    default:
+      throw Error(`Unknown place passed into render - ${place}`);
   }
 };
 

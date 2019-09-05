@@ -1,17 +1,9 @@
-import {createElement} from '../utils.js';
+import {AbstractComponent} from './abstract-component.js';
 
-class Rating {
+class Rating extends AbstractComponent {
   constructor({status}) {
+    super();
     this._status = status;
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
   }
 
   getTemplate() {

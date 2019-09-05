@@ -1,25 +1,17 @@
-import {createElement} from '../utils.js';
+import {AbstractComponent} from './abstract-component.js';
 
-class Film {
+class Film extends AbstractComponent {
   constructor({title, poster, description, rating, year, numberComments, hours, minutes, genre}) {
+    super();
     this._title = title;
     this._poster = poster;
     this._description = description;
     this._rating = rating;
-    this._element = null;
     this._year = year;
     this._numberComments = numberComments;
     this._hours = hours;
     this._minutes = minutes;
     this._genre = genre;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
   }
 
   getTemplate() {
