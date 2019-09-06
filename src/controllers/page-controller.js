@@ -1,4 +1,5 @@
 import {Search} from '../components/search.js';
+import {Sort} from '../components/sort.js';
 import {Menu} from '../components/menu.js';
 import {Footer} from '../components/footer.js';
 import {Rating} from '../components/rating.js';
@@ -19,6 +20,7 @@ class PageController {
     this._search = new Search();
     this._rating = new Rating(ratingMock);
     this._menu = new Menu(menuMock);
+    this._sort = new Sort();
     this._filmsWrapper = new FilmsWrapper();
     this._footerClass = new Footer(footerMock);
     this._filmMocks = filmMocks;
@@ -35,6 +37,7 @@ class PageController {
     render(this._containerHeader, this._search.getElement(), position.BEFOREEND);
     render(this._containerHeader, this._rating.getElement(), position.BEFOREEND);
     render(this._containerMain, this._menu.getElement(), position.BEFOREEND);
+    render(this._containerMain, this._sort.getElement(), position.BEFOREEND);
     render(this._containerMain, this._filmsWrapper.getElement(), position.BEFOREEND);
     render(this._containerFooter, this._footerClass.getElement(), position.BEFOREEND);
 
@@ -158,6 +161,27 @@ class PageController {
     renderExtraCards();
     renderShowMore();
 
+    this._sort.getElement()
+    .addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      if (evt.target.tagName !== `A`) {
+        return;
+      }
+
+      filmsList.querySelector(`.films-list__container`).innerHTML = ``;
+
+      if (evt.target.textContent.substring(8) === `date`) {
+        const sortedByDateFilms = this._filmMocks.slice().sort((a, b) => a.year - b.year);
+        sortedByDateFilms.forEach((filmMock) => renderFilm(filmMock, filmsList.querySelector(`.films-list__container`)));
+      } else if (evt.target.textContent.substring(8) === `rating`) {
+        const sortedByRatingFilms = this._filmMocks.slice().sort((a, b) => a.rating - b.rating);
+        sortedByRatingFilms.forEach((filmMock) => renderFilm(filmMock, filmsList.querySelector(`.films-list__container`)));
+      } else {
+        const sortedByDefault = this._filmMocks;
+        sortedByDefault.forEach((filmMock) => renderFilm(filmMock, filmsList.querySelector(`.films-list__container`)));
+      }
+
+    });
   }
 }
 
