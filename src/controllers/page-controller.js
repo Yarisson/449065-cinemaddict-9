@@ -173,7 +173,7 @@ class PageController {
       this._checkRenderCards = 0;
 
 
-      if (evt.target.textContent.substring(8) === `date`) {
+      if (evt.target.dataset.sortType === `date`) {
         const sortedByDateFilms = this._filmMocks.slice().sort((a, b) => a.year - b.year);
         renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sortedByDateFilms);
         unrender(this._showMore.getElement());
@@ -181,7 +181,7 @@ class PageController {
         console.log(this._checkRenderCards);
         // sortedByDateFilms.forEach((filmMock) => renderFilm(filmMock, filmsList.querySelector(`.films-list__container`)));
         // unrender(this._showMore.getElement());
-      } else if (evt.target.textContent.substring(8) === `rating`) {
+      } else if (evt.target.dataset.sortType === `rating`) {
         const sortedByRatingFilms = this._filmMocks.slice().sort((a, b) => a.rating - b.rating);
         renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sortedByRatingFilms);
         unrender(this._showMore.getElement());
