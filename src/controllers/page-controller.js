@@ -173,12 +173,15 @@ class PageController {
       if (evt.target.textContent.substring(8) === `date`) {
         const sortedByDateFilms = this._filmMocks.slice().sort((a, b) => a.year - b.year);
         sortedByDateFilms.forEach((filmMock) => renderFilm(filmMock, filmsList.querySelector(`.films-list__container`)));
+        this._checkRenderCards = sortedByDateFilms.length;
       } else if (evt.target.textContent.substring(8) === `rating`) {
         const sortedByRatingFilms = this._filmMocks.slice().sort((a, b) => a.rating - b.rating);
         sortedByRatingFilms.forEach((filmMock) => renderFilm(filmMock, filmsList.querySelector(`.films-list__container`)));
+        this._checkRenderCards = sortedByRatingFilms.length;
       } else {
         const sortedByDefault = this._filmMocks;
         sortedByDefault.forEach((filmMock) => renderFilm(filmMock, filmsList.querySelector(`.films-list__container`)));
+        this._checkRenderCards = sortedByDefault.length;
       }
 
     });
