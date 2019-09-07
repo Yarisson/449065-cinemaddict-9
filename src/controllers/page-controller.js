@@ -98,7 +98,6 @@ class PageController {
       });
 
       render(container, film.getElement(), position.BEFOREEND);
-      console.log(this._checkRenderCards);
     };
 
     /**
@@ -140,9 +139,7 @@ class PageController {
 
     const renderShowMore = (Mocks) => {
 
-      console.log(this._checkRenderCards);
-      this._showMore.getElement()
-      .addEventListener(`click`, () => {
+      const showMoreCards = () => {
         const currentNumberCards = this._checkRenderCards;
         let storedCard = Mocks.length - currentNumberCards;
         if (storedCard === 0) {
@@ -153,7 +150,14 @@ class PageController {
         } else {
           renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, Mocks);
         }
+      };
+
+      this._sort.getElement()
+      .addEventListener(`click`, () => {
+        this._showMore.getElement().removeEventListener(`click`, showMoreCards);
       });
+
+      this._showMore.getElement().addEventListener(`click`, showMoreCards);
       render(filmsList, this._showMore.getElement(), position.BEFOREEND);
     };
 
@@ -173,36 +177,25 @@ class PageController {
       this._checkRenderCards = 0;
       this._sort.getElement().querySelector(`.sort__button--active`).classList.remove(`sort__button--active`);
 
-
       if (evt.target.dataset.sortType === `date`) {
         evt.target.classList.add(`sort__button--active`);
         const sortedByDateFilms = this._filmMocks.slice().sort((a, b) => b.year - a.year);
         renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sortedByDateFilms);
-        this._checkRenderCards = this._NUMBER_MORE_RENDER_CARDS;
-        unrender(this._showMore.getElement());
+        unrender(this._showMore.getElement(this._filmMocks));
         renderShowMore(sortedByDateFilms);
-        // sortedByDateFilms.forEach((filmMock) => renderFilm(filmMock, filmsList.querySelector(`.films-list__container`)));
-        // unrender(this._showMore.getElement());
       } else if (evt.target.dataset.sortType === `rating`) {
         evt.target.classList.add(`sort__button--active`);
         const sortedByRatingFilms = this._filmMocks.slice().sort((a, b) => b.rating - a.rating);
         renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sortedByRatingFilms);
-        this._checkRenderCards = this._NUMBER_MORE_RENDER_CARDS;
-        unrender(this._showMore.getElement());
+        unrender(this._showMore.getElement(this._filmMocks));
         renderShowMore(sortedByRatingFilms);
-        // sortedByRatingFilms.forEach((filmMock) => renderFilm(filmMock, filmsList.querySelector(`.films-list__container`)));
-        // unrender(this._showMore.getElement());
       } else {
         evt.target.classList.add(`sort__button--active`);
         const sortedByDefault = this._filmMocks;
         renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sortedByDefault);
-        this._checkRenderCards = this._NUMBER_MORE_RENDER_CARDS;
-        unrender(this._showMore.getElement());
+        unrender(this._showMore.getElement(this._filmMocks));
         renderShowMore(sortedByDefault);
-        // sortedByDefault.forEach((filmMock) => renderFilm(filmMock, filmsList.querySelector(`.films-list__container`)));
-        // unrender(this._showMore.getElement());
       }
-      console.log(this._checkRenderCards);
     });
   }
 }
