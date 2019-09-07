@@ -45,6 +45,12 @@ class PageController {
     const filmsList = this._filmsWrapper.getElement().querySelector(`.films-list`);
     const filmsListsExtra = this._filmsWrapper.getElement().querySelectorAll(`.films-list--extra`);
 
+    const SortHandlers = {
+      'date': (arr) => arr.sort((a, b) => b.year - a.year),
+      'rating': (arr) => arr.sort((a, b) => b.rating - a.rating),
+      'default': (arr) => arr.sort((a, b) => a - b)
+    };
+
     /**
       * Функция рендера карточки фильма
     */
@@ -165,12 +171,6 @@ class PageController {
     renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmMocks);
     renderExtraCards();
     renderShowMore(this._filmMocks);
-
-    const SortHandlers = {
-      'date': (arr) => arr.sort((a, b) => b.year - a.year),
-      'rating': (arr) => arr.sort((a, b) => b.rating - a.rating),
-      'default': (arr) => arr.sort((a, b) => a - b)
-    };
 
     let sortArr = (arr, by) => {
       if (!SortHandlers[by]) {
