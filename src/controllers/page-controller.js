@@ -1,4 +1,5 @@
 import {Search} from '../components/search.js';
+import {Sort} from '../components/sort.js';
 import {Menu} from '../components/menu.js';
 import {Footer} from '../components/footer.js';
 import {Rating} from '../components/rating.js';
@@ -19,6 +20,7 @@ class PageController {
     this._search = new Search();
     this._rating = new Rating(ratingMock);
     this._menu = new Menu(menuMock);
+    this._sort = new Sort();
     this._filmsWrapper = new FilmsWrapper();
     this._footerClass = new Footer(footerMock);
     this._filmMocks = filmMocks;
@@ -35,12 +37,19 @@ class PageController {
     render(this._containerHeader, this._search.getElement(), position.BEFOREEND);
     render(this._containerHeader, this._rating.getElement(), position.BEFOREEND);
     render(this._containerMain, this._menu.getElement(), position.BEFOREEND);
+    render(this._containerMain, this._sort.getElement(), position.BEFOREEND);
     render(this._containerMain, this._filmsWrapper.getElement(), position.BEFOREEND);
     render(this._containerFooter, this._footerClass.getElement(), position.BEFOREEND);
 
     // Поиск элементов в ДОМ-API
     const filmsList = this._filmsWrapper.getElement().querySelector(`.films-list`);
     const filmsListsExtra = this._filmsWrapper.getElement().querySelectorAll(`.films-list--extra`);
+
+    const SortHandlers = {
+      'date': (arr) => arr.sort((a, b) => b.year - a.year),
+      'rating': (arr) => arr.sort((a, b) => b.rating - a.rating),
+      'default': (arr) => arr.sort((a, b) => a - b)
+    };
 
     /**
       * Функция рендера карточки фильма
@@ -101,13 +110,13 @@ class PageController {
       * Функция рендера нескольких карточек
     */
 
-    const renderFilmCards = (number) => {
+    const renderFilmCards = (number, mocks) => {
       const startIndex = this._checkRenderCards;
-      if (this._filmMocks.length === 0) {
+      if (mocks.length === 0) {
         render(filmsList.querySelector(`.films-list__container`), this._noFilms.getElement(), position.BEFOREEND);
       } else {
         for (let i = startIndex; i < (startIndex + number); i++) {
-          renderFilm(this._filmMocks[i], filmsList.querySelector(`.films-list__container`));
+          renderFilm(mocks[i], filmsList.querySelector(`.films-list__container`));
           this._checkRenderCards = this._checkRenderCards + 1;
         }
       }
@@ -134,30 +143,66 @@ class PageController {
       * Функция для рендера кнопки show more
     */
 
-    const renderShowMore = () => {
+    const renderShowMore = (mocks) => {
 
-      this._showMore.getElement()
-      .addEventListener(`click`, () => {
+      const showMoreCards = () => {
         const currentNumberCards = this._checkRenderCards;
-        let storedCard = this._filmMocks.length - currentNumberCards;
+        let storedCard = mocks.length - currentNumberCards;
         if (storedCard === 0) {
           this._showMore.getElement().style.display = `none`;
         } else if (storedCard < this._NUMBER_MORE_RENDER_CARDS) {
-          renderFilmCards(storedCard);
+          renderFilmCards(storedCard, mocks);
           this._showMore.getElement().style.display = `none`;
         } else {
-          renderFilmCards(this._NUMBER_MORE_RENDER_CARDS);
+          renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, mocks);
         }
+      };
+
+      this._sort.getElement()
+      .addEventListener(`click`, () => {
+        this._showMore.getElement().removeEventListener(`click`, showMoreCards);
       });
 
+      this._showMore.getElement().addEventListener(`click`, showMoreCards);
       render(filmsList, this._showMore.getElement(), position.BEFOREEND);
     };
 
     // Отрисовка карточек фильмов и кнопки show more
-    renderFilmCards(this._NUMBER_MORE_RENDER_CARDS);
+    renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmMocks);
     renderExtraCards();
-    renderShowMore();
+    renderShowMore(this._filmMocks);
 
+    let sortArr = (arr, by) => {
+      if (!SortHandlers[by]) {
+        throw new Error(`Unknown sort key: ${by}`);
+      }
+
+      let sorted = SortHandlers[by](arr.slice(0));
+      renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sorted);
+      unrender(this._showMore.getElement(this._filmMocks));
+      renderShowMore(sorted);
+      return sorted;
+    };
+
+    this._sort.getElement()
+    .addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      if (evt.target.tagName !== `A`) {
+        return;
+      }
+
+      filmsList.querySelector(`.films-list__container`).innerHTML = ``;
+      this._checkRenderCards = 0;
+      this._sort.getElement().querySelector(`.sort__button--active`).classList.remove(`sort__button--active`);
+      evt.target.classList.add(`sort__button--active`);
+      if (evt.target.dataset.sortType === `date`) {
+        sortArr(this._filmMocks, `date`);
+      } else if (evt.target.dataset.sortType === `rating`) {
+        sortArr(this._filmMocks, `rating`);
+      } else {
+        sortArr(this._filmMocks, `default`);
+      }
+    });
   }
 }
 
