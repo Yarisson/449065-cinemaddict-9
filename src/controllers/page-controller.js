@@ -104,13 +104,13 @@ class PageController {
       * Функция рендера нескольких карточек
     */
 
-    const renderFilmCards = (number, Mocks) => {
+    const renderFilmCards = (number, mocks) => {
       const startIndex = this._checkRenderCards;
-      if (Mocks.length === 0) {
+      if (mocks.length === 0) {
         render(filmsList.querySelector(`.films-list__container`), this._noFilms.getElement(), position.BEFOREEND);
       } else {
         for (let i = startIndex; i < (startIndex + number); i++) {
-          renderFilm(Mocks[i], filmsList.querySelector(`.films-list__container`));
+          renderFilm(mocks[i], filmsList.querySelector(`.films-list__container`));
           this._checkRenderCards = this._checkRenderCards + 1;
         }
       }
@@ -137,18 +137,18 @@ class PageController {
       * Функция для рендера кнопки show more
     */
 
-    const renderShowMore = (Mocks) => {
+    const renderShowMore = (mocks) => {
 
       const showMoreCards = () => {
         const currentNumberCards = this._checkRenderCards;
-        let storedCard = Mocks.length - currentNumberCards;
+        let storedCard = mocks.length - currentNumberCards;
         if (storedCard === 0) {
           this._showMore.getElement().style.display = `none`;
         } else if (storedCard < this._NUMBER_MORE_RENDER_CARDS) {
-          renderFilmCards(storedCard, Mocks);
+          renderFilmCards(storedCard, mocks);
           this._showMore.getElement().style.display = `none`;
         } else {
-          renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, Mocks);
+          renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, mocks);
         }
       };
 
@@ -166,6 +166,24 @@ class PageController {
     renderExtraCards();
     renderShowMore(this._filmMocks);
 
+    const SortHandlers = {
+      'date': (arr) => arr.sort((a, b) => b.year - a.year),
+      'rating': (arr) => arr.sort((a, b) => b.rating - a.rating),
+      'default': (arr) => arr.sort((a, b) => a - b)
+    };
+
+    let sortArr = (arr, by) => {
+      if (!SortHandlers[by]) {
+        throw new Error(`Unknown sort key: ${by}`);
+      }
+
+      let sorted = SortHandlers[by](arr.slice(0));
+      renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sorted);
+      unrender(this._showMore.getElement(this._filmMocks));
+      renderShowMore(sorted);
+      return sorted;
+    };
+
     this._sort.getElement()
     .addEventListener(`click`, (evt) => {
       evt.preventDefault();
@@ -176,25 +194,13 @@ class PageController {
       filmsList.querySelector(`.films-list__container`).innerHTML = ``;
       this._checkRenderCards = 0;
       this._sort.getElement().querySelector(`.sort__button--active`).classList.remove(`sort__button--active`);
-
+      evt.target.classList.add(`sort__button--active`);
       if (evt.target.dataset.sortType === `date`) {
-        evt.target.classList.add(`sort__button--active`);
-        const sortedByDateFilms = this._filmMocks.slice().sort((a, b) => b.year - a.year);
-        renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sortedByDateFilms);
-        unrender(this._showMore.getElement(this._filmMocks));
-        renderShowMore(sortedByDateFilms);
+        sortArr(this._filmMocks, `date`);
       } else if (evt.target.dataset.sortType === `rating`) {
-        evt.target.classList.add(`sort__button--active`);
-        const sortedByRatingFilms = this._filmMocks.slice().sort((a, b) => b.rating - a.rating);
-        renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sortedByRatingFilms);
-        unrender(this._showMore.getElement(this._filmMocks));
-        renderShowMore(sortedByRatingFilms);
+        sortArr(this._filmMocks, `rating`);
       } else {
-        evt.target.classList.add(`sort__button--active`);
-        const sortedByDefault = this._filmMocks;
-        renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sortedByDefault);
-        unrender(this._showMore.getElement(this._filmMocks));
-        renderShowMore(sortedByDefault);
+        sortArr(this._filmMocks, `default`);
       }
     });
   }
