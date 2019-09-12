@@ -9,6 +9,8 @@ class MovieController {
     this._containerMain = containerMain;
     this._data = data;
     this._onDataChange = PageController.onDataChange();
+    // Не понимаю как правильно нужно вытаскивать onDataChange ?
+    this._onDataChange = this._onDataChange.bind(this);
     this._onChangeView = onChangeView;
   }
 
