@@ -6,11 +6,12 @@ import {Rating} from '../components/rating.js';
 import {FilmsWrapper} from '../components/films.js';
 import {Film} from '../components/film.js';
 import {NoFilms} from '../components/no-films.js';
-import {Popup} from '../components/popup.js';
 import {ShowMore} from '../components/show-more.js';
 import {position} from '../utils.js';
 import {render} from '../utils.js';
 import {unrender} from '../utils.js';
+import {MovieController} from './movie-controller.js';
+import {films} from '../data.js';
 
 class PageController {
   constructor(containerHeader, containerMain, containerFooter, ratingMock, menuMock, footerMock, filmMocks, extraFilmMocks) {
@@ -55,43 +56,9 @@ class PageController {
       * Функция рендера карточки фильма
     */
 
-    const renderFilm = (filmMock, container) => {
+    const renderFilm = (filmMock, container, index) => {
       const film = new Film(filmMock);
-      const popup = new Popup(filmMock);
       const popupRenderElements = [];
-
-      const onEscKeyDown = (evt) => {
-        if (evt.key === `Escape` || evt.key === `Esc`) {
-          unrender(popup.getElement());
-          document.removeEventListener(`keydown`, onEscKeyDown);
-        }
-      };
-
-      const closePopup = () => {
-        popup.getElement()
-        .querySelector(`.film-details__close-btn`)
-        .addEventListener(`click`, () => {
-          unrender(popup.getElement());
-          document.removeEventListener(`keydown`, onEscKeyDown);
-        });
-      };
-
-      popup.getElement().querySelector(`.film-details__comment-input`)
-      .addEventListener(`focus`, () => {
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      });
-
-      popup.getElement().querySelector(`.film-details__comment-input`)
-      .addEventListener(`blur`, () => {
-        document.addEventListener(`keydown`, onEscKeyDown);
-      });
-
-      const popupRender = () => {
-        unrender(popup.getElement());
-        render(this._containerMain, popup.getElement(), position.BEFOREEND);
-        document.addEventListener(`keydown`, onEscKeyDown);
-        document.addEventListener(`click`, closePopup);
-      };
 
       popupRenderElements.push(film.getElement().querySelector(`.film-card__poster`));
       popupRenderElements.push(film.getElement().querySelector(`.film-card__title`));
@@ -99,10 +66,12 @@ class PageController {
 
       popupRenderElements.forEach(function (item) {
         item.addEventListener(`click`, () => {
-          popupRender();
+          const movieController = new MovieController(container, filmMock);
+          movieController.init();
         });
       });
 
+      film.getElement().id = index;
       render(container, film.getElement(), position.BEFOREEND);
     };
 
@@ -116,7 +85,7 @@ class PageController {
         render(filmsList.querySelector(`.films-list__container`), this._noFilms.getElement(), position.BEFOREEND);
       } else {
         for (let i = startIndex; i < (startIndex + number); i++) {
-          renderFilm(mocks[i], filmsList.querySelector(`.films-list__container`));
+          renderFilm(mocks[i], filmsList.querySelector(`.films-list__container`), i);
           this._checkRenderCards = this._checkRenderCards + 1;
         }
       }
@@ -203,6 +172,12 @@ class PageController {
         sortArr(this._filmMocks, `default`);
       }
     });
+  }
+
+  onDataChange (newData, oldData) {
+    this._filmMocks[this._filmMocks.findIndex((it) => it === oldData)] = newData;
+    this._filmMocks.forEach((filmMock) => unrender(filmMock, filmsList.querySelector(`.films-list__container`));
+    this._filmMocks.forEach((filmMock) => renderFilm(filmMock, filmsList.querySelector(`.films-list__container`));
   }
 }
 
