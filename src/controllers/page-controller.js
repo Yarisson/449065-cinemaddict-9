@@ -12,6 +12,7 @@ import {render} from '../utils.js';
 import {unrender} from '../utils.js';
 import {MovieController} from './movie-controller.js';
 import {films} from '../data.js';
+import {getCard} from '../data.js';
 
 class PageController {
   constructor(containerHeader, containerMain, containerFooter, ratingMock, menuMock, footerMock, filmMocks, extraFilmMocks) {
@@ -74,6 +75,14 @@ class PageController {
       film.getElement().id = index;
       render(container, film.getElement(), position.BEFOREEND);
     };
+
+    const onChangeCard = (container, item) => {
+      container.getElement().replaceChild(item.getElement(), item.getElement());
+    };
+    console.log(filmsList.getElement());
+    // console.log(onChangeCard(filmsList, filmsList.querySelector(`.film-card`)));
+    // filmsList.getElement().replaceChild(item.getElement(), item.getElement());
+    // onChangeCard(filmsList, filmsList.querySelector(`.film-card`));
 
     /**
       * Функция рендера нескольких карточек
@@ -174,10 +183,9 @@ class PageController {
     });
   }
 
-  onDataChange (newData, oldData) {
-    this._filmMocks[this._filmMocks.findIndex((it) => it === oldData)] = newData;
-    this._filmMocks.forEach((filmMock) => unrender(filmMock, filmsList.querySelector(`.films-list__container`));
-    this._filmMocks.forEach((filmMock) => renderFilm(filmMock, filmsList.querySelector(`.films-list__container`));
+  onDataChange(item, id, container) {
+    unrender(item[id], container.querySelector(`.films-list__container`));
+    render(container, item.getElement(), position.BEFOREEND);
   }
 }
 
