@@ -11,8 +11,6 @@ import {position} from '../utils.js';
 import {render} from '../utils.js';
 import {unrender} from '../utils.js';
 import {MovieController} from './movie-controller.js';
-import {films} from '../data.js';
-import {getCard} from '../data.js';
 
 class PageController {
   constructor(containerHeader, containerMain, containerFooter, ratingMock, menuMock, footerMock, filmMocks, extraFilmMocks) {
@@ -31,6 +29,7 @@ class PageController {
     this._showMore = new ShowMore();
     this._checkRenderCards = 0;
     this._NUMBER_MORE_RENDER_CARDS = 5;
+    this._onDataChange = this._onDataChange.bind(this);
   }
 
   init() {
@@ -75,14 +74,6 @@ class PageController {
       film.getElement().id = index;
       render(container, film.getElement(), position.BEFOREEND);
     };
-
-    const onChangeCard = (container, item) => {
-      container.getElement().replaceChild(item.getElement(), item.getElement());
-    };
-    console.log(filmsList.getElement());
-    // console.log(onChangeCard(filmsList, filmsList.querySelector(`.film-card`)));
-    // filmsList.getElement().replaceChild(item.getElement(), item.getElement());
-    // onChangeCard(filmsList, filmsList.querySelector(`.film-card`));
 
     /**
       * Функция рендера нескольких карточек
@@ -183,10 +174,24 @@ class PageController {
     });
   }
 
-  onDataChange(item, id, container) {
-    unrender(item[id], container.querySelector(`.films-list__container`));
-    render(container, item.getElement(), position.BEFOREEND);
+  _onDataChange(newData, oldData) {
+    const currentIndexOfFilmCard = this._filmMocks.findIndex((it) => it === oldData);
+    const keysOfNewData = Object.keys(newData);
+
+    keysOfNewData.forEach((key) => { // Ищем нужные свойства объекта карточка филма и меняем их
+      this._filmMocks[currentIndexOfFilmCard][key] = newData[key];
+    });
+
+    // unrender(this._filmListContainerAll.getElement());
+    // this._filmListContainerAll.removeElement();
+    // unrender(filmsList.querySelector(`.films-list__container`));
+    // filmsList.querySelector(`.films-list__container`)
+    unrender(this._filmMocks.getElement());
+    this._filmMocks.removeElement();
+    render(this._filmsWrapper.getElement().querySelector(`.films-list__container`), this._filmMocks.getElement(), position.BEFOREEND);
   }
 }
 
 export {PageController};
+
+// buttonAddToWatchlist = querySelector.(`.film-card__controls-item--add-to-watchlist`);
