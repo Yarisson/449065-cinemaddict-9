@@ -256,8 +256,7 @@ class PageController {
     // this._filmMocks.removeElement();
     // render(this._filmsWrapper.getElement().querySelector(`.films-list__container`), this._filmMocks.getElement(), position.BEFOREEND);
   }
+
 }
 
 export {PageController};
-
-// buttonAddToWatchlist = querySelector.(`.film-card__controls-item--add-to-watchlist`);
