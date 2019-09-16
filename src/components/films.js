@@ -14,14 +14,14 @@ class FilmsWrapper extends AbstractComponent {
        <div class="films-list__container">
        </div>
      </section>
-     <section class="films-list--extra">
+     <section class="films-list--extra films-list--rate">
        <h2 class="films-list__title">Top rated</h2>
 
        <div class="films-list__container">
        </div>
      </section>
 
-     <section class="films-list--extra">
+     <section class="films-list--extra films-list--comments">
        <h2 class="films-list__title">Most commented</h2>
 
        <div class="films-list__container">

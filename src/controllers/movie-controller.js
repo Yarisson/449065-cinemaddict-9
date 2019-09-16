@@ -4,10 +4,19 @@ import {render} from '../utils.js';
 import {unrender} from '../utils.js';
 
 class MovieController {
-  constructor(containerMain, data, onDataChange) {
+  constructor(containerMain, data, onDataChange, onChangeView) {
     this._containerMain = containerMain;
     this._data = data;
     this._onDataChange = onDataChange;
+    this._onChangeView = onChangeView;
+    this._popup = new Popup(data);
+  }
+
+  setDefaultView() {
+    if (document.body.contains(this._popup.getElement())) {
+      unrender(this._popup.getElement());
+      this._popup.removeElement();
+    }
   }
 
   init() {
@@ -16,8 +25,8 @@ class MovieController {
       * Функция рендера карточки фильма
     */
 
-    const renderPopup = (filmMock, container) => {
-      const popup = new Popup(filmMock);
+    const renderPopup = (container) => {
+      const popup = this._popup;
 
       const onEscKeyDown = (evt) => {
         if (evt.key === `Escape` || evt.key === `Esc`) {
@@ -26,18 +35,41 @@ class MovieController {
         }
       };
 
-      const formData = new FormData(popup.getElement().querySelector(`.film-details__inner`));
+      const getNewMokData = (nameOfList) => {
+        const switchTrueFalse = (bool) => {
+          return bool ? false : true;
+        };
+        const formData = new FormData(popup.getElement().querySelector(`.film-details__inner`));
+        const userRating = formData.getAll(`score`);
+        const entry = {
+          favorites: Boolean(formData.get(`favorite`)),
+          watchlist: Boolean(formData.get(`watchlist`)),
+          watched: Boolean(formData.get(`watched`)),
+          userRating: `Your rate ${userRating}`,
+        };
 
-      const entry = {
-        favorites: Boolean(formData.get(`favorite`)),
-        watchlist: Boolean(formData.get(`watchlist`)),
-        watched: Boolean(formData.get(`watched`)),
-      };
+        switch (nameOfList) {
+          case `favorites`:
+            entry.favorites = switchTrueFalse(entry.favorites);
+            break;
+          case `watchlist`:
+            entry.watchlist = switchTrueFalse(entry.watchlist);
+            break;
+          case `watched`:
+            entry.watched = switchTrueFalse(entry.watched);
+            break;
+        }
 
-      console.log(entry);
+        if (entry.watched) {
+          popup.getElement().querySelector(`.form-details__middle-container `).classList.remove(`visually-hidden`);
+          popup.getElement().querySelector(`.film-details__user-rating `).classList.remove(`visually-hidden`);
+        } else {
+          popup.getElement().querySelector(`.form-details__middle-container `).classList.add(`visually-hidden`);
+          popup.getElement().querySelector(`.film-details__user-rating `).classList.add(`visually-hidden`);
+          entry.userRating = ``;
+        }
 
-      const switchTrueFalse = (bool) => {
-        return bool ? false : true;
+        this._onDataChange(entry, this._data);
       };
 
       const popupFilmControls = [];
@@ -48,28 +80,18 @@ class MovieController {
 
       popupFilmControls.forEach(function (item) {
         item.addEventListener(`click`, (evt) => {
-          console.log(evt.target.dataset.controlType);
+          evt.preventDefault();
           switch (evt.target.dataset.controlType) {
             case `favorites`:
-              entry.favorites = switchTrueFalse(entry.favorites);
+              getNewMokData(`favorites`);
               break;
             case `watchlist`:
-              entry.watchlist = switchTrueFalse(entry.watchlist);
+              getNewMokData(`watchlist`);
               break;
             case `watched`:
-              entry.watched = switchTrueFalse(entry.watched);
+              getNewMokData(`watched`);
               break;
           }
-
-          if (entry.watched) {
-            popup.getElement().querySelector(`.form-details__middle-container `).classList.remove(`visually-hidden`);
-            popup.getElement().querySelector(`.film-details__user-rating `).classList.remove(`visually-hidden`);
-          } else {
-            popup.getElement().querySelector(`.form-details__middle-container `).classList.add(`visually-hidden`);
-            popup.getElement().querySelector(`.film-details__user-rating `).classList.add(`visually-hidden`);
-          }
-
-          this._onDataChange(entry, this._data);
         });
       });
 
@@ -99,53 +121,15 @@ class MovieController {
         document.addEventListener(`click`, closePopup);
       };
 
+      popup.getElement().addEventListener(`change`, () => {
+        getNewMokData();
+      });
+
       popupRender();
     };
 
-    renderPopup(this._data, this._containerMain);
+    renderPopup(this._containerMain);
   }
 }
-
-/**
-  *
-  *
-  * const getNewMokData = (nameOfList) => {
-  const switchTrueFalse = (bool) => {
-    return bool ? false : true;
-  };
-  const formData = new FormData(this._popUpFilm.getElement().querySelector(`.film-details__inner`));
-  const userRatio = formData.getAll(`score`);
-  const entry = {
-    favorites: Boolean(formData.get(`favorite`)),
-    watchlist: Boolean(formData.get(`watchlist`)),
-    watched: Boolean(formData.get(`watched`)),
-    userRatio: `Your rate ${userRatio}`,
-  };
-
-  switch (nameOfList) {
-    case `favorites`:
-      entry.favorites = switchTrueFalse(entry.favorites);
-      break;
-    case `watchlist`:
-      entry.watchlist = switchTrueFalse(entry.watchlist);
-      break;
-    case `watched`:
-      entry.watched = switchTrueFalse(entry.watched);
-      break;
-  }
-
-  if (entry.watched) {
-    this._popUpFilm.getElement().querySelector(`.form-details__middle-container `).classList.remove(`visually-hidden`);
-    this._popUpFilm.getElement().querySelector(`.film-details__user-rating `).classList.remove(`visually-hidden`);
-  } else {
-    this._popUpFilm.getElement().querySelector(`.form-details__middle-container `).classList.add(`visually-hidden`);
-    this._popUpFilm.getElement().querySelector(`.film-details__user-rating `).classList.add(`visually-hidden`);
-    entry.userRatio = ``;
-  }
-
-  this._onDataChange(entry, this._data);
-};
-
-*/
 
 export {MovieController};
