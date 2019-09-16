@@ -56,57 +56,57 @@ class PageController {
       * Функция рендера карточки фильма
     */
 
-    const renderFilm = (filmMock, container, index) => {
-      const film = new Film(filmMock);
-      const popupRenderElements = [];
+    // const renderFilm = (filmMock, container, index) => {
+    //  const film = new Film(filmMock);
+    //  const popupRenderElements = [];
 
-      popupRenderElements.push(film.getElement().querySelector(`.film-card__poster`));
-      popupRenderElements.push(film.getElement().querySelector(`.film-card__title`));
-      popupRenderElements.push(film.getElement().querySelector(`.film-card__comments`));
+    //  popupRenderElements.push(film.getElement().querySelector(`.film-card__poster`));
+    //  popupRenderElements.push(film.getElement().querySelector(`.film-card__title`));
+    //  popupRenderElements.push(film.getElement().querySelector(`.film-card__comments`));
 
-      popupRenderElements.forEach(function (item) {
-        item.addEventListener(`click`, () => {
-          const movieController = new MovieController(container, filmMock);
-          movieController.init();
-        });
-      });
+    //  popupRenderElements.forEach(function (item) {
+    //    item.addEventListener(`click`, () => {
+    //      const movieController = new MovieController(container, filmMock);
+    //      movieController.init();
+    //    });
+    //  });
 
-      film.getElement().id = index;
-      render(container, film.getElement(), position.BEFOREEND);
-    };
+    //  film.getElement().id = index;
+    //  render(container, film.getElement(), position.BEFOREEND);
+    // };
 
     /**
       * Функция рендера нескольких карточек
     */
 
-    const renderFilmCards = (number, mocks) => {
-      const startIndex = this._checkRenderCards;
-      if (mocks.length === 0) {
-        render(filmsList.querySelector(`.films-list__container`), this._noFilms.getElement(), position.BEFOREEND);
-      } else {
-        for (let i = startIndex; i < (startIndex + number); i++) {
-          renderFilm(mocks[i], filmsList.querySelector(`.films-list__container`), i);
-          this._checkRenderCards = this._checkRenderCards + 1;
-        }
-      }
-    };
+    // const renderFilmCards = (number, mocks) => {
+    //  const startIndex = this._checkRenderCards;
+    //  if (mocks.length === 0) {
+    //    render(filmsList.querySelector(`.films-list__container`), this._noFilms.getElement(), position.BEFOREEND);
+    //  } else {
+    //    for (let i = startIndex; i < (startIndex + number); i++) {
+    //      renderFilm(mocks[i], filmsList.querySelector(`.films-list__container`), i);
+    //      this._checkRenderCards = this._checkRenderCards + 1;
+    //    }
+    //  }
+    // };
 
     /**
       * Функция рендера extra карточек
     */
 
-    const renderExtraCards = () => {
-      if (this._filmMocks.length === 0) {
-        return;
-      } else {
-        const extraMocks = this._extraFilmMocks;
-        filmsListsExtra.forEach(function (item) {
-          for (let i = 0; i < extraMocks.length; i++) {
-            renderFilm(extraMocks[i], item.querySelector(`.films-list__container`));
-          }
-        });
-      }
-    };
+    // const renderExtraCards = () => {
+    //  if (this._filmMocks.length === 0) {
+    //    return;
+    //  } else {
+    //    const extraMocks = this._extraFilmMocks;
+    //    filmsListsExtra.forEach(function (item) {
+    //      for (let i = 0; i < extraMocks.length; i++) {
+    //        renderFilm(extraMocks[i], item.querySelector(`.films-list__container`));
+    //      }
+    //    });
+    //  }
+    // };
 
     /**
       * Функция для рендера кнопки show more
@@ -120,10 +120,12 @@ class PageController {
         if (storedCard === 0) {
           this._showMore.getElement().style.display = `none`;
         } else if (storedCard < this._NUMBER_MORE_RENDER_CARDS) {
-          renderFilmCards(storedCard, mocks);
+          this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, mocks, filmsList);
+          // renderFilmCards(storedCard, mocks);
           this._showMore.getElement().style.display = `none`;
         } else {
-          renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, mocks);
+          this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, mocks, filmsList);
+          // renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, mocks);
         }
       };
 
@@ -137,8 +139,15 @@ class PageController {
     };
 
     // Отрисовка карточек фильмов и кнопки show more
-    renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmMocks);
-    renderExtraCards();
+    this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmMocks, filmsList);
+    // renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmMocks);
+    const extraFilmMocks = this._extraFilmMocks;
+    const renderFilmExtraCards = this._renderFilmExtraCards;
+    filmsListsExtra.forEach(function (element) {
+      renderFilmExtraCards(extraFilmMocks, element.querySelector(`.films-list__container`));
+    });
+    // this._renderFilmExtraCards(this._extraFilmMocks, filmsListsExtra.querySelector(`.films-list__container`));
+    // renderExtraCards();
     renderShowMore(this._filmMocks);
 
     let sortArr = (arr, by) => {
@@ -147,7 +156,8 @@ class PageController {
       }
 
       let sorted = SortHandlers[by](arr.slice(0));
-      renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sorted);
+      this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sorted, filmsList);
+      // renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sorted);
       unrender(this._showMore.getElement(this._filmMocks));
       renderShowMore(sorted);
       return sorted;
@@ -174,6 +184,60 @@ class PageController {
     });
   }
 
+  _renderFilm(filmMock, container, index) {
+    const film = new Film(filmMock);
+    const popupRenderElements = [];
+
+    popupRenderElements.push(film.getElement().querySelector(`.film-card__poster`));
+    popupRenderElements.push(film.getElement().querySelector(`.film-card__title`));
+    popupRenderElements.push(film.getElement().querySelector(`.film-card__comments`));
+
+    popupRenderElements.forEach(function (item) {
+      item.addEventListener(`click`, () => {
+        const movieController = new MovieController(container, filmMock);
+        movieController.init();
+      });
+    });
+
+    film.getElement().id = index;
+    render(container, film.getElement(), position.BEFOREEND);
+  }
+
+  _renderFilmCards(number, mocks, container) {
+    const startIndex = this._checkRenderCards;
+    if (mocks.length === 0) {
+      render(container.querySelector(`.films-list__container`), this._noFilms.getElement(), position.BEFOREEND);
+    } else {
+      for (let i = startIndex; i < (startIndex + number); i++) {
+        this._renderFilm(mocks[i], container.querySelector(`.films-list__container`), i);
+        this._checkRenderCards = this._checkRenderCards + 1;
+      }
+    }
+  }
+
+  _renderFilmExtraCards(mocks, container) {
+    if (mocks.length === 0) {
+      return;
+    } else {
+      for (let i = 0; i < mocks.length; i++) {
+        this._renderFilm(mocks[i], container);
+      }
+    }
+  }
+
+  // _renderExtraCards() {
+  //  if (this._filmMocks.length === 0) {
+  //    return;
+  //  } else {
+  //    const extraMocks = this._extraFilmMocks;
+  //    this.filmsListsExtra.forEach(function (item) {
+  //      for (let i = 0; i < extraMocks.length; i++) {
+  //        this._renderFilm(extraMocks[i], item.querySelector(`.films-list__container`));
+  //      }
+  //    });
+  //  }
+  // }
+
   _onDataChange(newData, oldData) {
     const currentIndexOfFilmCard = this._filmMocks.findIndex((it) => it === oldData);
     const keysOfNewData = Object.keys(newData);
@@ -182,13 +246,15 @@ class PageController {
       this._filmMocks[currentIndexOfFilmCard][key] = newData[key];
     });
 
+    unrender(this._filmsWrapper.getElement(this._filmMocks));
+    this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmMocks, this.filmsList);
     // unrender(this._filmListContainerAll.getElement());
     // this._filmListContainerAll.removeElement();
     // unrender(filmsList.querySelector(`.films-list__container`));
     // filmsList.querySelector(`.films-list__container`)
-    unrender(this._filmMocks.getElement());
-    this._filmMocks.removeElement();
-    render(this._filmsWrapper.getElement().querySelector(`.films-list__container`), this._filmMocks.getElement(), position.BEFOREEND);
+    // unrender(this._filmMocks.getElement());
+    // this._filmMocks.removeElement();
+    // render(this._filmsWrapper.getElement().querySelector(`.films-list__container`), this._filmMocks.getElement(), position.BEFOREEND);
   }
 }
 
