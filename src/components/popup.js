@@ -16,7 +16,7 @@ class Popup extends AbstractComponent {
     this._favorites = favorites;
     this._watchlist = watchlist;
     this._watched = watched;
-    this.userRating = userRating;
+    this._userRating = userRating;
   }
 
   getTemplate() {
