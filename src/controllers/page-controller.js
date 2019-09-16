@@ -126,6 +126,10 @@ class PageController {
   _renderFilm(filmMock, container, index) {
     const film = new Film(filmMock);
     const popupRenderElements = [];
+    const subscriptions = this._subscriptions;
+    const onDataChange = this._onDataChange;
+    const onChangeView = this._onChangeView;
+
 
     popupRenderElements.push(film.getElement().querySelector(`.film-card__poster`));
     popupRenderElements.push(film.getElement().querySelector(`.film-card__title`));
@@ -133,14 +137,18 @@ class PageController {
 
     popupRenderElements.forEach(function (item) {
       item.addEventListener(`click`, () => {
-        const movieController = new MovieController(container, filmMock);
+        const movieController = new MovieController(container, filmMock, onDataChange, onChangeView);
         movieController.init();
-        this._subscriptions.push(movieController.setDefaultView.bind(movieController));
+        subscriptions.push(movieController.setDefaultView.bind(movieController));
       });
     });
 
     film.getElement().id = index;
     render(container, film.getElement(), position.BEFOREEND);
+
+    this._subscriptions = subscriptions;
+    console.log(subscriptions);
+    console.log(this._subscriptions);
   }
 
   _renderFilmCards(number, mocks, container) {
