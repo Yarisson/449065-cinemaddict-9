@@ -146,41 +146,60 @@ class PageController {
     });
 
     film.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, () => {
+      const formData = new FormData(film);
+      const entry = {
+        _watchlist: formData.get(`_watchlist`),
+      };
+
       if (film._watchlist) {
         film._watchlist = false;
+        entry.watchlist = false;
         film.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).classList.remove(`film-card__controls-item--active`);
       } else {
         film._watchlist = true;
+        entry.watchlist = true;
         film.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).classList.add(`film-card__controls-item--active`);
       }
-      // this._onDataChange(film, film);
+      this._onDataChange(entry, film);
     });
 
     film.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, () => {
+      const formData = new FormData(film);
+      const entry = {
+        _watched: formData.get(`_watched`),
+      };
+
       if (film._watched) {
         film._watched = false;
+        entry.watched = false;
         film.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).classList.remove(`film-card__controls-item--active`);
       } else {
         film._watched = true;
+        entry.watched = true;
         film.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).classList.add(`film-card__controls-item--active`);
       }
-      // this._onDataChange(film, film);
+      this._onDataChange(entry, film);
     });
 
     film.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, () => {
+      const formData = new FormData(film);
+      const entry = {
+        _favorites: formData.get(`_favorites`),
+      };
       if (film._favorites) {
         film._favorites = false;
+        entry._favorites = false;
         film.getElement().querySelector(`.film-card__controls-item--favorite`).classList.remove(`film-card__controls-item--active`);
       } else {
         film._favorites = true;
+        entry._favorites = true;
         film.getElement().querySelector(`.film-card__controls-item--favorite`).classList.add(`film-card__controls-item--active`);
       }
-      // this._onDataChange(entry, film);
+      this._onDataChange(entry, film);
     });
 
     film.getElement().id = index;
     render(container, film.getElement(), position.BEFOREEND);
-
     this._subscriptions = subscriptions;
     // console.log(subscriptions);
     // console.log(this._subscriptions);
