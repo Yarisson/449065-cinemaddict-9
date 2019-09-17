@@ -145,6 +145,39 @@ class PageController {
       });
     });
 
+    film.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, () => {
+      if (film._watchlist) {
+        film._watchlist = false;
+        film.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).classList.remove(`film-card__controls-item--active`);
+      } else {
+        film._watchlist = true;
+        film.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).classList.add(`film-card__controls-item--active`);
+      }
+      // this._onDataChange(film, film);
+    });
+
+    film.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, () => {
+      if (film._watched) {
+        film._watched = false;
+        film.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).classList.remove(`film-card__controls-item--active`);
+      } else {
+        film._watched = true;
+        film.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).classList.add(`film-card__controls-item--active`);
+      }
+      // this._onDataChange(film, film);
+    });
+
+    film.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, () => {
+      if (film._favorites) {
+        film._favorites = false;
+        film.getElement().querySelector(`.film-card__controls-item--favorite`).classList.remove(`film-card__controls-item--active`);
+      } else {
+        film._favorites = true;
+        film.getElement().querySelector(`.film-card__controls-item--favorite`).classList.add(`film-card__controls-item--active`);
+      }
+      // this._onDataChange(entry, film);
+    });
+
     film.getElement().id = index;
     render(container, film.getElement(), position.BEFOREEND);
 
@@ -225,11 +258,6 @@ class PageController {
     this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmMocks, this.filmsList);
     this._renderExtraCards(this.filmsListRate);
     this._renderExtraCards(this.filmsListComments);
-    // this._renderShowMore(this._filmMocks);
-    console.log(this._filmsWrapper.getElement().querySelectorAll(`.film-card`));
-    console.log(oldData);
-    console.log(newData);
-    console.log(this._showMore.getElement());
   }
 
   _onChangeView() {
