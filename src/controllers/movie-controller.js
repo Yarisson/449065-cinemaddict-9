@@ -81,17 +81,10 @@ class MovieController {
       popupFilmControls.forEach(function (item) {
         item.addEventListener(`click`, (evt) => {
           evt.preventDefault();
-          switch (evt.target.dataset.controlType) {
-            case `favorites`:
-              getNewMokData(`favorites`);
-              break;
-            case `watchlist`:
-              getNewMokData(`watchlist`);
-              break;
-            case `watched`:
-              getNewMokData(`watched`);
-              break;
-          }
+          console.log(evt.target.dataset.controlType);
+          console.log(`${evt.target.dataset.controlType}`);
+          getNewMokData(`${evt.target.dataset.controlType}`);
+          getNewMokData(evt.target.dataset.controlType);
         });
       });
 
