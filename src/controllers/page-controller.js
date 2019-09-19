@@ -12,19 +12,26 @@ import {render} from '../utils.js';
 import {unrender} from '../utils.js';
 import {MovieController} from './movie-controller.js';
 
+const SortHandlers = {
+  'date': (arr) => arr.sort((a, b) => b.year - a.year),
+  'rating': (arr) => arr.sort((a, b) => b.rating - a.rating),
+  'default': (arr) => arr.sort((a, b) => a - b)
+};
+
 class PageController {
-  constructor(containerHeader, containerMain, containerFooter, ratingMock, menuMock, footerMock, filmMocks, extraFilmMocks) {
+
+  constructor(containerHeader, containerMain, containerFooter, ratingData, menuData, footerData, filmsData, extraFilmsData) {
     this._containerMain = containerMain;
     this._containerHeader = containerHeader;
     this._containerFooter = containerFooter;
     this._search = new Search();
-    this._rating = new Rating(ratingMock);
-    this._menu = new Menu(menuMock);
+    this._rating = new Rating(ratingData);
+    this._menu = new Menu(menuData);
     this._sort = new Sort();
     this._filmsWrapper = new FilmsWrapper();
-    this._footerClass = new Footer(footerMock);
-    this._filmMocks = filmMocks;
-    this._extraFilmMocks = extraFilmMocks;
+    this._footerClass = new Footer(footerData);
+    this._filmsData = filmsData;
+    this._extraFilmsData = extraFilmsData;
     this._noFilms = new NoFilms();
     this._showMore = new ShowMore();
     this._checkRenderCards = 0;
@@ -49,59 +56,12 @@ class PageController {
     this.filmsListRate = this._filmsWrapper.getElement().querySelector(`.films-list--rate`);
     this.filmsListComments = this._filmsWrapper.getElement().querySelector(`.films-list--comments`);
 
-    const SortHandlers = {
-      'date': (arr) => arr.sort((a, b) => b.year - a.year),
-      'rating': (arr) => arr.sort((a, b) => b.rating - a.rating),
-      'default': (arr) => arr.sort((a, b) => a - b)
-    };
-
-    /**
-      * Функция для рендера кнопки show more
-    */
-
-    // const renderShowMore = (mocks) => {
-
-    //  const showMoreCards = () => {
-    //    const currentNumberCards = this._checkRenderCards;
-    //    let storedCard = mocks.length - currentNumberCards;
-    //    if (storedCard === 0) {
-    //      this._showMore.getElement().style.display = `none`;
-    //    } else if (storedCard < this._NUMBER_MORE_RENDER_CARDS) {
-    //      this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, mocks, this.filmsList);
-    //      this._showMore.getElement().style.display = `none`;
-    //    } else {
-    //      this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, mocks, this.filmsList);
-    //    }
-    //  };
-
-    //  this._sort.getElement()
-    //  .addEventListener(`click`, () => {
-    //    this._showMore.getElement().removeEventListener(`click`, showMoreCards);
-    //  });
-
-    //  this._showMore.getElement().addEventListener(`click`, showMoreCards);
-    //  render(this.filmsList, this._showMore.getElement(), position.BEFOREEND);
-    // };
-
     // Отрисовка карточек фильмов и кнопки show more
-    this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmMocks, this.filmsList);
+    this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsData, this.filmsList);
     this._renderExtraCards(this.filmsListRate);
     this._renderExtraCards(this.filmsListComments);
-    this._renderShowMore(this._filmMocks);
+    this._renderShowMore(this._filmsData);
     // renderShowMore(this._filmMocks);
-
-    let sortArr = (arr, by) => {
-      if (!SortHandlers[by]) {
-        throw new Error(`Unknown sort key: ${by}`);
-      }
-
-      let sorted = SortHandlers[by](arr.slice(0));
-      this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sorted, this.filmsList);
-      unrender(this._showMore.getElement(this._filmMocks));
-      this._renderShowMore(sorted);
-      // renderShowMore(sorted);
-      return sorted;
-    };
 
     this._sort.getElement()
     .addEventListener(`click`, (evt) => {
@@ -115,19 +75,32 @@ class PageController {
       this._sort.getElement().querySelector(`.sort__button--active`).classList.remove(`sort__button--active`);
       evt.target.classList.add(`sort__button--active`);
       if (evt.target.dataset.sortType === `date`) {
-        sortArr(this._filmMocks, `date`);
+        this._sortArr(this._filmsData, `date`);
       } else if (evt.target.dataset.sortType === `rating`) {
-        sortArr(this._filmMocks, `rating`);
+        this._sortArr(this._filmsData, `rating`);
       } else {
-        sortArr(this._filmMocks, `default`);
+        this._sortArr(this._filmsData, `default`);
       }
     });
-
   }
 
-  _renderFilm(filmMock, container, index) {
-    const film = new Film(filmMock);
+  _sortArr(arr, by) {
+    if (!SortHandlers[by]) {
+      throw new Error(`Unknown sort key: ${by}`);
+    }
+
+    let sorted = SortHandlers[by](arr.slice(0));
+    this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sorted, this.filmsList);
+    unrender(this._showMore.getElement(this._filmsData));
+    this._renderShowMore(sorted);
+    // renderShowMore(sorted);
+    return sorted;
+  }
+
+  _renderFilm(filmData, container, index) {
+    const film = new Film(filmData);
     const popupRenderElements = [];
+    const filmControls = [];
     const subscriptions = this._subscriptions;
     const onDataChange = this._onDataChange;
     const onChangeView = this._onChangeView;
@@ -139,63 +112,42 @@ class PageController {
 
     popupRenderElements.forEach(function (item) {
       item.addEventListener(`click`, () => {
-        const movieController = new MovieController(container, filmMock, onDataChange, onChangeView);
+        const movieController = new MovieController(container, filmData, onDataChange, onChangeView);
         movieController.init();
         subscriptions.push(movieController.setDefaultView.bind(movieController));
       });
     });
 
-    film.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, () => {
-      const formData = new FormData(film);
-      const entry = {
-        _watchlist: formData.get(`_watchlist`),
-      };
+    filmControls.push(film.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`));
+    filmControls.push(film.getElement().querySelector(`.film-card__controls-item--mark-as-watched`));
+    filmControls.push(film.getElement().querySelector(`.film-card__controls-item--favorite`));
 
-      if (film._watchlist) {
-        film._watchlist = false;
-        entry.watchlist = false;
-        film.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).classList.remove(`film-card__controls-item--active`);
-      } else {
-        film._watchlist = true;
-        entry.watchlist = true;
-        film.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).classList.add(`film-card__controls-item--active`);
-      }
-      this._onDataChange(entry, film);
-    });
+    filmControls.forEach(function (item) {
+      item.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        const formData = new FormData(film.getElement().querySelector(`.film-card__controls`));
+        const entry = {
+          _watchlist: formData.get(`watchlist`),
+          _watched: formData.get(`watched`),
+          _favorites: formData.get(`favorites`),
+        };
+        const value = evt.target.name;
+        switch (value) {
+          case `value`:
+            entry._value = !entry._value;
+            break;
+        }
 
-    film.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).addEventListener(`click`, () => {
-      const formData = new FormData(film);
-      const entry = {
-        _watched: formData.get(`_watched`),
-      };
+        if (entry._value) {
+          item.classList.add(`film-card__controls-item--active`);
+        } else {
+          item.classList.remove(`film-card__controls-item--active`);
+        }
+        console.log(entry);
+        // this._onDataChange(entry, film);
 
-      if (film._watched) {
-        film._watched = false;
-        entry.watched = false;
-        film.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).classList.remove(`film-card__controls-item--active`);
-      } else {
-        film._watched = true;
-        entry.watched = true;
-        film.getElement().querySelector(`.film-card__controls-item--mark-as-watched`).classList.add(`film-card__controls-item--active`);
-      }
-      this._onDataChange(entry, film);
-    });
-
-    film.getElement().querySelector(`.film-card__controls-item--favorite`).addEventListener(`click`, () => {
-      const formData = new FormData(film);
-      const entry = {
-        _favorites: formData.get(`_favorites`),
-      };
-      if (film._favorites) {
-        film._favorites = false;
-        entry._favorites = false;
-        film.getElement().querySelector(`.film-card__controls-item--favorite`).classList.remove(`film-card__controls-item--active`);
-      } else {
-        film._favorites = true;
-        entry._favorites = true;
-        film.getElement().querySelector(`.film-card__controls-item--favorite`).classList.add(`film-card__controls-item--active`);
-      }
-      this._onDataChange(entry, film);
+        this._onDataChange(entry, film);
+      });
     });
 
     film.getElement().id = index;
@@ -205,51 +157,41 @@ class PageController {
     // console.log(this._subscriptions);
   }
 
-  _renderFilmCards(number, mocks, container) {
+  _renderFilmCards(number, filmsData, container) {
     const startIndex = this._checkRenderCards;
-    if (mocks.length === 0) {
+    if (filmsData.length === 0) {
       render(container.querySelector(`.films-list__container`), this._noFilms.getElement(), position.BEFOREEND);
     } else {
       for (let i = startIndex; i < (startIndex + number); i++) {
-        this._renderFilm(mocks[i], container.querySelector(`.films-list__container`), i);
+        this._renderFilm(filmsData[i], container.querySelector(`.films-list__container`), i);
         this._checkRenderCards = this._checkRenderCards + 1;
       }
     }
   }
 
-  _renderFilmExtraCards(mocks, container) {
-    if (mocks.length === 0) {
-      return;
-    } else {
-      for (let i = 0; i < mocks.length; i++) {
-        this._renderFilm(mocks[i], container);
-      }
-    }
-  }
-
   _renderExtraCards(container) {
-    if (this._filmMocks.length === 0) {
+    if (this._filmsData.length === 0) {
       return;
     } else {
-      const extraMocks = this._extraFilmMocks;
-      for (let i = 0; i < extraMocks.length; i++) {
-        this._renderFilm(extraMocks[i], container.querySelector(`.films-list__container`));
+      const extraFilmsData = this._extraFilmsData;
+      for (let i = 0; i < extraFilmsData.length; i++) {
+        this._renderFilm(extraFilmsData[i], container.querySelector(`.films-list__container`));
       }
     }
   }
 
-  _renderShowMore(mocks) {
+  _renderShowMore(filmsData) {
 
     const showMoreCards = () => {
       const currentNumberCards = this._checkRenderCards;
-      let storedCard = mocks.length - currentNumberCards;
+      let storedCard = filmsData.length - currentNumberCards;
       if (storedCard === 0) {
         this._showMore.getElement().style.display = `none`;
       } else if (storedCard < this._NUMBER_MORE_RENDER_CARDS) {
-        this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, mocks, this.filmsList);
+        this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, filmsData, this.filmsList);
         this._showMore.getElement().style.display = `none`;
       } else {
-        this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, mocks, this.filmsList);
+        this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, filmsData, this.filmsList);
       }
     };
 
@@ -263,18 +205,13 @@ class PageController {
   }
 
   _onDataChange(newData, oldData) {
-    const currentIndexOfFilmCard = this._filmMocks.findIndex((it) => it === oldData);
-    const keysOfNewData = Object.keys(newData);
-
-    keysOfNewData.forEach((key) => { // Ищем нужные свойства объекта карточка филма и меняем их
-      this._filmMocks[currentIndexOfFilmCard][key] = newData[key];
-    });
-
+    const currentFilmCard = this._filmsData.find((oldData));
+    currentFilmCard.editableKey = newData.editableKey;
     this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((item) => {
       unrender(item);
     });
 
-    this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmMocks, this.filmsList);
+    this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsData, this.filmsList);
     this._renderExtraCards(this.filmsListRate);
     this._renderExtraCards(this.filmsListComments);
   }

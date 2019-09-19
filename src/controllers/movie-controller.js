@@ -35,43 +35,6 @@ class MovieController {
         }
       };
 
-      const getNewMokData = (nameOfList) => {
-        const switchTrueFalse = (bool) => {
-          return bool ? false : true;
-        };
-        const formData = new FormData(popup.getElement().querySelector(`.film-details__inner`));
-        const userRating = formData.getAll(`score`);
-        const entry = {
-          favorites: Boolean(formData.get(`favorite`)),
-          watchlist: Boolean(formData.get(`watchlist`)),
-          watched: Boolean(formData.get(`watched`)),
-          userRating: `Your rate ${userRating}`,
-        };
-
-        switch (nameOfList) {
-          case `favorites`:
-            entry.favorites = switchTrueFalse(entry.favorites);
-            break;
-          case `watchlist`:
-            entry.watchlist = switchTrueFalse(entry.watchlist);
-            break;
-          case `watched`:
-            entry.watched = switchTrueFalse(entry.watched);
-            break;
-        }
-
-        if (entry.watched) {
-          popup.getElement().querySelector(`.form-details__middle-container `).classList.remove(`visually-hidden`);
-          popup.getElement().querySelector(`.film-details__user-rating `).classList.remove(`visually-hidden`);
-        } else {
-          popup.getElement().querySelector(`.form-details__middle-container `).classList.add(`visually-hidden`);
-          popup.getElement().querySelector(`.film-details__user-rating `).classList.add(`visually-hidden`);
-          entry.userRating = ``;
-        }
-
-        this._onDataChange(entry, this._data);
-      };
-
       const popupFilmControls = [];
 
       popupFilmControls.push(popup.getElement().querySelector(`.film-details__control-label--watchlist`));
@@ -83,8 +46,8 @@ class MovieController {
           evt.preventDefault();
           console.log(evt.target.dataset.controlType);
           console.log(`${evt.target.dataset.controlType}`);
-          getNewMokData(`${evt.target.dataset.controlType}`);
-          getNewMokData(evt.target.dataset.controlType);
+          this._getNewMokData(`${evt.target.dataset.controlType}`);
+          this._getNewMokData(evt.target.dataset.controlType);
         });
       });
 
@@ -115,13 +78,41 @@ class MovieController {
       };
 
       popup.getElement().addEventListener(`change`, () => {
-        getNewMokData();
+        this._getNewMokData();
       });
 
       popupRender();
     };
 
     renderPopup(this._containerMain);
+  }
+
+  _getNewMokData(nameOfList) {
+    const formData = new FormData(this._popup.getElement().querySelector(`.film-details__inner`));
+    const userRating = formData.getAll(`score`);
+    const entry = {
+      favorites: Boolean(formData.get(`favorite`)),
+      watchlist: Boolean(formData.get(`watchlist`)),
+      watched: Boolean(formData.get(`watched`)),
+      userRating: `Your rate ${userRating}`,
+    };
+
+    switch (nameOfList) {
+      case `nameOfList`:
+        entry[nameOfList] = !entry[nameOfList];
+        break;
+    }
+
+    if (entry.watched) {
+      this._popup.getElement().querySelector(`.form-details__middle-container `).classList.remove(`visually-hidden`);
+      this._popup.getElement().querySelector(`.film-details__user-rating `).classList.remove(`visually-hidden`);
+    } else {
+      this._popup.getElement().querySelector(`.form-details__middle-container `).classList.add(`visually-hidden`);
+      this._popup.getElement().querySelector(`.film-details__user-rating `).classList.add(`visually-hidden`);
+      entry.userRating = ``;
+    }
+
+    this._onDataChange(entry, this._data);
   }
 }
 
