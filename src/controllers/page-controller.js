@@ -122,7 +122,7 @@ class PageController {
     filmControls.push(film.getElement().querySelector(`.film-card__controls-item--mark-as-watched`));
     filmControls.push(film.getElement().querySelector(`.film-card__controls-item--favorite`));
 
-    filmControls.forEach(function (item) {
+    filmControls.forEach((item) => {
       item.addEventListener(`click`, (evt) => {
         evt.preventDefault();
         const formData = new FormData(film.getElement().querySelector(`.film-card__controls`));
@@ -143,10 +143,10 @@ class PageController {
         } else {
           item.classList.remove(`film-card__controls-item--active`);
         }
-        console.log(entry);
-        // this._onDataChange(entry, film);
-
+        console.log(`entry`);
         this._onDataChange(entry, film);
+
+        // this._onDataChange(entry, film);
       });
     });
 

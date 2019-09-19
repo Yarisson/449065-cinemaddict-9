@@ -41,7 +41,7 @@ class MovieController {
       popupFilmControls.push(popup.getElement().querySelector(`.film-details__control-label--watched`));
       popupFilmControls.push(popup.getElement().querySelector(`.film-details__control-label--favorite`));
 
-      popupFilmControls.forEach(function (item) {
+      popupFilmControls.forEach((item) => {
         item.addEventListener(`click`, (evt) => {
           evt.preventDefault();
           console.log(evt.target.dataset.controlType);
