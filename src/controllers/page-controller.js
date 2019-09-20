@@ -228,7 +228,7 @@ class PageController {
     this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((item) => {
       unrender(item);
     });
-
+    this._checkRenderCards = 0;
     this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsData, this.filmsList);
     this._renderExtraCards(this.filmsListRate);
     this._renderExtraCards(this.filmsListComments);
