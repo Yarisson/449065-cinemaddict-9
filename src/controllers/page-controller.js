@@ -127,23 +127,37 @@ class PageController {
         evt.preventDefault();
         const formData = new FormData(film.getElement().querySelector(`.film-card__controls`));
         const entry = {
-          _watchlist: formData.get(`watchlist`),
-          _watched: formData.get(`watched`),
-          _favorites: formData.get(`favorites`),
+          _watchlist: Boolean(formData.get(`_watchlist`)),
+          _watched: Boolean(formData.get(`_watched`)),
+          _favorites: Boolean(formData.get(`_favorites`)),
         };
         const value = evt.target.name;
         switch (value) {
           case `value`:
-            entry._value = !entry._value;
+            entry[value] = !entry[value];
             break;
+          // case `watchlist`:
+          //  entry._watchlist = !entry._watchlist;
+          //  break;
+          // case `watched`:
+          //  entry._watched = !entry._watched;
+          //  break;
+          // case `favorites`:
+          //  entry._favorites = !entry._favorites;
+          //  break;
         }
 
-        if (entry._value) {
-          item.classList.add(`film-card__controls-item--active`);
-        } else {
+        if (item.classList.contains(`film-card__controls-item--active`)) {
           item.classList.remove(`film-card__controls-item--active`);
+        } else {
+          item.classList.add(`film-card__controls-item--active`);
         }
-        console.log(`entry`);
+        // console.log(item.classList.contains(`film-card__controls-item--active`));
+        // console.log(film._favorites);
+        console.log(entry);
+        console.log(entry[value]);
+        // console.log(entry._favorites);
+        // console.log(entry._watchlist);
         this._onDataChange(entry, film);
 
         // this._onDataChange(entry, film);
@@ -205,8 +219,12 @@ class PageController {
   }
 
   _onDataChange(newData, oldData) {
-    const currentFilmCard = this._filmsData.find((oldData));
-    currentFilmCard.editableKey = newData.editableKey;
+    const currentFilmCard = this._filmsData.find(oldData);
+    console.log(currentFilmCard);
+    currentFilmCard._watchlist = newData._watchlist;
+    currentFilmCard._watched = newData._watched;
+    currentFilmCard._favorites = newData._favorites;
+    // currentFilmCard.editableKey = newData.editableKey;
     this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((item) => {
       unrender(item);
     });
