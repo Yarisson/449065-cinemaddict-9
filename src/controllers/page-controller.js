@@ -125,6 +125,9 @@ class PageController {
     filmControls.forEach((item) => {
       item.addEventListener(`click`, (evt) => {
         evt.preventDefault();
+        const switchTrueFalse = (bool) => {
+          return bool ? false : true;
+        };
         const formData = new FormData(film.getElement().querySelector(`.film-card__controls`));
         const entry = {
           _watchlist: Boolean(formData.get(`_watchlist`)),
@@ -132,9 +135,11 @@ class PageController {
           _favorites: Boolean(formData.get(`_favorites`)),
         };
         const value = evt.target.name;
+        console.log(value);
+        console.log(entry[value]);
         switch (value) {
           case `value`:
-            entry[value] = !entry[value];
+            entry[value] = switchTrueFalse(entry[value]);
             break;
           // case `watchlist`:
           //  entry._watchlist = !entry._watchlist;
@@ -146,7 +151,8 @@ class PageController {
           //  entry._favorites = !entry._favorites;
           //  break;
         }
-
+        console.log(entry[value] ? false : true);
+        console.log(Boolean(entry[value]));
         if (item.classList.contains(`film-card__controls-item--active`)) {
           item.classList.remove(`film-card__controls-item--active`);
         } else {
@@ -217,10 +223,9 @@ class PageController {
   }
 
   _onDataChange(newData, oldData) {
+    const currentFilmCard = this._filmsData.find((element) => element.id === oldData._id);
+    console.log(currentFilmCard);
     console.log(this._filmsData);
-    const currentFilmCard = this._filmsData.find((element) => element === oldData);
-    console.log(Film.oldData);
-    console.log(newData);
     currentFilmCard._watchlist = newData._watchlist;
     currentFilmCard._watched = newData._watched;
     currentFilmCard._favorites = newData._favorites;

@@ -1,7 +1,7 @@
 import {AbstractComponent} from './abstract-component.js';
 
 class Film extends AbstractComponent {
-  constructor({title, poster, description, rating, year, numberComments, hours, minutes, genre, favorites, watchlist, watched}) {
+  constructor({title, poster, description, rating, year, numberComments, hours, minutes, genre, favorites, watchlist, watched, id}) {
     super();
     this._title = title;
     this._poster = poster;
@@ -15,6 +15,7 @@ class Film extends AbstractComponent {
     this._favorites = favorites;
     this._watchlist = watchlist;
     this._watched = watched;
+    this._id = id;
   }
 
   getTemplate() {

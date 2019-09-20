@@ -144,12 +144,14 @@ const getCard = () => ({
   watchlist: Boolean(Math.round(Math.random() * 1)),
   watched: Boolean(Math.round(Math.random() * 1)),
   userRating: ``,
+  id: ``,
 });
 
 const films = [];
 
 for (let i = 0; i < NUMBER_OF_FILMS; i++) {
   films.push(getCard());
+  films[i].id = i;
 }
 
 const extraFilms = [];
