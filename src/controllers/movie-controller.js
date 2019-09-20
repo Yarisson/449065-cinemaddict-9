@@ -25,66 +25,66 @@ class MovieController {
       * Функция рендера карточки фильма
     */
 
-    const renderPopup = (container) => {
-      const popup = this._popup;
+    this._renderPopup(this._containerMain);
+  }
 
-      const onEscKeyDown = (evt) => {
-        if (evt.key === `Escape` || evt.key === `Esc`) {
-          unrender(popup.getElement());
-          document.removeEventListener(`keydown`, onEscKeyDown);
-        }
-      };
+  _renderPopup(container) {
+    const popup = this._popup;
 
-      const popupFilmControls = [];
-
-      popupFilmControls.push(popup.getElement().querySelector(`.film-details__control-label--watchlist`));
-      popupFilmControls.push(popup.getElement().querySelector(`.film-details__control-label--watched`));
-      popupFilmControls.push(popup.getElement().querySelector(`.film-details__control-label--favorite`));
-
-      popupFilmControls.forEach((item) => {
-        item.addEventListener(`click`, (evt) => {
-          evt.preventDefault();
-          console.log(evt.target.dataset.controlType);
-          console.log(`${evt.target.dataset.controlType}`);
-          this._getNewMokData(`${evt.target.dataset.controlType}`);
-          this._getNewMokData(evt.target.dataset.controlType);
-        });
-      });
-
-      const closePopup = () => {
-        popup.getElement()
-        .querySelector(`.film-details__close-btn`)
-        .addEventListener(`click`, () => {
-          unrender(popup.getElement());
-          document.removeEventListener(`keydown`, onEscKeyDown);
-        });
-      };
-
-      popup.getElement().querySelector(`.film-details__comment-input`)
-      .addEventListener(`focus`, () => {
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      });
-
-      popup.getElement().querySelector(`.film-details__comment-input`)
-      .addEventListener(`blur`, () => {
-        document.addEventListener(`keydown`, onEscKeyDown);
-      });
-
-      const popupRender = () => {
+    const onEscKeyDown = (evt) => {
+      if (evt.key === `Escape` || evt.key === `Esc`) {
         unrender(popup.getElement());
-        render(container, popup.getElement(), position.BEFOREEND);
-        document.addEventListener(`keydown`, onEscKeyDown);
-        document.addEventListener(`click`, closePopup);
-      };
-
-      popup.getElement().addEventListener(`change`, () => {
-        this._getNewMokData();
-      });
-
-      popupRender();
+        document.removeEventListener(`keydown`, onEscKeyDown);
+      }
     };
 
-    renderPopup(this._containerMain);
+    const popupFilmControls = [];
+
+    popupFilmControls.push(popup.getElement().querySelector(`.film-details__control-label--watchlist`));
+    popupFilmControls.push(popup.getElement().querySelector(`.film-details__control-label--watched`));
+    popupFilmControls.push(popup.getElement().querySelector(`.film-details__control-label--favorite`));
+
+    popupFilmControls.forEach((item) => {
+      item.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        console.log(evt.target.dataset.controlType);
+        console.log(`${evt.target.dataset.controlType}`);
+        this._getNewMokData(`${evt.target.dataset.controlType}`);
+        this._getNewMokData(evt.target.dataset.controlType);
+      });
+    });
+
+    const closePopup = () => {
+      popup.getElement()
+      .querySelector(`.film-details__close-btn`)
+      .addEventListener(`click`, () => {
+        unrender(popup.getElement());
+        document.removeEventListener(`keydown`, onEscKeyDown);
+      });
+    };
+
+    popup.getElement().querySelector(`.film-details__comment-input`)
+    .addEventListener(`focus`, () => {
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+
+    popup.getElement().querySelector(`.film-details__comment-input`)
+    .addEventListener(`blur`, () => {
+      document.addEventListener(`keydown`, onEscKeyDown);
+    });
+
+    const popupRender = () => {
+      unrender(popup.getElement());
+      render(container, popup.getElement(), position.BEFOREEND);
+      document.addEventListener(`keydown`, onEscKeyDown);
+      document.addEventListener(`click`, closePopup);
+    };
+
+    popup.getElement().addEventListener(`change`, () => {
+      this._getNewMokData();
+    });
+
+    popupRender();
   }
 
   _getNewMokData(nameOfList) {

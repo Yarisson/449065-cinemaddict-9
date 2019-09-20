@@ -154,10 +154,8 @@ class PageController {
         }
         // console.log(item.classList.contains(`film-card__controls-item--active`));
         // console.log(film._favorites);
+        console.log(film);
         console.log(entry);
-        console.log(entry[value]);
-        // console.log(entry._favorites);
-        // console.log(entry._watchlist);
         this._onDataChange(entry, film);
 
         // this._onDataChange(entry, film);
@@ -219,8 +217,10 @@ class PageController {
   }
 
   _onDataChange(newData, oldData) {
-    const currentFilmCard = this._filmsData.find(oldData);
-    console.log(currentFilmCard);
+    console.log(this._filmsData);
+    const currentFilmCard = this._filmsData.find((element) => element === oldData);
+    console.log(Film.oldData);
+    console.log(newData);
     currentFilmCard._watchlist = newData._watchlist;
     currentFilmCard._watched = newData._watched;
     currentFilmCard._favorites = newData._favorites;
