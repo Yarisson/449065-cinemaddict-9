@@ -135,24 +135,19 @@ class PageController {
           _favorites: Boolean(formData.get(`_favorites`)),
         };
         const value = evt.target.name;
-        console.log(value);
         console.log(entry[value]);
-        switch (value) {
-          case `value`:
-            entry[value] = switchTrueFalse(entry[value]);
-            break;
-          // case `watchlist`:
-          //  entry._watchlist = !entry._watchlist;
-          //  break;
-          // case `watched`:
-          //  entry._watched = !entry._watched;
-          //  break;
-          // case `favorites`:
-          //  entry._favorites = !entry._favorites;
-          //  break;
+        if (value === `favorites`) {
+          entry._favorites = switchTrueFalse(entry._value);
+        } else if (value === `watchlist`) {
+          entry._watchlist = switchTrueFalse(entry._watchlist);
+        } else if (value === `watched`) {
+          entry._watched = switchTrueFalse(entry._watched);
         }
-        console.log(entry[value] ? false : true);
-        console.log(Boolean(entry[value]));
+
+        console.log(entry[value]);
+        console.log(typeof(entry[value]));
+        // console.log(switchTrueFalse(entry[value]));
+        // console.log(Boolean(entry[value]));
         if (item.classList.contains(`film-card__controls-item--active`)) {
           item.classList.remove(`film-card__controls-item--active`);
         } else {
@@ -160,8 +155,8 @@ class PageController {
         }
         // console.log(item.classList.contains(`film-card__controls-item--active`));
         // console.log(film._favorites);
-        console.log(film);
-        console.log(entry);
+        // console.log(film);
+        // console.log(entry);
         this._onDataChange(entry, film);
 
         // this._onDataChange(entry, film);
@@ -224,8 +219,8 @@ class PageController {
 
   _onDataChange(newData, oldData) {
     const currentFilmCard = this._filmsData.find((element) => element.id === oldData._id);
-    console.log(currentFilmCard);
-    console.log(this._filmsData);
+    // console.log(currentFilmCard);
+    // console.log(this._filmsData);
     currentFilmCard._watchlist = newData._watchlist;
     currentFilmCard._watched = newData._watched;
     currentFilmCard._favorites = newData._favorites;
