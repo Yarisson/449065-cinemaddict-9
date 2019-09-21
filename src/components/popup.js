@@ -1,7 +1,7 @@
 import {AbstractComponent} from './abstract-component.js';
 
 class Popup extends AbstractComponent {
-  constructor({title, poster, description, rating, year, month, day, hours, minutes, genre, favorites, watchlist, watched, userRating}) {
+  constructor({title, poster, description, rating, year, month, day, hours, minutes, genre, favorite, watchlist, watched, userRating}) {
     super();
     this._title = title;
     this._poster = poster;
@@ -13,7 +13,7 @@ class Popup extends AbstractComponent {
     this._hours = hours;
     this._minutes = minutes;
     this._genre = genre;
-    this._favorites = favorites;
+    this._favorite = favorite;
     this._watchlist = watchlist;
     this._watched = watched;
     this._userRating = userRating;
@@ -93,7 +93,7 @@ class Popup extends AbstractComponent {
         <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${(this._watched) ? `checked` : ``}>
         <label for="watched" data-control-type="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${(this._favorites) ? `checked` : ``}>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${(this._favorite) ? `checked` : ``}>
         <label for="favorite" data-control-type="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
     </div>

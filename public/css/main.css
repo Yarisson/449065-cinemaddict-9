@@ -172,7 +172,7 @@ button {
   position: absolute;
   top: 50%;
   left: 19%;
-    
+
   width: 20px;
   height: 1px;
 
@@ -266,7 +266,7 @@ button {
   margin-right: 32px;
   padding: 0;
 
-  color: #ffffff;  
+  color: #ffffff;
   text-decoration: none;
 
   background-color: transparent;
@@ -281,7 +281,7 @@ button {
 }
 
 .sort__button--active {
-  color: #ffe800;  
+  color: #ffe800;
 }
 
 .films {
@@ -531,7 +531,7 @@ button {
   top: 0;
   right: 0;
   left: 10%;
-  z-index: 1;
+  z-index: 10;
   background-color: #212126;
   animation: bounceInRight 0.3s;
   box-shadow: -3px 2px 13px 0 #141628;
@@ -997,7 +997,7 @@ button {
 }
 .statistic__rank {
   display: flex;
-  align-items: center; 
+  align-items: center;
   margin: 0;
   margin-bottom: 34px;
   font-size: 50px;

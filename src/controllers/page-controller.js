@@ -61,7 +61,6 @@ class PageController {
     this._renderExtraCards(this.filmsListRate);
     this._renderExtraCards(this.filmsListComments);
     this._renderShowMore(this._filmsData);
-    // renderShowMore(this._filmMocks);
 
     this._sort.getElement()
     .addEventListener(`click`, (evt) => {
@@ -93,7 +92,6 @@ class PageController {
     this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, sorted, this.filmsList);
     unrender(this._showMore.getElement(this._filmsData));
     this._renderShowMore(sorted);
-    // renderShowMore(sorted);
     return sorted;
   }
 
@@ -105,7 +103,7 @@ class PageController {
     const onDataChange = this._onDataChange;
     const onChangeView = this._onChangeView;
 
-
+    film.getElement().id = index;
     popupRenderElements.push(film.getElement().querySelector(`.film-card__poster`));
     popupRenderElements.push(film.getElement().querySelector(`.film-card__title`));
     popupRenderElements.push(film.getElement().querySelector(`.film-card__comments`));
@@ -125,18 +123,9 @@ class PageController {
     filmControls.forEach((item) => {
       item.addEventListener(`click`, (evt) => {
         evt.preventDefault();
-        const switchTrueFalse = (bool) => {
-          return bool ? false : true;
-        };
-
+        this._updateFilm();
         const value = evt.target.name;
-        if (value === `_favorites`) {
-          film._favorites = switchTrueFalse(film._value);
-        } else if (value === `_watchlist`) {
-          film._watchlist = switchTrueFalse(film._watchlist);
-        } else if (value === `_watched`) {
-          film._watched = switchTrueFalse(film._watched);
-        }
+        film[value] = !film[value];
 
         if (item.classList.contains(`film-card__controls-item--active`)) {
           item.classList.remove(`film-card__controls-item--active`);
@@ -146,11 +135,8 @@ class PageController {
       });
     });
 
-    film.getElement().id = index;
     render(container, film.getElement(), position.BEFOREEND);
     this._subscriptions = subscriptions;
-    // console.log(subscriptions);
-    // console.log(this._subscriptions);
   }
 
   _renderFilmCards(number, filmsData, container) {
@@ -202,18 +188,11 @@ class PageController {
 
   _onDataChange(newData, oldData) {
     const currentFilmCard = this._filmsData.find((element) => element.id === oldData.id);
-    // console.log(currentFilmCard.watchlist);
-    // console.log(oldData.watchlist);
-    // console.log(newData.watchlist);
-    //console.log(oldData._id);
-    //console.log(oldData.id);
-    //console.log(this._filmsData[1].id);
+
     currentFilmCard.watchlist = newData.watchlist;
     currentFilmCard.watched = newData.watched;
-    currentFilmCard.favorites = newData.favorites;
-    console.log(newData);
-    // console.log(newData);
-    //console.log(currentFilmCard);
+    currentFilmCard.favorite = newData.favorite;
+    currentFilmCard.userRating = newData.userRating;
     this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((item) => {
       unrender(item);
     });
@@ -224,7 +203,8 @@ class PageController {
   }
 
   _onChangeView() {
-    this._subscriptions.forEach((it) => it());
+    this._subscriptions.forEach((subscription) => subscription());
+    // this._subscriptions.forEach((it) => it());
   }
 
 }

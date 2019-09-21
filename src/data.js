@@ -140,7 +140,7 @@ const getCard = () => ({
     `Crime & Gangster`,
     `Adventure`,
   ][Math.floor(Math.random() * 7)],
-  favorites: Boolean(Math.round(Math.random() * 1)),
+  favorite: Boolean(Math.round(Math.random() * 1)),
   watchlist: Boolean(Math.round(Math.random() * 1)),
   watched: Boolean(Math.round(Math.random() * 1)),
   userRating: ``,
