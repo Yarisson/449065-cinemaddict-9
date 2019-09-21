@@ -128,38 +128,21 @@ class PageController {
         const switchTrueFalse = (bool) => {
           return bool ? false : true;
         };
-        const formData = new FormData(film.getElement().querySelector(`.film-card__controls`));
-        const entry = {
-          _watchlist: Boolean(formData.get(`_watchlist`)),
-          _watched: Boolean(formData.get(`_watched`)),
-          _favorites: Boolean(formData.get(`_favorites`)),
-        };
+
         const value = evt.target.name;
-        console.log(entry[value]);
-        if (value === `favorites`) {
-          entry._favorites = switchTrueFalse(entry._value);
-        } else if (value === `watchlist`) {
-          entry._watchlist = switchTrueFalse(entry._watchlist);
-        } else if (value === `watched`) {
-          entry._watched = switchTrueFalse(entry._watched);
+        if (value === `_favorites`) {
+          film._favorites = switchTrueFalse(film._value);
+        } else if (value === `_watchlist`) {
+          film._watchlist = switchTrueFalse(film._watchlist);
+        } else if (value === `_watched`) {
+          film._watched = switchTrueFalse(film._watched);
         }
 
-        console.log(entry[value]);
-        console.log(typeof(entry[value]));
-        // console.log(switchTrueFalse(entry[value]));
-        // console.log(Boolean(entry[value]));
         if (item.classList.contains(`film-card__controls-item--active`)) {
           item.classList.remove(`film-card__controls-item--active`);
         } else {
           item.classList.add(`film-card__controls-item--active`);
         }
-        // console.log(item.classList.contains(`film-card__controls-item--active`));
-        // console.log(film._favorites);
-        // console.log(film);
-        // console.log(entry);
-        this._onDataChange(entry, film);
-
-        // this._onDataChange(entry, film);
       });
     });
 
@@ -218,13 +201,19 @@ class PageController {
   }
 
   _onDataChange(newData, oldData) {
-    const currentFilmCard = this._filmsData.find((element) => element.id === oldData._id);
-    // console.log(currentFilmCard);
-    // console.log(this._filmsData);
-    currentFilmCard._watchlist = newData._watchlist;
-    currentFilmCard._watched = newData._watched;
-    currentFilmCard._favorites = newData._favorites;
-    // currentFilmCard.editableKey = newData.editableKey;
+    const currentFilmCard = this._filmsData.find((element) => element.id === oldData.id);
+    // console.log(currentFilmCard.watchlist);
+    // console.log(oldData.watchlist);
+    // console.log(newData.watchlist);
+    //console.log(oldData._id);
+    //console.log(oldData.id);
+    //console.log(this._filmsData[1].id);
+    currentFilmCard.watchlist = newData.watchlist;
+    currentFilmCard.watched = newData.watched;
+    currentFilmCard.favorites = newData.favorites;
+    console.log(newData);
+    // console.log(newData);
+    //console.log(currentFilmCard);
     this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((item) => {
       unrender(item);
     });

@@ -47,10 +47,10 @@ class MovieController {
     popupFilmControls.forEach((item) => {
       item.addEventListener(`click`, (evt) => {
         evt.preventDefault();
-        console.log(evt.target.dataset.controlType);
+        // console.log(evt.target.dataset.controlType);
         console.log(`${evt.target.dataset.controlType}`);
         this._getNewMokData(`${evt.target.dataset.controlType}`);
-        this._getNewMokData(evt.target.dataset.controlType);
+        // this._getNewMokData(evt.target.dataset.controlType);
       });
     });
 
@@ -80,8 +80,8 @@ class MovieController {
       document.addEventListener(`click`, closePopup);
     };
 
-    popup.getElement().addEventListener(`change`, () => {
-      this._getNewMokData();
+    popup.getElement().addEventListener(`change`, (evt) => {
+      this._getNewMokData(`${evt.target.dataset.controlType}`);
     });
 
     popupRender();
@@ -90,30 +90,52 @@ class MovieController {
   _getNewMokData(nameOfList) {
     const formData = new FormData(this._popup.getElement().querySelector(`.film-details__inner`));
     const userRating = formData.getAll(`score`);
+    const switchTrueFalse = (bool) => {
+      return bool ? false : true;
+    };
     const entry = {
-      favorites: Boolean(formData.get(`favorite`)),
+      favorites: Boolean(formData.get(`favorites`)),
       watchlist: Boolean(formData.get(`watchlist`)),
       watched: Boolean(formData.get(`watched`)),
       userRating: `Your rate ${userRating}`,
     };
 
-    switch (nameOfList) {
-      case `nameOfList`:
-        entry[nameOfList] = !entry[nameOfList];
-        break;
+    console.log(Boolean(formData.get(`favorite`)));
+    // switch (nameOfList) {
+      // case `nameOfList`:
+        // entry[nameOfList] = switchTrueFalse(entry[nameOfList]);
+        // break;
+    // }
+
+    if (nameOfList === `favorites`) {
+      entry.favorites = switchTrueFalse(entry.favorites);
+    } else if (nameOfList === `watchlist`) {
+      entry.watchlist = switchTrueFalse(entry.watchlist);
+    } else if (nameOfList === `watched`) {
+      entry.watched = switchTrueFalse(entry.watched);
     }
 
-    if (entry.watched) {
-      this._popup.getElement().querySelector(`.form-details__middle-container `).classList.remove(`visually-hidden`);
-      this._popup.getElement().querySelector(`.film-details__user-rating `).classList.remove(`visually-hidden`);
-    } else {
-      this._popup.getElement().querySelector(`.form-details__middle-container `).classList.add(`visually-hidden`);
-      this._popup.getElement().querySelector(`.film-details__user-rating `).classList.add(`visually-hidden`);
-      entry.userRating = ``;
-    }
+    // if (entry.watched) {
+      // this._popup.getElement().querySelector(`.form-details__middle-container `).classList.remove(`visually-hidden`);
+      // this._popup.getElement().querySelector(`.film-details__user-rating `).classList.remove(`visually-hidden`);
+    // } else {
+      // this._popup.getElement().querySelector(`.form-details__middle-container `).classList.add(`visually-hidden`);
+      // this._popup.getElement().querySelector(`.film-details__user-rating `).classList.add(`visually-hidden`);
+      // entry.userRating = ``;
+    // }
 
+    // console.log(entry);
     this._onDataChange(entry, this._data);
+    // unrender(this._popup.getElement());
+    // this._renderPopup(this._containerMain);
   }
 }
+
+// const formData = new FormData(film.getElement().querySelector(`.film-card__controls`));
+// const entry = {
+  // _watchlist: Boolean(formData.get(`_watchlist`)),
+  // _watched: Boolean(formData.get(`_watched`)),
+  // _favorites: Boolean(formData.get(`_favorites`)),
+// };
 
 export {MovieController};
