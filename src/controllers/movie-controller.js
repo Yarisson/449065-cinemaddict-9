@@ -28,13 +28,6 @@ class MovieController {
   _renderPopup(container) {
     const popup = this._popup;
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        unrender(popup.getElement());
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
     const popupFilmControls = [];
 
     popupFilmControls.push(popup.getElement().querySelector(`#watchlist`));
@@ -47,32 +40,15 @@ class MovieController {
       });
     });
 
-    // const closePopup = () => {
-      // popup.getElement()
-      // .querySelector(`.film-details__close-btn`)
-      // .addEventListener(`click`, () => {
-        // unrender(popup.getElement());
-        // document.removeEventListener(`keydown`, this._onEscKeyDown);
-      // });
-    // };
-
     popup.getElement().querySelector(`.film-details__comment-input`)
     .addEventListener(`focus`, () => {
-      document.removeEventListener(`keydown`, onEscKeyDown);
+      document.removeEventListener(`keydown`, this._createEschandler);
     });
 
     popup.getElement().querySelector(`.film-details__comment-input`)
     .addEventListener(`blur`, () => {
-      document.addEventListener(`keydown`, onEscKeyDown);
+      document.addEventListener(`keydown`, this._createEschandler);
     });
-
-    // const popupRender = () => {
-      // unrender(popup.getElement());
-      // this._onChangeView();
-      // render(container, popup.getElement(), position.BEFOREEND);
-      // document.addEventListener(`keydown`, this._onEscKeyDown);
-      // document.addEventListener(`click`, this._closePopup);
-    // };
 
     const emoji = [];
     emoji.push(popup.getElement().querySelector(`#emoji-smile`));
@@ -103,22 +79,21 @@ class MovieController {
     });
 
     this._popupRender(container);
-    // popupRender();
   }
 
-  // _onEscKeyDown(evt, popup) {
-    // if (evt.key === `Escape` || evt.key === `Esc`) {
-      // unrender(popup.getElement());
-      // document.removeEventListener(`keydown`, _onEscKeyDown(evt, popup));
-    // }
-  // }
+  _createEschandler(popup, evt) {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      unrender(popup.getElement());
+      document.removeEventListener(`keydown`, this._createEschandler);
+    }
+  }
 
   _closePopup(popup) {
     popup.getElement()
     .querySelector(`.film-details__close-btn`)
     .addEventListener(`click`, () => {
       unrender(popup.getElement());
-      document.removeEventListener(`keydown`, this.onEscKeyDown);
+      document.removeEventListener(`keydown`, this._createEschandler);
     });
   }
 
@@ -126,7 +101,7 @@ class MovieController {
     unrender(this._popup.getElement());
     this._onChangeView();
     render(container, this._popup.getElement(), position.BEFOREEND);
-    document.addEventListener(`keydown`, this.onEscKeyDown);
+    document.addEventListener(`keydown`, this._createEschandler);
     document.addEventListener(`click`, this._closePopup(this._popup));
   }
 
