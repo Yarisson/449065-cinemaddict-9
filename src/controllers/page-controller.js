@@ -204,7 +204,6 @@ class PageController {
 
   _onChangeView() {
     this._subscriptions.forEach((subscription) => subscription());
-    // this._subscriptions.forEach((it) => it());
   }
 
 }

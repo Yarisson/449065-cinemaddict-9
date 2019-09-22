@@ -1,7 +1,9 @@
 import {Popup} from '../components/popup.js';
+import {Comment} from '../components/comment.js';
 import {position} from '../utils.js';
 import {render} from '../utils.js';
 import {unrender} from '../utils.js';
+import {getCommentaries} from '../data.js';
 
 class MovieController {
   constructor(containerMain, data, onDataChange, onChangeView) {
@@ -10,6 +12,7 @@ class MovieController {
     this._onDataChange = onDataChange;
     this._onChangeView = onChangeView;
     this._popup = new Popup(data);
+    this._commentData = getCommentaries();
   }
 
   setDefaultView() {
@@ -41,7 +44,6 @@ class MovieController {
     popupFilmControls.forEach((item) => {
       item.addEventListener(`click`, (evt) => {
         this._getNewMokData(evt.target.id);
-        console.log(`click`);
       });
     });
 
@@ -71,6 +73,36 @@ class MovieController {
       document.addEventListener(`keydown`, onEscKeyDown);
       document.addEventListener(`click`, closePopup);
     };
+
+    const emoji = [];
+    emoji.push(popup.getElement().querySelector(`#emoji-smile`));
+    emoji.push(popup.getElement().querySelector(`#emoji-sleeping`));
+    emoji.push(popup.getElement().querySelector(`#emoji-angry`));
+    emoji.push(popup.getElement().querySelector(`#emoji-gpuke`));
+
+    emoji.forEach((item) => {
+      item.addEventListener(`click`, (evt) => {
+        const test = popup.getElement().querySelector(`.film-details__add-emoji-label`);
+        const newEmoji = popup.getElement().querySelector(`.film-details__emoji-list label[for="${evt.target.id}"] img`);
+        test.innerHTML = ``;
+        test.append(newEmoji.cloneNode(true));
+      });
+    });
+
+    popup.getElement().querySelector(`.film-details__comment-input`).addEventListener(`change`, (evt) => {
+      const commentsContainer = popup.getElement().querySelector(`.film-details__comments-list`);
+      const commentText = evt.target.value;
+      const commentImgContainer = popup.getElement().querySelector(`.film-details__add-emoji-label`);
+      const commentImg = commentImgContainer.querySelector(`img`).src;
+      this._renderComment(commentsContainer, commentImg, commentText);
+      // console.log(popup.getElement().querySelector(`.film-details__comment`));
+      // const comment = commentsList.querySelector(`.film-details__comment`);
+      // const commentText = comment.querySelector(`.film-details__comment-text`);
+
+      // popup.getElement().querySelector(`.film-details__comment`);
+      // commentsList.append(comment.cloneNode(true));
+      // commentText.textContent = evt.target.value;
+    });
 
     popup.getElement().addEventListener(`change`, () => {
       this._getNewMokData();
@@ -102,6 +134,13 @@ class MovieController {
     }
 
     this._onDataChange(entry, this._data);
+  }
+
+  _renderComment(container, img, text) {
+    const comment = new Comment(this._commentData);
+    comment._emoji = img;
+    comment._text = text;
+    render(container, comment.getElement(), position.BEFOREEND);
   }
 }
 
