@@ -47,14 +47,14 @@ class MovieController {
       });
     });
 
-    const closePopup = () => {
-      popup.getElement()
-      .querySelector(`.film-details__close-btn`)
-      .addEventListener(`click`, () => {
-        unrender(popup.getElement());
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      });
-    };
+    // const closePopup = () => {
+      // popup.getElement()
+      // .querySelector(`.film-details__close-btn`)
+      // .addEventListener(`click`, () => {
+        // unrender(popup.getElement());
+        // document.removeEventListener(`keydown`, this._onEscKeyDown);
+      // });
+    // };
 
     popup.getElement().querySelector(`.film-details__comment-input`)
     .addEventListener(`focus`, () => {
@@ -66,13 +66,13 @@ class MovieController {
       document.addEventListener(`keydown`, onEscKeyDown);
     });
 
-    const popupRender = () => {
-      unrender(popup.getElement());
-      this._onChangeView();
-      render(container, popup.getElement(), position.BEFOREEND);
-      document.addEventListener(`keydown`, onEscKeyDown);
-      document.addEventListener(`click`, closePopup);
-    };
+    // const popupRender = () => {
+      // unrender(popup.getElement());
+      // this._onChangeView();
+      // render(container, popup.getElement(), position.BEFOREEND);
+      // document.addEventListener(`keydown`, this._onEscKeyDown);
+      // document.addEventListener(`click`, this._closePopup);
+    // };
 
     const emoji = [];
     emoji.push(popup.getElement().querySelector(`#emoji-smile`));
@@ -95,13 +95,6 @@ class MovieController {
       const commentImgContainer = popup.getElement().querySelector(`.film-details__add-emoji-label`);
       const commentImg = commentImgContainer.querySelector(`img`).src;
       this._renderComment(commentsContainer, commentImg, commentText);
-      // console.log(popup.getElement().querySelector(`.film-details__comment`));
-      // const comment = commentsList.querySelector(`.film-details__comment`);
-      // const commentText = comment.querySelector(`.film-details__comment-text`);
-
-      // popup.getElement().querySelector(`.film-details__comment`);
-      // commentsList.append(comment.cloneNode(true));
-      // commentText.textContent = evt.target.value;
     });
 
     popup.getElement().addEventListener(`change`, () => {
@@ -109,7 +102,32 @@ class MovieController {
       popup.getElement().querySelector(`.film-details__user-rating`).textContent = this._data.userRating;
     });
 
-    popupRender();
+    this._popupRender(container);
+    // popupRender();
+  }
+
+  // _onEscKeyDown(evt, popup) {
+    // if (evt.key === `Escape` || evt.key === `Esc`) {
+      // unrender(popup.getElement());
+      // document.removeEventListener(`keydown`, _onEscKeyDown(evt, popup));
+    // }
+  // }
+
+  _closePopup(popup) {
+    popup.getElement()
+    .querySelector(`.film-details__close-btn`)
+    .addEventListener(`click`, () => {
+      unrender(popup.getElement());
+      document.removeEventListener(`keydown`, this.onEscKeyDown);
+    });
+  }
+
+  _popupRender(container) {
+    unrender(this._popup.getElement());
+    this._onChangeView();
+    render(container, this._popup.getElement(), position.BEFOREEND);
+    document.addEventListener(`keydown`, this.onEscKeyDown);
+    document.addEventListener(`click`, this._closePopup(this._popup));
   }
 
   _getNewMokData(nameOfList) {
@@ -143,6 +161,5 @@ class MovieController {
     render(container, comment.getElement(), position.BEFOREEND);
   }
 }
-
 
 export {MovieController};
