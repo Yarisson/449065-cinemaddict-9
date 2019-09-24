@@ -58,7 +58,6 @@ const getUser = () => ({
   status: generateUserRating(),
 });
 
-/**
 const getCommentaries = () => ({
   emoji: [
     `/images/emoji/angry.png`,
@@ -92,7 +91,6 @@ const getCommentaries = () => ({
     `3 days ago`,
   ][Math.floor(Math.random() * 4)],
 });
- */
 
 const getCard = () => ({
   title: [
@@ -140,12 +138,18 @@ const getCard = () => ({
     `Crime & Gangster`,
     `Adventure`,
   ][Math.floor(Math.random() * 7)],
+  favorite: Boolean(Math.round(Math.random() * 1)),
+  watchlist: Boolean(Math.round(Math.random() * 1)),
+  watched: Boolean(Math.round(Math.random() * 1)),
+  userRating: ``,
+  id: ``,
 });
 
 const films = [];
 
 for (let i = 0; i < NUMBER_OF_FILMS; i++) {
   films.push(getCard());
+  films[i].id = i;
 }
 
 const extraFilms = [];
@@ -182,6 +186,8 @@ const getMenu = () => ({
 });
 
 export {getUser};
+export {getCommentaries};
+export {getCard};
 export {films};
 export {extraFilms};
 export {extraFilmsIndex};
