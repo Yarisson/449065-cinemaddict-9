@@ -146,11 +146,40 @@ const getCard = () => ({
 });
 
 const films = [];
+const filmsWatchlist = [];
+const filmsWatched = [];
+const filmsFavorites = [];
 
-for (let i = 0; i < NUMBER_OF_FILMS; i++) {
-  films.push(getCard());
-  films[i].id = i;
-}
+const generateFilms = () => {
+  for (let i = 0; i < NUMBER_OF_FILMS; i++) {
+    films.push(getCard());
+    films[i].id = i;
+  }
+};
+
+const generateWatchlist = () => {
+  films.forEach((item) => {
+    if (item.watchlist) {
+      filmsWatchlist.push(item);
+    }
+  });
+};
+
+const generateWatched = () => {
+  films.forEach((item) => {
+    if (item.watched) {
+      filmsWatched.push(item);
+    }
+  });
+};
+
+const generateFavorites = () => {
+  films.forEach((item) => {
+    if (item.favorite) {
+      filmsFavorites.push(item);
+    }
+  });
+};
 
 const extraFilms = [];
 const extraFilmsIndex = [];
@@ -165,7 +194,11 @@ const generateIndexExtraFilms = () => {
   });
 };
 
+generateFilms();
+generateWatchlist();
 generateIndexExtraFilms();
+generateWatched();
+generateFavorites();
 
 const getExtraCards = () => ({
   films: extraFilms,
@@ -189,6 +222,9 @@ export {getUser};
 export {getCommentaries};
 export {getCard};
 export {films};
+export {filmsWatchlist};
+export {filmsWatched};
+export {filmsFavorites};
 export {extraFilms};
 export {extraFilmsIndex};
 export {getExtraCards};

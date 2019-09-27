@@ -7,6 +7,7 @@ import {FilmsWrapper} from '../components/films.js';
 import {Film} from '../components/film.js';
 import {NoFilms} from '../components/no-films.js';
 import {ShowMore} from '../components/show-more.js';
+import {Statistic} from '../components/statistic.js';
 import {position} from '../utils.js';
 import {render} from '../utils.js';
 import {unrender} from '../utils.js';
@@ -20,25 +21,30 @@ const SortHandlers = {
 
 class PageController {
 
-  constructor(containerHeader, containerMain, containerFooter, ratingData, menuData, footerData, filmsData, extraFilmsData) {
+  constructor(containerHeader, containerMain, containerFooter, ratingData, statisticData, footerData, filmsData, WatchlistData, HistoryData, FavoritesData, extraFilmsData) {
     this._containerMain = containerMain;
     this._containerHeader = containerHeader;
     this._containerFooter = containerFooter;
     this._search = new Search();
     this._rating = new Rating(ratingData);
-    this._menu = new Menu(menuData);
+    this._menu = new Menu(WatchlistData.length, HistoryData.length, FavoritesData.length);
     this._sort = new Sort();
     this._filmsWrapper = new FilmsWrapper();
     this._footerClass = new Footer(footerData);
     this._filmsData = filmsData;
     this._extraFilmsData = extraFilmsData;
     this._noFilms = new NoFilms();
+    this._filmsWatchlist = WatchlistData;
+    this._filmsHistory = HistoryData;
+    this._filmsFavorites = FavoritesData;
     this._showMore = new ShowMore();
+    this._statistic = new Statistic(statisticData);
     this._checkRenderCards = 0;
     this._NUMBER_MORE_RENDER_CARDS = 5;
     this._subscriptions = [];
     this._onDataChange = this._onDataChange.bind(this);
     this._onChangeView = this._onChangeView.bind(this);
+    this._currentFilmsList = this._filmsData;
   }
 
   init() {
@@ -47,6 +53,7 @@ class PageController {
     render(this._containerHeader, this._search.getElement(), position.BEFOREEND);
     render(this._containerHeader, this._rating.getElement(), position.BEFOREEND);
     render(this._containerMain, this._menu.getElement(), position.BEFOREEND);
+    render(this._containerMain, this._statistic.getElement(), position.BEFOREEND);
     render(this._containerMain, this._sort.getElement(), position.BEFOREEND);
     render(this._containerMain, this._filmsWrapper.getElement(), position.BEFOREEND);
     render(this._containerFooter, this._footerClass.getElement(), position.BEFOREEND);
@@ -61,6 +68,9 @@ class PageController {
     this._renderExtraCards(this.filmsListRate);
     this._renderExtraCards(this.filmsListComments);
     this._renderShowMore(this._filmsData);
+
+    this._switchStatistic();
+    this._changeFilmlist();
 
     this._sort.getElement()
     .addEventListener(`click`, (evt) => {
@@ -81,6 +91,7 @@ class PageController {
         this._sortArr(this._filmsData, `default`);
       }
     });
+
   }
 
   _sortArr(arr, by) {
@@ -182,6 +193,11 @@ class PageController {
       this._showMore.getElement().removeEventListener(`click`, showMoreCards);
     });
 
+    this._menu.getElement()
+    .addEventListener(`click`, () => {
+      this._showMore.getElement(this._currentFilmsList).removeEventListener(`click`, showMoreCards);
+    });
+
     this._showMore.getElement().addEventListener(`click`, showMoreCards);
     render(this.filmsList, this._showMore.getElement(), position.BEFOREEND);
   }
@@ -206,6 +222,85 @@ class PageController {
     this._subscriptions.forEach((subscription) => subscription());
   }
 
+  _generateWatchlist() {
+    this._filmsData.forEach((item) => {
+      if (item.watchlist) {
+        this._filmsWatchlist.push(item);
+      }
+    });
+  }
+
+  _generateWatched() {
+    this._filmsData.forEach((item) => {
+      if (item.watched) {
+        this._filmsHistory.push(item);
+      }
+    });
+  }
+
+  _generateFavorites() {
+    this._filmsData.forEach((item) => {
+      if (item.favorite) {
+        this._filmsFavorites.push(item);
+      }
+    });
+  }
+
+  _changeFilmlist() {
+    const menuPoints = this._menu.getElement().querySelectorAll(`.main-navigation__item`);
+    menuPoints.forEach((item) => {
+      item.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((element) => {
+          unrender(element);
+        });
+        if (item.id === `all`) {
+          this._currentFilmsList = this._filmsData;
+          this._checkRenderCards = 0;
+          this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsData, this.filmsList);
+          unrender(this._showMore.getElement(this._currentFilmsList));
+          this._showMore.getElement().removeEventListener(`click`);
+          this._renderShowMore(this._filmsData);
+        } else if (item.id === `watchlist`) {
+          this._generateWatchlist();
+          this._currentFilmsList = this._filmsWatchlist;
+          this._checkRenderCards = 0;
+          this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsWatchlist, this.filmsList);
+          unrender(this._showMore.getElement(this._currentFilmsList));
+          this._showMore.getElement().remove();
+          this._renderShowMore(this._filmsWatchlist);
+        } else if (item.id === `history`) {
+          this._generateWatched();
+          this._currentFilmsList = this._filmsHistory;
+          this._checkRenderCards = 0;
+          this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsHistory, this.filmsList);
+          unrender(this._showMore.getElement(this._currentFilmsList));
+          this._renderShowMore(this._filmsHistory);
+        } else if (item.id === `favorites`) {
+          this._generateFavorites();
+          this._currentFilmsList = this._filmsFavorites;
+          this._checkRenderCards = 0;
+          this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsFavorites, this.filmsList);
+          unrender(this._showMore.getElement(this._currentFilmsList));
+          this._renderShowMore(this._filmsFavorites);
+        } else {
+          return;
+        }
+      });
+    });
+  }
+
+  _switchStatistic() {
+    this._menu.getElement().querySelector(`#stats`).addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      const hidden = this._statistic.getElement().classList.contains(`visually-hidden`);
+      if (hidden) {
+        this._statistic.getElement().classList.remove(`visually-hidden`);
+      } else {
+        this._statistic.getElement().classList.add(`visually-hidden`);
+      }
+    });
+  }
 }
 
 export {PageController};
