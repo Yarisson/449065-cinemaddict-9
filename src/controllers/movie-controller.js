@@ -24,6 +24,8 @@ class MovieController {
 
   init() {
     this._renderPopup(this._containerMain);
+    // console.log(this._popup.getElement().querySelectorAll(`.film-details__comment-delete`));
+    this._deleteComment();
   }
 
   _renderPopup(container) {
@@ -144,8 +146,9 @@ class MovieController {
 
   _renderFilmComments(container) {
     this._generateCommentaries();
-    this._commentsArray.forEach((element) => {
+    this._commentsArray.forEach((element, index) => {
       const comment = new Comment(element);
+      comment.getElement().id = index;
       render(container, comment.getElement(), position.BEFOREEND);
     });
   }
@@ -155,6 +158,23 @@ class MovieController {
     comment._emoji = img;
     comment._text = text;
     render(container, comment.getElement(), position.BEFOREEND);
+    this._commentsArray.push(comment);
+    console.log(this._commentsArray);
+    // this._commentsArray.length.getElement().id = this._commentsArray.length;
+  }
+
+  _deleteComment() {
+    this._popup.getElement().querySelectorAll(`.film-details__comment-delete`).forEach((button) => {
+      button.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        const currentComment = evt.target.closest(`.film-details__comment`);
+        const currentId = currentComment.id;
+        unrender(currentComment);
+        this._commentsArray.splice(currentId, 1);
+        this._getNewMokData(evt.target.closest(`.film-details__comment`));
+        this._popup.getElement().querySelector(`.film-details__comments-count`).textContent = this._data.numberComments;
+      });
+    });
   }
 }
 
