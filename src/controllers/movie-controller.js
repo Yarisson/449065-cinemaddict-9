@@ -77,6 +77,7 @@ class MovieController {
     popup.getElement().addEventListener(`change`, () => {
       this._getNewMokData();
       popup.getElement().querySelector(`.film-details__user-rating`).textContent = this._data.userRating;
+      popup.getElement().querySelector(`.film-details__comments-title`).text = this._data.numberComments;
     });
 
     this._popupRender(container);
@@ -116,8 +117,12 @@ class MovieController {
       watchlist: Boolean(formData.get(`watchlist`)),
       watched: Boolean(formData.get(`watched`)),
       userRating: `Your rate ${userRating}`,
+      // numberComments: new Set(formData.getAll(`comment`)),
+      numberComments: this._popup.getElement().querySelectorAll(`.film-details__comment`).length,
+      // numberComments: this._commentsArray.length;
     };
 
+    console.log(entry);
     entry[nameOfList] = !entry[nameOfList];
 
     if (entry.watched) {

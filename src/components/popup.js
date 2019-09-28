@@ -1,5 +1,4 @@
 import {AbstractComponent} from './abstract-component.js';
-import {getCommentaries} from '../data.js';
 
 class Popup extends AbstractComponent {
   constructor({title, poster, description, rating, year, numberComments, month, day, hours, minutes, genre, favorite, watchlist, watched, userRating}) {
@@ -19,7 +18,6 @@ class Popup extends AbstractComponent {
     this._watchlist = watchlist;
     this._watched = watched;
     this._userRating = userRating;
-    this._commentsArray = [];
   }
 
   getTemplate() {

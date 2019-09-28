@@ -209,6 +209,7 @@ class PageController {
     currentFilmCard.watched = newData.watched;
     currentFilmCard.favorite = newData.favorite;
     currentFilmCard.userRating = newData.userRating;
+    currentFilmCard.numberComments = newData.numberComments;
     this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((item) => {
       unrender(item);
     });
