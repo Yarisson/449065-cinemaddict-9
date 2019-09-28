@@ -8,7 +8,6 @@ import {filmsWatchlist} from './data.js';
 import {filmsWatched} from './data.js';
 import {filmsFavorites} from './data.js';
 
-
 // моковые данные для рандер функций
 const filmsData = films;
 const WatchlistData = filmsWatchlist;

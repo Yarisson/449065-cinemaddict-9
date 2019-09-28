@@ -12,7 +12,8 @@ class MovieController {
     this._onDataChange = onDataChange;
     this._onChangeView = onChangeView;
     this._popup = new Popup(data);
-    this._commentData = getCommentaries();
+    this._commentData = getCommentaries;
+    this._commentsArray = [];
   }
 
   setDefaultView() {
@@ -101,6 +102,7 @@ class MovieController {
     unrender(this._popup.getElement());
     this._onChangeView();
     render(container, this._popup.getElement(), position.BEFOREEND);
+    this._renderFilmComments(this._popup.getElement().querySelector(`.film-details__comments-list`));
     document.addEventListener(`keydown`, this._createEschandler);
     document.addEventListener(`click`, this._closePopup(this._popup));
   }
@@ -127,6 +129,21 @@ class MovieController {
     }
 
     this._onDataChange(entry, this._data);
+  }
+
+  _generateCommentaries() {
+    for (let i = 0; i < this._popup._numberComments; i++) {
+      const item = this._commentData();
+      this._commentsArray.push(item);
+    }
+  }
+
+  _renderFilmComments(container) {
+    this._generateCommentaries();
+    this._commentsArray.forEach((element) => {
+      const comment = new Comment(element);
+      render(container, comment.getElement(), position.BEFOREEND);
+    });
   }
 
   _renderComment(container, img, text) {
