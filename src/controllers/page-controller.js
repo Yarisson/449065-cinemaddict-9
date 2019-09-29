@@ -116,7 +116,6 @@ class PageController {
     const onChangeView = this._onChangeView;
 
     film.getElement().id = index;
-    film.getElement().querySelector(`.film-card__controls`).id = index;
     popupRenderElements.push(film.getElement().querySelector(`.film-card__poster`));
     popupRenderElements.push(film.getElement().querySelector(`.film-card__title`));
     popupRenderElements.push(film.getElement().querySelector(`.film-card__comments`));
@@ -136,31 +135,28 @@ class PageController {
     filmControls.forEach((item) => {
       item.addEventListener(`click`, (evt) => {
         evt.preventDefault();
+        const currentElement = evt.target;
+        const currentProperty = evt.target.name;
+        const currentId = evt.target.id;
 
-        console.log(evt.target);
-        const formData = new FormData(evt.target.closest(`.film-card__controls`));
-        console.log(evt.target.closest(`.film-card`).id);
-        // film.getElement().id
-        const currentFilmCard = evt.target.closest(`.film-card`);
-        const currentFilmCardId = evt.target.closest(`.film-card`).id;
-        console.log(currentFilmCard);
-        console.log(currentFilmCardId);
-        const entry = {
-          id: (formData.get(`id`)),
-          favorite: Boolean(formData.get(`favorite`)),
-          watchlist: Boolean(formData.get(`watchlist`)),
-          watched: Boolean(formData.get(`watched`)),
-          userRating: ``,
-          // comments: this._popup.getElement().querySelectorAll(`.film-details__comment`).length,
-        };
-        entry[evt.target.name] = !entry[evt.target.name];
-        this._onDataChange(entry, this._data);
+        if (currentProperty === `watchlist`) {
+          this._filmsData[Number(currentId)].watchlist = !this._filmsData[Number(currentId)].watchlist;
+        } else if (currentProperty === `watched`) {
+          this._filmsData[Number(currentId)].watched = !this._filmsData[Number(currentId)].watched;
+        } else if (currentProperty === `favorite`) {
+          this._filmsData[Number(currentId)].favorite = !this._filmsData[Number(currentId)].favorite;
+        }
+
+        if (currentElement.classList.contains(`film-card__controls-item--active`)) {
+          currentElement.classList.remove(`film-card__controls-item--active`);
+        } else {
+          currentElement.classList.add(`film-card__controls-item--active`);
+        }
       });
     });
 
     render(container, film.getElement(), position.BEFOREEND);
     this._subscriptions = subscriptions;
-    // console.log(film._comments);
   }
 
   _renderFilmCards(number, filmsData, container) {
