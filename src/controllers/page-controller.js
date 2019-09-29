@@ -116,6 +116,7 @@ class PageController {
     const onChangeView = this._onChangeView;
 
     film.getElement().id = index;
+    film.getElement().querySelector(`.film-card__controls`).id = index;
     popupRenderElements.push(film.getElement().querySelector(`.film-card__poster`));
     popupRenderElements.push(film.getElement().querySelector(`.film-card__title`));
     popupRenderElements.push(film.getElement().querySelector(`.film-card__comments`));
@@ -135,15 +136,25 @@ class PageController {
     filmControls.forEach((item) => {
       item.addEventListener(`click`, (evt) => {
         evt.preventDefault();
-        this._updateFilm();
-        const value = evt.target.name;
-        film[value] = !film[value];
 
-        if (item.classList.contains(`film-card__controls-item--active`)) {
-          item.classList.remove(`film-card__controls-item--active`);
-        } else {
-          item.classList.add(`film-card__controls-item--active`);
-        }
+        console.log(evt.target);
+        const formData = new FormData(evt.target.closest(`.film-card__controls`));
+        console.log(evt.target.closest(`.film-card`).id);
+        // film.getElement().id
+        const currentFilmCard = evt.target.closest(`.film-card`);
+        const currentFilmCardId = evt.target.closest(`.film-card`).id;
+        console.log(currentFilmCard);
+        console.log(currentFilmCardId);
+        const entry = {
+          id: (formData.get(`id`)),
+          favorite: Boolean(formData.get(`favorite`)),
+          watchlist: Boolean(formData.get(`watchlist`)),
+          watched: Boolean(formData.get(`watched`)),
+          userRating: ``,
+          // comments: this._popup.getElement().querySelectorAll(`.film-details__comment`).length,
+        };
+        entry[evt.target.name] = !entry[evt.target.name];
+        this._onDataChange(entry, this._data);
       });
     });
 
@@ -267,6 +278,9 @@ class PageController {
     menuPoints.forEach((item) => {
       item.addEventListener(`click`, (evt) => {
         evt.preventDefault();
+        if (item.id === `stats`) {
+          return;
+        }
         this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((element) => {
           unrender(element);
         });
@@ -274,6 +288,8 @@ class PageController {
           this._currentFilmsList = this._filmsData;
           this._checkRenderCards = 0;
           this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsData, this.filmsList);
+          this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
+          this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
           unrender(this._showMore.getElement(this._currentFilmsList));
           // this._showMore.getElement().removeEventListener(`click`);
           this._renderShowMore(this._filmsData);
@@ -282,6 +298,8 @@ class PageController {
           this._currentFilmsList = this._filmsWatchlist;
           this._checkRenderCards = 0;
           this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsWatchlist, this.filmsList);
+          this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
+          this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
           unrender(this._showMore.getElement(this._currentFilmsList));
           this._showMore.getElement().remove();
           this._renderShowMore(this._filmsWatchlist);
@@ -290,6 +308,8 @@ class PageController {
           this._currentFilmsList = this._filmsHistory;
           this._checkRenderCards = 0;
           this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsHistory, this.filmsList);
+          this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
+          this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
           unrender(this._showMore.getElement(this._currentFilmsList));
           this._renderShowMore(this._filmsHistory);
         } else if (item.id === `favorites`) {
@@ -297,10 +317,10 @@ class PageController {
           this._currentFilmsList = this._filmsFavorites;
           this._checkRenderCards = 0;
           this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsFavorites, this.filmsList);
+          this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
+          this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
           unrender(this._showMore.getElement(this._currentFilmsList));
           this._renderShowMore(this._filmsFavorites);
-        } else {
-          return;
         }
       });
     });

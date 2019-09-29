@@ -31,7 +31,7 @@ class Film extends AbstractComponent {
   <img src="${this._poster}" alt="" name="image" class="film-card__poster">
   <p class="film-card__description" name="description">${this._description}</p>
   <a class="film-card__comments" name="numberComments">${this._comments.length} comments</a>
-  <form class="film-card__controls">
+  <form class="film-card__controls name="id">
     <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${(this._watchlist) ? `film-card__controls-item--active` : ``}" name="watchlist">Add to watchlist</button>
     <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${(this._watched) ? `film-card__controls-item--active` : ``}" name="watched">Mark as watched</button>
     <button class="film-card__controls-item button film-card__controls-item--favorite ${(this._favorite) ? `film-card__controls-item--active` : ``}" name="favorite">Mark as favorite</button>
