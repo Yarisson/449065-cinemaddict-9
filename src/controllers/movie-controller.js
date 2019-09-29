@@ -30,7 +30,6 @@ class MovieController {
     // console.log(this._commentsArray);
     this._renderPopup(this._containerMain);
     // console.log(this._popup.getElement().querySelectorAll(`.film-details__comment-delete`));
-    this._deleteComment();
   }
 
   _renderPopup(container) {
@@ -82,10 +81,12 @@ class MovieController {
     });
 
     popup.getElement().addEventListener(`change`, () => {
-      this._getNewMokData();
+      // this._getNewMokData();
       popup.getElement().querySelector(`.film-details__user-rating`).textContent = this._data.userRating;
       popup.getElement().querySelector(`.film-details__comments-count`).textContent = this._data.comments.length;
     });
+
+    this._deleteComment();
 
     this._popupRender(container);
   }
@@ -174,6 +175,7 @@ class MovieController {
         evt.preventDefault();
         const currentComment = evt.target.closest(`.film-details__comment`);
         const currentId = currentComment.id;
+        console.log(currentComment);
         unrender(currentComment);
         this._dataComments.splice(currentId, 1);
 

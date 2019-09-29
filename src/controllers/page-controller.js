@@ -221,7 +221,7 @@ class PageController {
       });
     } else {
       currentFilmCard.comments.push(newData.comment);
-      currentFilmCard.forEach((element, index) => {
+      currentFilmCard.comments.forEach((element, index) => {
         element.id = index;
       });
     }
