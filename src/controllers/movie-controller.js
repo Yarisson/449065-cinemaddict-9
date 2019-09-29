@@ -13,7 +13,11 @@ class MovieController {
     this._onChangeView = onChangeView;
     this._popup = new Popup(data);
     this._commentData = getCommentaries;
-    this._commentsArray = [];
+    this._dataComments = data.comments;
+    // console.log(this._popup);
+    // console.log(data);
+    // console.log(data.comments);
+    // console.log(this._commentData);
   }
 
   setDefaultView() {
@@ -23,6 +27,7 @@ class MovieController {
   }
 
   init() {
+    // console.log(this._commentsArray);
     this._renderPopup(this._containerMain);
     // console.log(this._popup.getElement().querySelectorAll(`.film-details__comment-delete`));
     this._deleteComment();
@@ -79,7 +84,7 @@ class MovieController {
     popup.getElement().addEventListener(`change`, () => {
       this._getNewMokData();
       popup.getElement().querySelector(`.film-details__user-rating`).textContent = this._data.userRating;
-      popup.getElement().querySelector(`.film-details__comments-count`).textContent = this._data.numberComments;
+      popup.getElement().querySelector(`.film-details__comments-count`).textContent = this._data.comments.length;
     });
 
     this._popupRender(container);
@@ -105,7 +110,6 @@ class MovieController {
     unrender(this._popup.getElement());
     this._onChangeView();
     render(container, this._popup.getElement(), position.BEFOREEND);
-    this._renderFilmComments(this._popup.getElement().querySelector(`.film-details__comments-list`));
     document.addEventListener(`keydown`, this._createEschandler);
     document.addEventListener(`click`, this._closePopup(this._popup));
   }
@@ -113,14 +117,17 @@ class MovieController {
   _getNewMokData(nameOfList) {
     const formData = new FormData(this._popup.getElement().querySelector(`.film-details__inner`));
     const userRating = formData.getAll(`score`);
+    console.log(formData.get(`comment`));
+    console.log(nameOfList);
+
     const entry = {
       id: this._data.id,
       favorite: Boolean(formData.get(`favorite`)),
       watchlist: Boolean(formData.get(`watchlist`)),
       watched: Boolean(formData.get(`watched`)),
       userRating: `Your rate ${userRating}`,
-      // numberComments: new Set(formData.getAll(`comment`)),
-      numberComments: this._popup.getElement().querySelectorAll(`.film-details__comment`).length,
+      comment: formData.get(`comment`),
+      // comments: this._popup.getElement().querySelectorAll(`.film-details__comment`).length,
     };
 
     console.log(entry);
@@ -137,30 +144,28 @@ class MovieController {
     this._onDataChange(entry, this._data);
   }
 
-  _generateCommentaries() {
-    for (let i = 0; i < this._popup._numberComments; i++) {
-      const item = this._commentData();
-      this._commentsArray.push(item);
-    }
-  }
-
-  _renderFilmComments(container) {
-    this._generateCommentaries();
-    this._commentsArray.forEach((element, index) => {
-      const comment = new Comment(element);
-      comment.getElement().id = index;
-      render(container, comment.getElement(), position.BEFOREEND);
-    });
-  }
-
   _renderComment(container, img, text) {
     const comment = new Comment(this._commentData);
     comment._emoji = img;
     comment._text = text;
     render(container, comment.getElement(), position.BEFOREEND);
-    this._commentsArray.push(comment);
-    console.log(this._commentsArray);
-    // this._commentsArray.length.getElement().id = this._commentsArray.length;
+    const formData = new FormData(this._popup.getElement().querySelector(`.film-details__inner`));
+    const userRating = formData.getAll(`score`);
+
+    const entry = {
+      id: this._data.id,
+      favorite: Boolean(formData.get(`favorite`)),
+      watchlist: Boolean(formData.get(`watchlist`)),
+      watched: Boolean(formData.get(`watched`)),
+      userRating: `Your rate ${userRating}`,
+      comment: {
+        emoji: img,
+        text: comment._text,
+        author: ``,
+        day: ``,
+      },
+    };
+    this._onDataChange(entry, this._data);
   }
 
   _deleteComment() {
@@ -170,9 +175,23 @@ class MovieController {
         const currentComment = evt.target.closest(`.film-details__comment`);
         const currentId = currentComment.id;
         unrender(currentComment);
-        this._commentsArray.splice(currentId, 1);
-        this._getNewMokData(evt.target.closest(`.film-details__comment`));
-        this._popup.getElement().querySelector(`.film-details__comments-count`).textContent = this._data.numberComments;
+        this._dataComments.splice(currentId, 1);
+
+        const formData = new FormData(this._popup.getElement().querySelector(`.film-details__inner`));
+        const userRating = formData.getAll(`score`);
+
+        const entry = {
+          id: this._data.id,
+          favorite: Boolean(formData.get(`favorite`)),
+          watchlist: Boolean(formData.get(`watchlist`)),
+          watched: Boolean(formData.get(`watched`)),
+          userRating: `Your rate ${userRating}`,
+          comment: null,
+          commentId: currentId
+        };
+
+        this._onDataChange(entry, this._data);
+        this._popup.getElement().querySelector(`.film-details__comments-count`).textContent = this._dataComments.length;
       });
     });
   }

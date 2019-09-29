@@ -1,14 +1,14 @@
 import {AbstractComponent} from './abstract-component.js';
 
 class Popup extends AbstractComponent {
-  constructor({title, poster, description, rating, year, numberComments, month, day, hours, minutes, genre, favorite, watchlist, watched, userRating}) {
+  constructor({title, poster, description, rating, year, comments, month, day, hours, minutes, genre, favorite, watchlist, watched, userRating}) {
     super();
     this._title = title;
     this._poster = poster;
     this._description = description;
     this._rating = rating;
     this._year = year;
-    this._numberComments = numberComments;
+    this._comments = comments;
     this._month = month;
     this._day = day;
     this._hours = hours;
@@ -151,9 +151,24 @@ class Popup extends AbstractComponent {
 
     <div class="form-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._numberComments}</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._comments.length}</span></h3>
 
         <ul class="film-details__comments-list">
+          ${(Array.from(this._comments).map((comment, index) => (`
+            <li class="film-details__comment" name="comment" id="${index}">
+              <span class="film-details__comment-emoji">
+                <img src="${comment.emoji}" width="55" height="55" alt="emoji">
+              </span>
+              <div>
+                <p class="film-details__comment-text">${comment.text}</p>
+                <p class="film-details__comment-info">
+                  <span class="film-details__comment-author">${comment.author}</span>
+                  <span class="film-details__comment-day">${comment.day}</span>
+                  <button class="film-details__comment-delete">Delete</button>
+                </p>
+              </div>
+            </li>`.trim()
+  ))).join(``)}
         </ul>
 
         <div class="film-details__new-comment">

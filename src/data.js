@@ -1,7 +1,6 @@
 const NOVICE = 11;
 const FAN = 21;
 const NUMBER_OF_FILMS = 42;
-const NUMBER_OF_EXTRA_FILMS = 2;
 
 const TEXT_DESCRIPTION = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
@@ -126,7 +125,6 @@ const getCard = () => ({
   year: getRandomYear(),
   month: getRandomMonth(),
   day: getRandomDay(),
-  numberComments: Math.round(Math.random() * 100),
   hours: Math.round(Math.random() * 1) + 1,
   minutes: Math.round(Math.random() * 60),
   genre: [
@@ -157,6 +155,15 @@ const generateFilms = () => {
   }
 };
 
+const generateFilmComments = () => {
+  films.forEach((film) => {
+    film.comments = [];
+    for (let i = 0; i < (Math.floor(Math.random() * 100)); i++) {
+      film.comments.push(getCommentaries());
+    }
+  });
+};
+
 const generateWatchlist = () => {
   films.forEach((item) => {
     if (item.watchlist) {
@@ -181,29 +188,11 @@ const generateFavorites = () => {
   });
 };
 
-const extraFilms = [];
-const extraFilmsIndex = [];
-
-const generateIndexExtraFilms = () => {
-  for (let i = 0; i < NUMBER_OF_EXTRA_FILMS; i++) {
-    extraFilmsIndex.push(Math.round(Math.random() * NUMBER_OF_FILMS));
-  }
-
-  extraFilmsIndex.forEach(function (element) {
-    extraFilms.push(films[element]);
-  });
-};
-
 generateFilms();
 generateWatchlist();
-generateIndexExtraFilms();
 generateWatched();
 generateFavorites();
-
-const getExtraCards = () => ({
-  films: extraFilms,
-  number: extraFilmsIndex,
-});
+generateFilmComments();
 
 const getFilmsNumber = () => {
   return films.length;
@@ -225,8 +214,5 @@ export {films};
 export {filmsWatchlist};
 export {filmsWatched};
 export {filmsFavorites};
-export {extraFilms};
-export {extraFilmsIndex};
-export {getExtraCards};
 export {getFilmsAll};
 export {getMenu};
