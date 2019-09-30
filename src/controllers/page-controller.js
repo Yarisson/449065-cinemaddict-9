@@ -50,9 +50,9 @@ class PageController {
 
   init() {
     // Отрисовка блоков поиска, рейтинга пользователя, меню, обертки для фильмов и подвала
-    render(this._containerHeader, this._search.getElement(), position.BEFOREEND);
-    // searchController = new SearchController(this._containerHeader, this._filmsData);
-    // searchController.init();
+    // render(this._containerHeader, this._search.getElement(), position.BEFOREEND);
+    let searchController = new SearchController(this._containerHeader, this._filmsData);
+    searchController.init();
     render(this._containerHeader, this._rating.getElement(), position.BEFOREEND);
     render(this._containerMain, this._menu.getElement(), position.BEFOREEND);
     render(this._containerMain, this._statistic.getElement(), position.BEFOREEND);
@@ -73,8 +73,6 @@ class PageController {
     this._renderShowMore(this._currentFilmsList);
 
     this._switchStatistic();
-    this._changeFilmlist();
-
     this._sort.getElement()
     .addEventListener(`click`, (evt) => {
       evt.preventDefault();
@@ -95,7 +93,11 @@ class PageController {
       }
     });
 
+    this._menu.getElement().querySelectorAll(`.main-navigation__item`).forEach((item) => {
+      item.addEventListener(`click`, (evt) => this._changeFilmlist(evt));
+    });
   }
+
 
   _sortArr(arr, by) {
     if (!SortHandlers[by]) {
@@ -139,7 +141,7 @@ class PageController {
         evt.preventDefault();
         const currentElement = evt.target;
         const currentProperty = evt.target.name;
-        const currentId = evt.target.id;
+        const currentId = evt.target.closest(`.film-card`).id;
 
         if (currentProperty === `watchlist`) {
           this._filmsData[Number(currentId)].watchlist = !this._filmsData[Number(currentId)].watchlist;
@@ -185,6 +187,8 @@ class PageController {
 
   _renderShowMore(Data) {
 
+    this._showMore.getElement().style.display = `block`;
+
     const showMoreCards = () => {
       const currentNumberCards = this._checkRenderCards;
       let storedCard = Data.length - currentNumberCards;
@@ -203,12 +207,12 @@ class PageController {
       this._showMore.getElement().removeEventListener(`click`, showMoreCards);
     });
 
-    console.log(this._sort.getElement());
-    console.log(this._showMore.getElement(this._currentFilmsList));
-    this._menu.getElement()
-    .addEventListener(`click`, () => {
-      this._showMore.getElement(this._currentFilmsList).removeEventListener(`click`, showMoreCards);
+    this._menu.getElement().querySelectorAll(`.main-navigation__item`).forEach((element) => {
+      element.addEventListener(`click`, () => {
+        this._showMore.getElement(this._currentFilmsList).removeEventListener(`click`, showMoreCards);
+      });
     });
+
 
     this._showMore.getElement().addEventListener(`click`, showMoreCards);
     render(this.filmsList, this._showMore.getElement(), position.BEFOREEND);
@@ -225,8 +229,6 @@ class PageController {
     if (newData.comment === null) {
       currentFilmCard.comments.forEach((item) => {
         if (item.id === newData.commentId) {
-          // console.log(item.id);
-          // console.log(item.indexOf);
           currentFilmCard.splice(item.indexOf);
         }
       });
@@ -250,6 +252,7 @@ class PageController {
   }
 
   _generateWatchlist() {
+    this._filmsWatchlist = [];
     this._filmsData.forEach((item) => {
       if (item.watchlist) {
         this._filmsWatchlist.push(item);
@@ -258,6 +261,7 @@ class PageController {
   }
 
   _generateWatched() {
+    this._filmsHistory = [];
     this._filmsData.forEach((item) => {
       if (item.watched) {
         this._filmsHistory.push(item);
@@ -266,6 +270,7 @@ class PageController {
   }
 
   _generateFavorites() {
+    this._filmsFavorites = [];
     this._filmsData.forEach((item) => {
       if (item.favorite) {
         this._filmsFavorites.push(item);
@@ -273,53 +278,50 @@ class PageController {
     });
   }
 
-  _changeFilmlist() {
-    const menuPoints = this._menu.getElement().querySelectorAll(`.main-navigation__item`);
-    menuPoints.forEach((item) => {
-      item.addEventListener(`click`, (evt) => {
-        evt.preventDefault();
-        if (item.id === `stats`) {
-          return;
-        }
-        this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((element) => {
-          unrender(element);
-        });
-        unrender(this._showMore.getElement(this._currentFilmsList));
-        if (item.id === `all`) {
-
-          this._currentFilmsList = this._filmsData;
-          this._checkRenderCards = 0;
-          this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsData, this.filmsList);
-          this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
-          this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
-          this._renderShowMore(this._filmsData);
-        } else if (item.id === `watchlist`) {
-          this._generateWatchlist();
-          this._currentFilmsList = this._filmsWatchlist;
-          this._checkRenderCards = 0;
-          this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsWatchlist, this.filmsList);
-          this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
-          this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
-          this._renderShowMore(this._filmsWatchlist);
-        } else if (item.id === `history`) {
-          this._generateWatched();
-          this._currentFilmsList = this._filmsHistory;
-          this._checkRenderCards = 0;
-          this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsHistory, this.filmsList);
-          this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
-          this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
-          this._renderShowMore(this._filmsHistory);
-        } else if (item.id === `favorites`) {
-          this._generateFavorites();
-          this._currentFilmsList = this._filmsFavorites;
-          this._checkRenderCards = 0;
-          this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsFavorites, this.filmsList);
-          this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
-          this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
-          this._renderShowMore(this._filmsFavorites);
-        }
+  _changeFilmlist(evt) {
+    evt.preventDefault();
+    console.log(`клик по меню`);
+    if (evt.target.id === `stats`) {
+      return;
+    } else {
+      this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((element) => {
+        unrender(element);
       });
-    });
+      unrender(this._showMore.getElement(this._currentFilmsList));
+      if (evt.target.id === `all`) {
+
+        this._currentFilmsList = this._filmsData;
+        this._checkRenderCards = 0;
+        this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsData, this.filmsList);
+        this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
+        this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
+        this._renderShowMore(this._filmsData);
+      } else if (evt.target.id === `watchlist`) {
+        this._generateWatchlist();
+        this._currentFilmsList = this._filmsWatchlist;
+        this._checkRenderCards = 0;
+        this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsWatchlist, this.filmsList);
+        this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
+        this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
+        this._renderShowMore(this._filmsWatchlist);
+      } else if (evt.target.id === `history`) {
+        this._generateWatched();
+        this._currentFilmsList = this._filmsHistory;
+        this._checkRenderCards = 0;
+        this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsHistory, this.filmsList);
+        this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
+        this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
+        this._renderShowMore(this._filmsHistory);
+      } else if (evt.target.id === `favorites`) {
+        this._generateFavorites();
+        this._currentFilmsList = this._filmsFavorites;
+        this._checkRenderCards = 0;
+        this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsFavorites, this.filmsList);
+        this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
+        this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
+        this._renderShowMore(this._filmsFavorites);
+      }
+    }
   }
 
   _mostCommented(arr, by) {
