@@ -18,7 +18,6 @@ class SearchController {
   }
 
   _searchFilm() {
-    const searchContainer = this._search.getElement().querySelector(`.header__search`);
     const searchInput = this._search.getElement().querySelector(`.search__field`);
     const searchButton = this._search.getElement().querySelector(`.search__active`);
     const searchButtonReset = this._search.getElement().querySelector(`.search__reset`);
