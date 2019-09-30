@@ -370,6 +370,12 @@ class PageController {
       }
     };
 
+    const onSearchButtonReset = (evt) => {
+      evt.preventDefault();
+      searchInput.value = ``;
+      searchButton.classList.add(`visually-hidden`);
+    };
+
     const onSearchButtonClick = (evt) => {
       evt.preventDefault();
       searchButton.classList.add(`visually-hidden`);
@@ -393,7 +399,7 @@ class PageController {
     };
 
     searchButton.addEventListener(`click`, onSearchButtonClick);
-
+    searchButtonReset.addEventListener(`click`, onSearchButtonReset);
     searchInput.addEventListener(`change`, onInputChange);
   }
 }
