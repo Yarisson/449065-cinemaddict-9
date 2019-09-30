@@ -12,6 +12,7 @@ import {position} from '../utils.js';
 import {render} from '../utils.js';
 import {unrender} from '../utils.js';
 import {MovieController} from './movie-controller.js';
+import {SearchController} from './search-controller.js';
 
 const SortHandlers = {
   'date': (arr) => arr.sort((a, b) => b.year - a.year),
@@ -48,9 +49,10 @@ class PageController {
   }
 
   init() {
-
     // Отрисовка блоков поиска, рейтинга пользователя, меню, обертки для фильмов и подвала
     render(this._containerHeader, this._search.getElement(), position.BEFOREEND);
+    // searchController = new SearchController(this._containerHeader, this._filmsData);
+    // searchController.init();
     render(this._containerHeader, this._rating.getElement(), position.BEFOREEND);
     render(this._containerMain, this._menu.getElement(), position.BEFOREEND);
     render(this._containerMain, this._statistic.getElement(), position.BEFOREEND);
@@ -68,7 +70,7 @@ class PageController {
     this._renderExtraCards(this.filmsListRate, this._topRated(this._filmsData, `rating`));
     this._renderExtraCards(this.filmsListComments, this._mostCommented(this._filmsData, `comments`));
     // this._renderExtraCards(this.filmsListComments);
-    this._renderShowMore(this._filmsData);
+    this._renderShowMore(this._currentFilmsList);
 
     this._switchStatistic();
     this._changeFilmlist();
@@ -155,8 +157,6 @@ class PageController {
       });
     });
 
-    this._searchFilm();
-
     render(container, film.getElement(), position.BEFOREEND);
     this._subscriptions = subscriptions;
   }
@@ -203,10 +203,12 @@ class PageController {
       this._showMore.getElement().removeEventListener(`click`, showMoreCards);
     });
 
-    // this._menu.getElement()
-    // .addEventListener(`click`, () => {
-      // this._showMore.getElement(this._currentFilmsList).removeEventListener(`click`, showMoreCards);
-    // });
+    console.log(this._sort.getElement());
+    console.log(this._showMore.getElement(this._currentFilmsList));
+    this._menu.getElement()
+    .addEventListener(`click`, () => {
+      this._showMore.getElement(this._currentFilmsList).removeEventListener(`click`, showMoreCards);
+    });
 
     this._showMore.getElement().addEventListener(`click`, showMoreCards);
     render(this.filmsList, this._showMore.getElement(), position.BEFOREEND);
@@ -282,14 +284,14 @@ class PageController {
         this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((element) => {
           unrender(element);
         });
+        unrender(this._showMore.getElement(this._currentFilmsList));
         if (item.id === `all`) {
+
           this._currentFilmsList = this._filmsData;
           this._checkRenderCards = 0;
           this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsData, this.filmsList);
           this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
           this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
-          unrender(this._showMore.getElement(this._currentFilmsList));
-          // this._showMore.getElement().removeEventListener(`click`);
           this._renderShowMore(this._filmsData);
         } else if (item.id === `watchlist`) {
           this._generateWatchlist();
@@ -298,8 +300,6 @@ class PageController {
           this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsWatchlist, this.filmsList);
           this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
           this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
-          unrender(this._showMore.getElement(this._currentFilmsList));
-          this._showMore.getElement().remove();
           this._renderShowMore(this._filmsWatchlist);
         } else if (item.id === `history`) {
           this._generateWatched();
@@ -308,7 +308,6 @@ class PageController {
           this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsHistory, this.filmsList);
           this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
           this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
-          unrender(this._showMore.getElement(this._currentFilmsList));
           this._renderShowMore(this._filmsHistory);
         } else if (item.id === `favorites`) {
           this._generateFavorites();
@@ -317,7 +316,6 @@ class PageController {
           this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsFavorites, this.filmsList);
           this._renderExtraCards(this.filmsListRate, this._topRated(this._currentFilmsList, `rating`));
           this._renderExtraCards(this.filmsListComments, this._mostCommented(this._currentFilmsList, `comments`));
-          unrender(this._showMore.getElement(this._currentFilmsList));
           this._renderShowMore(this._filmsFavorites);
         }
       });
@@ -353,54 +351,6 @@ class PageController {
         this._statistic.getElement().classList.add(`visually-hidden`);
       }
     });
-  }
-
-  _searchFilm() {
-    const searchContainer = this._search.getElement().querySelector(`.header__search`);
-    const searchInput = this._search.getElement().querySelector(`.search__field`);
-    const searchButton = this._search.getElement().querySelector(`.search__active`);
-    const searchButtonReset = this._search.getElement().querySelector(`.search__reset`);
-
-    const onInputChange = (evt) => {
-      evt.preventDefault();
-      if (searchInput.value.length < 3) {
-        searchInput.value = ``;
-      } else {
-        searchButton.classList.remove(`visually-hidden`);
-      }
-    };
-
-    const onSearchButtonReset = (evt) => {
-      evt.preventDefault();
-      searchInput.value = ``;
-      searchButton.classList.add(`visually-hidden`);
-    };
-
-    const onSearchButtonClick = (evt) => {
-      evt.preventDefault();
-      searchButton.classList.add(`visually-hidden`);
-      const searchFilm = [];
-      const searchText = searchInput.value;
-      this._filmsData.forEach((element) => {
-        if (element.title.toLowerCase() === searchText.toLowerCase()) {
-          searchFilm.push(element);
-        }
-      });
-      this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((element) => {
-        unrender(element);
-        this._checkRenderCards = 0;
-        this._renderFilmCards(searchFilm.length, searchFilm, this.filmsList);
-        // this._showMore.getElement().classList.add(`visually-hidden`);
-      });
-
-      console.log(searchFilm);
-      console.log(searchFilm.length);
-      console.log(searchText);
-    };
-
-    searchButton.addEventListener(`click`, onSearchButtonClick);
-    searchButtonReset.addEventListener(`click`, onSearchButtonReset);
-    searchInput.addEventListener(`change`, onInputChange);
   }
 }
 

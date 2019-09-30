@@ -14,10 +14,6 @@ class MovieController {
     this._popup = new Popup(data);
     this._commentData = getCommentaries;
     this._dataComments = data.comments;
-    // console.log(this._popup);
-    // console.log(data);
-    // console.log(data.comments);
-    // console.log(this._commentData);
   }
 
   setDefaultView() {
