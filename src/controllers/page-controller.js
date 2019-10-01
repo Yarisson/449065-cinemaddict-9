@@ -330,6 +330,8 @@ class PageController {
     if (by === `comments`) {
       return sorted.slice(0, 2);
     }
+
+    return ``;
   }
 
   _topRated(arr, by) {
@@ -339,6 +341,8 @@ class PageController {
     } else if (by === `rating`) {
       return sorted.slice(0, 2);
     }
+
+    return ``;
   }
 
   _switchStatistic() {

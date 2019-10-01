@@ -1,16 +1,14 @@
 import {AbstractComponent} from './abstract-component.js';
 
 class Popup extends AbstractComponent {
-  constructor({title, poster, description, rating, year, comments, month, day, hours, minutes, genre, favorite, watchlist, watched, userRating}) {
+  constructor({title, poster, description, rating, date, comments, hours, minutes, genre, favorite, watchlist, watched, userRating}) {
     super();
     this._title = title;
     this._poster = poster;
     this._description = description;
     this._rating = rating;
-    this._year = year;
+    this._date = date;
     this._comments = comments;
-    this._month = month;
-    this._day = day;
     this._hours = hours;
     this._minutes = minutes;
     this._genre = genre;
@@ -62,7 +60,7 @@ class Popup extends AbstractComponent {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${this._day} ${this._month} ${this._year}</td>
+              <td class="film-details__cell">${this._date}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>

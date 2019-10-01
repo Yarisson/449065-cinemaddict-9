@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const NOVICE = 11;
 const FAN = 21;
 const NUMBER_OF_FILMS = 42;
@@ -29,19 +31,16 @@ const generateUserRating = () => {
   }
 };
 
-const getRandomYear = () => {
-  const date = new Date();
-  return date.getFullYear() - Math.round(Math.random() * 100);
+const randomDate = (start, end) => {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
-const getRandomMonth = () => {
-  const date = new Date();
-  return date.getMonth();
+const filmYear = () => {
+  return moment(randomDate(new Date(1919, 0, 0), new Date())).format(`DD MMMM YYYY`);
 };
 
-const getRandomDay = () => {
-  const date = new Date();
-  return date.getDate();
+const commentDate = () => {
+  return moment(randomDate(new Date(2019, 8, 1), new Date())).fromNow();
 };
 
 const getRandomDescription = (arr) => {
@@ -83,12 +82,7 @@ const getCommentaries = () => ({
     `Jacob Call`,
     `Connor McLeod`,
   ][Math.floor(Math.random() * 7)],
-  day: [
-    `2 days ago`,
-    `today`,
-    `yesterday`,
-    `3 days ago`,
-  ][Math.floor(Math.random() * 4)],
+  day: commentDate(),
 });
 
 const getCard = () => ({
@@ -122,9 +116,7 @@ const getCard = () => ({
     getRandomDescription(TEXT_DESCRIPTION)
   ],
   rating: ((Math.random() * (10 - 0)) + 0).toFixed(1),
-  year: getRandomYear(),
-  month: getRandomMonth(),
-  day: getRandomDay(),
+  date: filmYear(),
   hours: Math.round(Math.random() * 1) + 1,
   minutes: Math.round(Math.random() * 60),
   genre: [
@@ -164,6 +156,12 @@ const generateFilmComments = () => {
   });
 };
 
+const generateFilmYear = () => {
+  films.forEach((film) => {
+    film.year = moment(film.date).format(`YYYY`);
+  });
+};
+
 const generateWatchlist = () => {
   films.forEach((item) => {
     if (item.watchlist) {
@@ -193,6 +191,7 @@ generateWatchlist();
 generateWatched();
 generateFavorites();
 generateFilmComments();
+generateFilmYear();
 
 const getFilmsNumber = () => {
   return films.length;
