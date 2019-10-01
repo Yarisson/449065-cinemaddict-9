@@ -23,9 +23,7 @@ class MovieController {
   }
 
   init() {
-    // console.log(this._commentsArray);
     this._renderPopup(this._containerMain);
-    // console.log(this._popup.getElement().querySelectorAll(`.film-details__comment-delete`));
   }
 
   _renderPopup(container) {
@@ -114,9 +112,6 @@ class MovieController {
   _getNewMokData(nameOfList) {
     const formData = new FormData(this._popup.getElement().querySelector(`.film-details__inner`));
     const userRating = formData.getAll(`score`);
-    console.log(formData.get(`comment`));
-    console.log(nameOfList);
-
     const entry = {
       id: this._data.id,
       favorite: Boolean(formData.get(`favorite`)),
@@ -127,7 +122,6 @@ class MovieController {
       // comments: this._popup.getElement().querySelectorAll(`.film-details__comment`).length,
     };
 
-    console.log(entry);
     entry[nameOfList] = !entry[nameOfList];
 
     if (entry.watched) {
@@ -171,7 +165,6 @@ class MovieController {
         evt.preventDefault();
         const currentComment = evt.target.closest(`.film-details__comment`);
         const currentId = currentComment.id;
-        console.log(currentComment);
         unrender(currentComment);
         this._dataComments.splice(currentId, 1);
 
