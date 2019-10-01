@@ -31,6 +31,7 @@ class PageController {
     this._rating = new Rating(ratingData);
     this._menu = new Menu(WatchlistData.length, HistoryData.length, FavoritesData.length);
     this._sort = new Sort();
+    this._search = new Search();
     this._filmsWrapper = new FilmsWrapper();
     this._footerClass = new Footer(footerData);
     this._filmsData = filmsData;
@@ -50,9 +51,10 @@ class PageController {
 
   init() {
     // Отрисовка блоков поиска, рейтинга пользователя, меню, обертки для фильмов и подвала
-    // render(this._containerHeader, this._search.getElement(), position.BEFOREEND);
-    let searchController = new SearchController(this._containerHeader, this._filmsData);
-    searchController.init();
+    render(this._containerHeader, this._search.getElement(), position.BEFOREEND);
+    // const renderFilm = this._renderFilm;
+    // let searchController = new SearchController(this._containerHeader, this._filmsData, renderFilm);
+    // searchController.init();
     render(this._containerHeader, this._rating.getElement(), position.BEFOREEND);
     render(this._containerMain, this._menu.getElement(), position.BEFOREEND);
     render(this._containerMain, this._statistic.getElement(), position.BEFOREEND);
@@ -71,6 +73,13 @@ class PageController {
     this._renderExtraCards(this.filmsListComments, this._mostCommented(this._filmsData, `comments`));
     // this._renderExtraCards(this.filmsListComments);
     this._renderShowMore(this._currentFilmsList);
+
+    const searchInput = this._search.getElement().querySelector(`.search__field`);
+    const searchButton = this._search.getElement().querySelector(`.search__active`);
+    const searchButtonReset = this._search.getElement().querySelector(`.search__reset`);
+    searchButton.addEventListener(`click`, (evt) => this._onSearchButtonClick(evt));
+    searchButtonReset.addEventListener(`click`, (evt) => this._onSearchButtonReset(evt, searchInput, searchButton));
+    searchInput.addEventListener(`change`, (evt) => this._onInputChange(evt, searchInput, searchButton));
 
     this._switchStatistic();
     this._sort.getElement()
@@ -186,7 +195,6 @@ class PageController {
   }
 
   _renderShowMore(Data) {
-
     this._showMore.getElement().style.display = `block`;
 
     const showMoreCards = () => {
@@ -280,6 +288,7 @@ class PageController {
 
   _changeFilmlist(evt) {
     evt.preventDefault();
+    unrender(this._noFilms.getElement());
     console.log(`клик по меню`);
     if (evt.target.id === `stats`) {
       return;
@@ -353,6 +362,54 @@ class PageController {
         this._statistic.getElement().classList.add(`visually-hidden`);
       }
     });
+  }
+
+  _onInputChange(evt, input, button) {
+    evt.preventDefault();
+    if (input.value.length < 3) {
+      input.value = ``;
+    } else {
+      button.classList.remove(`visually-hidden`);
+    }
+  }
+
+  _onSearchButtonReset(evt, input, button) {
+    evt.preventDefault();
+    input.value = ``;
+    button.classList.add(`visually-hidden`);
+  }
+
+  _onSearchButtonClick(evt) {
+    const searchInput = this._search.getElement().querySelector(`.search__field`);
+    const searchButton = this._search.getElement().querySelector(`.search__active`);
+    evt.preventDefault();
+    searchButton.classList.add(`visually-hidden`);
+    const filmsList = this._filmsWrapper.getElement().querySelector(`.films-list`);
+    const searchFilm = [];
+    const searchText = searchInput.value;
+    this._filmsData.forEach((element) => {
+      if (element.title.toLowerCase() === searchText.toLowerCase()) {
+        searchFilm.push(element);
+      }
+    });
+    console.log(this._filmsWrapper.getElement().querySelectorAll(`.film-card`));
+    console.log(filmsList);
+    this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((item) => {
+      unrender(item);
+    });
+    this._checkRenderCards = 0;
+
+    if (searchFilm.length === 0) {
+      render(filmsList, this._noFilms.getElement(), position.BEFOREEND);
+    } else {
+      this._renderFilmCards(searchFilm.length, searchFilm, filmsList);
+    }
+
+    this._showMore.getElement().style.display = `none`;
+
+    console.log(searchFilm);
+    console.log(searchFilm.length);
+    console.log(searchText);
   }
 }
 
