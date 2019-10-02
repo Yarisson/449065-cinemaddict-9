@@ -1,4 +1,3 @@
-import {Search} from '../components/search.js';
 import {Sort} from '../components/sort.js';
 import {Menu} from '../components/menu.js';
 import {Footer} from '../components/footer.js';
@@ -13,6 +12,7 @@ import {render} from '../utils.js';
 import {unrender} from '../utils.js';
 import {MovieController} from './movie-controller.js';
 import {SearchController} from './search-controller.js';
+import {StatisticController} from './statistic-controller';
 
 const SortHandlers = {
   'date': (arr) => arr.sort((a, b) => b.year - a.year),
@@ -27,11 +27,9 @@ class PageController {
     this._containerMain = containerMain;
     this._containerHeader = containerHeader;
     this._containerFooter = containerFooter;
-    this._search = new Search();
     this._rating = new Rating(ratingData);
     this._menu = new Menu(WatchlistData.length, HistoryData.length, FavoritesData.length);
     this._sort = new Sort();
-    this._search = new Search();
     this._filmsWrapper = new FilmsWrapper();
     this._footerClass = new Footer(footerData);
     this._filmsData = filmsData;
@@ -47,6 +45,12 @@ class PageController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onChangeView = this._onChangeView.bind(this);
     this._currentFilmsList = this._filmsData;
+    this._allWatchedTimeHours = 0;
+    this._allWatchedTimeMinutes = 0;
+    this._genres = [];
+    this._watchedFilms = this._filmsHistory.length;
+    this._statisticData = {};
+    this._ratingData = ratingData;
   }
 
   init() {
@@ -55,7 +59,12 @@ class PageController {
     const showMore = this._showMore;
     const noFilms = this._noFilms;
     render(this._containerMain, this._menu.getElement(), position.BEFOREEND);
-    render(this._containerMain, this._statistic.getElement(), position.BEFOREEND);
+
+    // render(this._containerMain, this._statistic.getElement(), position.BEFOREEND);
+    this._getStatistic();
+    this._sortGenres();
+    let statisticController = new StatisticController(this._containerMain, this._statisticData);
+    statisticController.init();
     render(this._containerMain, this._sort.getElement(), position.BEFOREEND);
     render(this._containerMain, this._filmsWrapper.getElement(), position.BEFOREEND);
     render(this._containerFooter, this._footerClass.getElement(), position.BEFOREEND);
@@ -98,6 +107,7 @@ class PageController {
     this._menu.getElement().querySelectorAll(`.main-navigation__item`).forEach((item) => {
       item.addEventListener(`click`, (evt) => this._changeFilmlist(evt));
     });
+
   }
 
   _sortArr(arr, by) {
@@ -356,6 +366,83 @@ class PageController {
       }
     });
   }
-}
 
+  _getStatistic() {
+    const watchedFilms = this._filmsHistory.length;
+    let allWatchedTimeHours = 0;
+    let allWatchedTimeMinutes = 0;
+    const genres = [];
+    this._filmsHistory.forEach((element) => {
+      allWatchedTimeHours = allWatchedTimeHours + element.hours;
+      allWatchedTimeMinutes = allWatchedTimeMinutes + element.minutes;
+      genres.push(element.genre);
+    });
+
+    allWatchedTimeHours = allWatchedTimeHours + (parseInt(allWatchedTimeMinutes / 60, 10));
+    allWatchedTimeMinutes = allWatchedTimeMinutes % 60;
+    this._allWatchedTimeHours = allWatchedTimeHours;
+    this._allWatchedTimeMinutes = allWatchedTimeMinutes;
+    this._genres = genres;
+    this._watchedFilms = watchedFilms;
+    this._statisticData.hours = this._allWatchedTimeHours;
+    this._statisticData.minutes = this._allWatchedTimeMinutes;
+    this._statisticData.genres = this._genres;
+    this._statisticData.numberWatchedFilms = this._watchedFilms;
+    this._statisticData.status = this._ratingData.status;
+    console.log(this._statisticData);
+  }
+
+  _sortGenres() {
+    const numberFilms = [];
+    let numberComedy = 0;
+    let numberMystery = 0;
+    let numberDrama = 0;
+    let numberFiction = 0;
+    let numberHorror = 0;
+    let numberCrime = 0;
+    let numberAdventure = 0;
+
+    this._statisticData.genres.forEach((element) => {
+      if (element === `Comedy`) {
+        numberComedy = numberComedy + 1;
+      } else if (element === `Mystery`) {
+        numberMystery = numberMystery + 1;
+      } else if (element === `Drama`) {
+        numberDrama = numberDrama + 1;
+      } else if (element === `Fiction`) {
+        numberFiction = numberFiction + 1;
+      } else if (element === `Horror`) {
+        numberHorror = numberHorror + 1;
+      } else if (element === `Crime & Gangster`) {
+        numberCrime = numberCrime + 1;
+      } else if (element === `Adventure`) {
+        numberAdventure = numberAdventure + 1;
+      }
+    });
+
+    numberFilms.comedy = numberComedy;
+    numberFilms.mystery = numberMystery;
+    numberFilms.drama = numberDrama;
+    numberFilms.fiction = numberFiction;
+    numberFilms.horror = numberHorror;
+    numberFilms.crime = numberCrime;
+    numberFilms.adventure = numberAdventure;
+    let topGenre = `comedy`;
+    let number = numberFilms.comedy;
+    console.log(numberFilms);
+    Object.entries(numberFilms);
+    for (let [key, value] of Object.entries(numberFilms)) {
+      if (value > number) {
+        number = value;
+        topGenre = key;
+      }
+    }
+    this._statisticData.numberFilms = numberFilms;
+    this._statisticData.topGenre = topGenre;
+    console.log(number);
+    console.log(topGenre);
+    console.log(this._statisticData);
+  }
+
+}
 export {PageController};

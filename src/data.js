@@ -31,16 +31,16 @@ const generateUserRating = () => {
   }
 };
 
-const randomDate = (start, end) => {
+const getRandomDate = (start, end) => {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
-const filmYear = () => {
-  return moment(randomDate(new Date(1919, 0, 0), new Date())).format(`DD MMMM YYYY`);
+const getFilmYear = () => {
+  return moment(getRandomDate(new Date(1919, 0, 0), new Date())).format(`DD MMMM YYYY`);
 };
 
-const commentDate = () => {
-  return moment(randomDate(new Date(2019, 8, 1), new Date())).fromNow();
+const getCommentDate = () => {
+  return moment(getRandomDate(new Date(2019, 8, 1), new Date())).fromNow();
 };
 
 const getRandomDescription = (arr) => {
@@ -82,7 +82,7 @@ const getCommentaries = () => ({
     `Jacob Call`,
     `Connor McLeod`,
   ][Math.floor(Math.random() * 7)],
-  day: commentDate(),
+  day: getCommentDate(),
 });
 
 const getCard = () => ({
@@ -110,13 +110,13 @@ const getCard = () => ({
     `/images/posters/santa-claus-conquers-the-martians.jpg`,
     `/images/posters/the-dance-of-life.jpg`,
     `/images/posters/the-great-flamarion.jpg`,
-    `/images/posters/popeye-meets-sinbad.jpg`,
-  ][Math.floor(Math.random() * 6)],
+    `/images/posters/the-man-with-the-golden-arm.jpg`,
+  ][Math.floor(Math.random() * 7)],
   description: [
     getRandomDescription(TEXT_DESCRIPTION)
   ],
   rating: ((Math.random() * (10 - 0)) + 0).toFixed(1),
-  date: filmYear(),
+  date: getFilmYear(),
   hours: Math.round(Math.random() * 1) + 1,
   minutes: Math.round(Math.random() * 60),
   genre: [

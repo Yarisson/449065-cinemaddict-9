@@ -1,10 +1,14 @@
 import {AbstractComponent} from './abstract-component.js';
 
 class Statistic extends AbstractComponent {
-  constructor({status, numberAllFilms}) {
+  constructor({status, numberWatchedFilms, hours, minutes, genres, topGenre}) {
     super();
     this._status = status;
-    this._numberAllFilms = numberAllFilms;
+    this._numberWatchedFilms = numberWatchedFilms;
+    this._hours = hours;
+    this._minutes = minutes;
+    this._genres = genres;
+    this._topGenre = topGenre;
   }
 
   getTemplate() {
@@ -38,15 +42,15 @@ class Statistic extends AbstractComponent {
       <ul class="statistic__text-list">
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">You watched</h4>
-          <p class="statistic__item-text">${this._numberAllFilms}<span class="statistic__item-description">movies</span></p>
+          <p class="statistic__item-text">${this._numberWatchedFilms}<span class="statistic__item-description">movies</span></p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Total duration</h4>
-          <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+          <p class="statistic__item-text">${this._hours} <span class="statistic__item-description">h</span> ${this._minutes} <span class="statistic__item-description">m</span></p>
         </li>
         <li class="statistic__text-item">
           <h4 class="statistic__item-title">Top genre</h4>
-          <p class="statistic__item-text">Sci-Fi</p>
+          <p class="statistic__item-text">${this._topGenre}</p>
         </li>
       </ul>
 
