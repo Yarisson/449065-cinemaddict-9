@@ -6,7 +6,6 @@ import {FilmsWrapper} from '../components/films.js';
 import {Film} from '../components/film.js';
 import {NoFilms} from '../components/no-films.js';
 import {ShowMore} from '../components/show-more.js';
-import {Statistic} from '../components/statistic.js';
 import {position} from '../utils.js';
 import {render} from '../utils.js';
 import {unrender} from '../utils.js';
@@ -38,7 +37,6 @@ class PageController {
     this._filmsHistory = HistoryData;
     this._filmsFavorites = FavoritesData;
     this._showMore = new ShowMore();
-    this._statistic = new Statistic(statisticData);
     this._checkRenderCards = 0;
     this._NUMBER_MORE_RENDER_CARDS = 5;
     this._subscriptions = [];
@@ -60,7 +58,6 @@ class PageController {
     const noFilms = this._noFilms;
     render(this._containerMain, this._menu.getElement(), position.BEFOREEND);
 
-    // render(this._containerMain, this._statistic.getElement(), position.BEFOREEND);
     this._getStatistic();
     this._sortGenres();
     let statisticController = new StatisticController(this._containerMain, this._statisticData);
@@ -83,7 +80,6 @@ class PageController {
     searchController.init();
     render(this._containerHeader, this._rating.getElement(), position.BEFOREEND);
 
-    this._switchStatistic();
     this._sort.getElement()
     .addEventListener(`click`, (evt) => {
       evt.preventDefault();
@@ -355,18 +351,6 @@ class PageController {
     return ``;
   }
 
-  _switchStatistic() {
-    this._menu.getElement().querySelector(`#stats`).addEventListener(`click`, (evt) => {
-      evt.preventDefault();
-      const hidden = this._statistic.getElement().classList.contains(`visually-hidden`);
-      if (hidden) {
-        this._statistic.getElement().classList.remove(`visually-hidden`);
-      } else {
-        this._statistic.getElement().classList.add(`visually-hidden`);
-      }
-    });
-  }
-
   _getStatistic() {
     const watchedFilms = this._filmsHistory.length;
     let allWatchedTimeHours = 0;
@@ -389,7 +373,6 @@ class PageController {
     this._statisticData.genres = this._genres;
     this._statisticData.numberWatchedFilms = this._watchedFilms;
     this._statisticData.status = this._ratingData.status;
-    console.log(this._statisticData);
   }
 
   _sortGenres() {
@@ -429,7 +412,6 @@ class PageController {
     numberFilms.adventure = numberAdventure;
     let topGenre = `comedy`;
     let number = numberFilms.comedy;
-    console.log(numberFilms);
     Object.entries(numberFilms);
     for (let [key, value] of Object.entries(numberFilms)) {
       if (value > number) {
@@ -439,9 +421,6 @@ class PageController {
     }
     this._statisticData.numberFilms = numberFilms;
     this._statisticData.topGenre = topGenre;
-    console.log(number);
-    console.log(topGenre);
-    console.log(this._statisticData);
   }
 
 }
