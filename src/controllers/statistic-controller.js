@@ -21,7 +21,13 @@ class StatisticController {
     let myChart = new Chart(ctx, {
       type: `horizontalBar`,
       data: {
-        labels: [`comedy`, `mystery`, `drama`, `fiction`, `horror`, `crime`, `adventure`],
+        labels: [`comedy ${this._statisticData.numberFilms.comedy}`,
+          `mystery ${this._statisticData.numberFilms.mystery}`,
+          `drama ${this._statisticData.numberFilms.drama}`,
+          `fiction ${this._statisticData.numberFilms.fiction}`,
+          `horror ${this._statisticData.numberFilms.horror}`,
+          `crime ${this._statisticData.numberFilms.crime}`,
+          `adventure ${this._statisticData.numberFilms.adventure}`],
         datasets: [{
           label: `films genres`,
           data: [this._statisticData.numberFilms.comedy,
@@ -55,11 +61,25 @@ class StatisticController {
       },
       options: {
         scales: {
+          xAxes: [{
+            ticks: {
+              beginAtZero: true,
+              display: false
+            }
+          }],
           yAxes: [{
             ticks: {
               beginAtZero: true
             }
           }]
+        }
+      },
+      legend: {
+        position: `left`,
+        labels: {
+          boxWidth: 45,
+          fontStyle: 700,
+          fontSize: 16
         }
       }
     });
