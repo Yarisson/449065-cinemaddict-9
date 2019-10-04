@@ -18,6 +18,7 @@ const SortHandlers = {
   'rating': (arr) => arr.sort((a, b) => b.rating - a.rating),
   'default': (arr) => arr.sort((a, b) => a - b),
   'comments': (arr) => arr.sort((a, b) => b.comments.length - a.comments.length),
+  'statistic': (arr) => arr.sort((a, b) => b - a)
 };
 
 class PageController {
@@ -164,6 +165,12 @@ class PageController {
           currentElement.classList.add(`film-card__controls-item--active`);
         }
       });
+
+      // this._generateFavorites();
+      // this._generateWatched();
+      // this._generateWatchlist();
+      // unrender(this._menu.getElement());
+      // render(this._containerMain, this._menu.getElement(), position.AFTERBEGIN);
     });
 
     render(container, film.getElement(), position.BEFOREEND);
@@ -225,6 +232,8 @@ class PageController {
   }
 
   _onDataChange(newData, oldData) {
+    console.log(oldData);
+    console.log(newData);
     const currentFilmCard = this._filmsData.find((element) => element.id === oldData.id);
     currentFilmCard.watchlist = newData.watchlist;
     currentFilmCard.watched = newData.watched;
@@ -236,6 +245,8 @@ class PageController {
           currentFilmCard.splice(item.indexOf);
         }
       });
+    } else if (newData.comment === ``) {
+      return;
     } else {
       currentFilmCard.comments.push(newData.comment);
       currentFilmCard.comments.forEach((element, index) => {
@@ -421,6 +432,23 @@ class PageController {
     }
     this._statisticData.numberFilms = numberFilms;
     this._statisticData.topGenre = topGenre;
+    // for (let [key, value] of Object.entries(this._statisticData.numberFilms)) {
+    this._sortGenresTop(Object.entries(this._statisticData.numberFilms), `statistic`);
+    // }
+    // this._sortGenresTop(this._statisticData, `statistic`);
+    console.log(this._sortGenresTop(Object.entries(this._statisticData.numberFilms), `statistic`));
+  }
+
+  _sortGenresTop(arr, by) {
+    if (!SortHandlers[by]) {
+      return ``;
+    }
+    let sorted = SortHandlers[by](arr);
+    if (by === `statistic`) {
+      return sorted;
+    }
+
+    return ``;
   }
 
 }

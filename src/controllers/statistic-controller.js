@@ -14,9 +14,11 @@ class StatisticController {
     render(this._containerMain, this._statistic.getElement(), position.BEFOREEND);
     this._switchStatistic();
     this._drawStatistic();
+    this._sortedStatistic();
   }
 
   _drawStatistic() {
+
     let ctx = this._statistic.getElement().querySelector(`.statistic__chart`).getContext(`2d`);
     let myChart = new Chart(ctx, {
       type: `horizontalBar`,
@@ -60,16 +62,25 @@ class StatisticController {
         }]
       },
       options: {
+        title: {
+          display: true,
+          fontSize: 46,
+          fontColor: `white`
+        },
         scales: {
           xAxes: [{
             ticks: {
               beginAtZero: true,
-              display: false
+              display: false,
             }
           }],
           yAxes: [{
             ticks: {
-              beginAtZero: true
+              fontSize: 26,
+              beginAtZero: true,
+              family: `Open Sans`,
+              fontStyle: 400,
+              fontColor: `white`,
             }
           }]
         }
@@ -77,9 +88,11 @@ class StatisticController {
       legend: {
         position: `left`,
         labels: {
+          fontSize: 26,
+          family: `Open Sans`,
+          fontStyle: 400,
+          fontColor: `white`,
           boxWidth: 45,
-          fontStyle: 700,
-          fontSize: 16
         }
       }
     });
@@ -95,6 +108,54 @@ class StatisticController {
         this._statistic.getElement().classList.add(`visually-hidden`);
       }
     });
+  }
+
+  _sort2() {
+    for (key in this._statisticData.numberFilms) {
+      const sortedArrayOfObj = this._statisticData.numberFilms.sort((a, b) => {
+        return b.key > a.key;
+      });
+    }
+  }
+
+  _sortedStatistic() {
+
+    let arrayLabel = [`comedy ${this._statisticData.numberFilms.comedy}`,
+      `mystery ${this._statisticData.numberFilms.mystery}`,
+      `drama ${this._statisticData.numberFilms.drama}`,
+      `fiction ${this._statisticData.numberFilms.fiction}`,
+      `horror ${this._statisticData.numberFilms.horror}`,
+      `crime ${this._statisticData.numberFilms.crime}`,
+      `adventure ${this._statisticData.numberFilms.adventure}`];
+
+    let arrayData = [this._statisticData.numberFilms.comedy,
+      this._statisticData.numberFilms.mystery,
+      this._statisticData.numberFilms.drama,
+      this._statisticData.numberFilms.fiction,
+      this._statisticData.numberFilms.horror,
+      this._statisticData.numberFilms.crime,
+      this._statisticData.numberFilms.adventure];
+
+    const arrayOfObj = arrayLabel.map((d, i) => {
+      return {
+        label: d,
+        data: arrayData[i] || 0
+      };
+    });
+
+    const sortedArrayOfObj = arrayOfObj.sort((a, b) => {
+      return b.data > a.data;
+    });
+
+    let newArrayLabel = [];
+    let newArrayData = [];
+    sortedArrayOfObj.forEach((d) => {
+      newArrayLabel.push(d.label);
+      newArrayData.push(d.data);
+    });
+
+    console.log(newArrayLabel);
+    console.log(newArrayData);
   }
 
 }

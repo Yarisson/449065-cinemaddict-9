@@ -34,21 +34,24 @@ class MovieController {
     popupFilmControls.push(popup.getElement().querySelector(`#watchlist`));
     popupFilmControls.push(popup.getElement().querySelector(`#watched`));
     popupFilmControls.push(popup.getElement().querySelector(`#favorite`));
+    console.log(popup.getElement().querySelector(`#watchlist`));
+    console.log(popup.getElement().querySelector(`#watched`));
 
     popupFilmControls.forEach((item) => {
       item.addEventListener(`click`, (evt) => {
         this._getNewMokData(evt.target.id);
+        console.log(evt.target.id);
       });
     });
 
     popup.getElement().querySelector(`.film-details__comment-input`)
     .addEventListener(`focus`, () => {
-      document.removeEventListener(`keydown`, this._createEschandler);
+      document.removeEventListener(`keydown`, (evt) => this._createEschandler(popup, evt));
     });
 
     popup.getElement().querySelector(`.film-details__comment-input`)
     .addEventListener(`blur`, () => {
-      document.addEventListener(`keydown`, this._createEschandler);
+      document.addEventListener(`keydown`, (evt) => this._createEschandler(popup, evt));
     });
 
     const emoji = [];
@@ -88,16 +91,16 @@ class MovieController {
   _createEschandler(popup, evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       unrender(popup.getElement());
-      document.removeEventListener(`keydown`, this._createEschandler);
+      document.removeEventListener(`keydown`, () => this._createEschandler(popup, evt));
     }
   }
 
   _closePopup(popup) {
     popup.getElement()
     .querySelector(`.film-details__close-btn`)
-    .addEventListener(`click`, () => {
+    .addEventListener(`click`, (evt) => {
       unrender(popup.getElement());
-      document.removeEventListener(`keydown`, this._createEschandler);
+      document.removeEventListener(`keydown`, () => this._createEschandler(popup, evt));
     });
   }
 
@@ -105,13 +108,14 @@ class MovieController {
     unrender(this._popup.getElement());
     this._onChangeView();
     render(container, this._popup.getElement(), position.BEFOREEND);
-    document.addEventListener(`keydown`, this._createEschandler);
+    document.addEventListener(`keydown`, (evt) => this._createEschandler(this._popup, evt));
     document.addEventListener(`click`, this._closePopup(this._popup));
   }
 
   _getNewMokData(nameOfList) {
     const formData = new FormData(this._popup.getElement().querySelector(`.film-details__inner`));
     const userRating = formData.getAll(`score`);
+    console.log(Boolean(formData.get(`favorite`)));
     const entry = {
       id: this._data.id,
       favorite: Boolean(formData.get(`favorite`)),
@@ -119,9 +123,10 @@ class MovieController {
       watched: Boolean(formData.get(`watched`)),
       userRating: `Your rate ${userRating}`,
       comment: formData.get(`comment`),
-      // comments: this._popup.getElement().querySelectorAll(`.film-details__comment`).length,
     };
 
+    console.log(entry.favorite);
+    console.log(nameOfList);
     entry[nameOfList] = !entry[nameOfList];
 
     if (entry.watched) {
