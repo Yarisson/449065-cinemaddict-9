@@ -18,7 +18,7 @@ const SortHandlers = {
   'rating': (arr) => arr.sort((a, b) => b.rating - a.rating),
   'default': (arr) => arr.sort((a, b) => a - b),
   'comments': (arr) => arr.sort((a, b) => b.comments.length - a.comments.length),
-  'statistic': (arr) => arr.sort((a, b) => b - a)
+  'statistic': (arr) => arr.sort((a, b) => b.numberFilms - a.numberFilms)
 };
 
 class PageController {
@@ -59,10 +59,10 @@ class PageController {
     const noFilms = this._noFilms;
     render(this._containerMain, this._menu.getElement(), position.BEFOREEND);
 
-    this._getStatistic();
-    this._sortGenres();
-    let statisticController = new StatisticController(this._containerMain, this._statisticData);
+    let statisticController = new StatisticController(this._containerMain, this._filmsHistory, this._ratingData.status);
     statisticController.init();
+    // let statisticController = new StatisticController(this._containerMain, this._statisticData);
+    // statisticController.init();
     render(this._containerMain, this._sort.getElement(), position.BEFOREEND);
     render(this._containerMain, this._filmsWrapper.getElement(), position.BEFOREEND);
     render(this._containerFooter, this._footerClass.getElement(), position.BEFOREEND);
@@ -357,95 +357,6 @@ class PageController {
       return ``;
     } else if (by === `rating`) {
       return sorted.slice(0, 2);
-    }
-
-    return ``;
-  }
-
-  _getStatistic() {
-    const watchedFilms = this._filmsHistory.length;
-    let allWatchedTimeHours = 0;
-    let allWatchedTimeMinutes = 0;
-    const genres = [];
-    this._filmsHistory.forEach((element) => {
-      allWatchedTimeHours = allWatchedTimeHours + element.hours;
-      allWatchedTimeMinutes = allWatchedTimeMinutes + element.minutes;
-      genres.push(element.genre);
-    });
-
-    allWatchedTimeHours = allWatchedTimeHours + (parseInt(allWatchedTimeMinutes / 60, 10));
-    allWatchedTimeMinutes = allWatchedTimeMinutes % 60;
-    this._allWatchedTimeHours = allWatchedTimeHours;
-    this._allWatchedTimeMinutes = allWatchedTimeMinutes;
-    this._genres = genres;
-    this._watchedFilms = watchedFilms;
-    this._statisticData.hours = this._allWatchedTimeHours;
-    this._statisticData.minutes = this._allWatchedTimeMinutes;
-    this._statisticData.genres = this._genres;
-    this._statisticData.numberWatchedFilms = this._watchedFilms;
-    this._statisticData.status = this._ratingData.status;
-  }
-
-  _sortGenres() {
-    const numberFilms = [];
-    let numberComedy = 0;
-    let numberMystery = 0;
-    let numberDrama = 0;
-    let numberFiction = 0;
-    let numberHorror = 0;
-    let numberCrime = 0;
-    let numberAdventure = 0;
-
-    this._statisticData.genres.forEach((element) => {
-      if (element === `Comedy`) {
-        numberComedy = numberComedy + 1;
-      } else if (element === `Mystery`) {
-        numberMystery = numberMystery + 1;
-      } else if (element === `Drama`) {
-        numberDrama = numberDrama + 1;
-      } else if (element === `Fiction`) {
-        numberFiction = numberFiction + 1;
-      } else if (element === `Horror`) {
-        numberHorror = numberHorror + 1;
-      } else if (element === `Crime & Gangster`) {
-        numberCrime = numberCrime + 1;
-      } else if (element === `Adventure`) {
-        numberAdventure = numberAdventure + 1;
-      }
-    });
-
-    numberFilms.comedy = numberComedy;
-    numberFilms.mystery = numberMystery;
-    numberFilms.drama = numberDrama;
-    numberFilms.fiction = numberFiction;
-    numberFilms.horror = numberHorror;
-    numberFilms.crime = numberCrime;
-    numberFilms.adventure = numberAdventure;
-    let topGenre = `comedy`;
-    let number = numberFilms.comedy;
-    Object.entries(numberFilms);
-    for (let [key, value] of Object.entries(numberFilms)) {
-      if (value > number) {
-        number = value;
-        topGenre = key;
-      }
-    }
-    this._statisticData.numberFilms = numberFilms;
-    this._statisticData.topGenre = topGenre;
-    // for (let [key, value] of Object.entries(this._statisticData.numberFilms)) {
-    this._sortGenresTop(Object.entries(this._statisticData.numberFilms), `statistic`);
-    // }
-    // this._sortGenresTop(this._statisticData, `statistic`);
-    console.log(this._sortGenresTop(Object.entries(this._statisticData.numberFilms), `statistic`));
-  }
-
-  _sortGenresTop(arr, by) {
-    if (!SortHandlers[by]) {
-      return ``;
-    }
-    let sorted = SortHandlers[by](arr);
-    if (by === `statistic`) {
-      return sorted;
     }
 
     return ``;
