@@ -1,7 +1,6 @@
 import {getFilmsAll} from './data.js';
 import {getUser} from './data.js';
 import {films} from './data.js';
-import {getMenu} from './data.js';
 import {PageController} from './controllers/page-controller.js';
 import {filmsWatchlist} from './data.js';
 import {filmsWatched} from './data.js';
@@ -12,7 +11,6 @@ const filmsData = films;
 const WatchlistData = filmsWatchlist;
 const HistoryData = filmsWatched;
 const FavoritesData = filmsFavorites;
-const statisticData = getMenu();
 const ratingData = getUser();
 const footerData = getFilmsAll();
 
@@ -24,5 +22,5 @@ const main = document.querySelector(`.main`);
 const footer = document.querySelector(`.footer`);
 
 // Добавляем экземпляр класс pageController и запускаем в нем метод init
-const pageController = new PageController(header, main, footer, ratingData, statisticData, footerData, filmsData, WatchlistData, HistoryData, FavoritesData);
+const pageController = new PageController(header, main, footer, ratingData, footerData, filmsData, WatchlistData, HistoryData, FavoritesData);
 pageController.init();

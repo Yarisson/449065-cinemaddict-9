@@ -201,11 +201,6 @@ const getFilmsAll = () => ({
   allFilms: getFilmsNumber(),
 });
 
-const getMenu = () => ({
-  numberAllFilms: getFilmsAll().allFilms,
-  status: getUser().status,
-});
-
 export {getUser};
 export {getCommentaries};
 export {getCard};
@@ -214,4 +209,3 @@ export {filmsWatchlist};
 export {filmsWatched};
 export {filmsFavorites};
 export {getFilmsAll};
-export {getMenu};

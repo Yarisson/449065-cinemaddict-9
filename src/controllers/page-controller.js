@@ -23,12 +23,11 @@ const SortHandlers = {
 
 class PageController {
 
-  constructor(containerHeader, containerMain, containerFooter, ratingData, statisticData, footerData, filmsData, WatchlistData, HistoryData, FavoritesData) {
+  constructor(containerHeader, containerMain, containerFooter, ratingData, footerData, filmsData, WatchlistData, HistoryData, FavoritesData) {
     this._containerMain = containerMain;
     this._containerHeader = containerHeader;
     this._containerFooter = containerFooter;
     this._rating = new Rating(ratingData);
-    this._menu = new Menu(WatchlistData.length, HistoryData.length, FavoritesData.length);
     this._sort = new Sort();
     this._filmsWrapper = new FilmsWrapper();
     this._footerClass = new Footer(footerData);
@@ -37,6 +36,7 @@ class PageController {
     this._filmsWatchlist = WatchlistData;
     this._filmsHistory = HistoryData;
     this._filmsFavorites = FavoritesData;
+    this._menu = new Menu(this._filmsWatchlist.length, this._filmsHistory.length, this._filmsFavorites.length);
     this._showMore = new ShowMore();
     this._checkRenderCards = 0;
     this._NUMBER_MORE_RENDER_CARDS = 5;
@@ -153,12 +153,18 @@ class PageController {
 
         if (currentProperty === `watchlist`) {
           this._filmsData[Number(currentId)].watchlist = !this._filmsData[Number(currentId)].watchlist;
+          this._generateWatchlist();
         } else if (currentProperty === `watched`) {
           this._filmsData[Number(currentId)].watched = !this._filmsData[Number(currentId)].watched;
+          this._generateWatched();
         } else if (currentProperty === `favorite`) {
           this._filmsData[Number(currentId)].favorite = !this._filmsData[Number(currentId)].favorite;
+          this._generateFavorites();
         }
 
+        unrender(this._menu.getElement());
+        this._menu = new Menu(this._filmsWatchlist.length, this._filmsHistory.length, this._filmsFavorites.length);
+        render(this._containerMain, this._menu.getElement(), position.AFTERBEGIN);
         if (currentElement.classList.contains(`film-card__controls-item--active`)) {
           currentElement.classList.remove(`film-card__controls-item--active`);
         } else {
@@ -166,11 +172,6 @@ class PageController {
         }
       });
 
-      // this._generateFavorites();
-      // this._generateWatched();
-      // this._generateWatchlist();
-      // unrender(this._menu.getElement());
-      // render(this._containerMain, this._menu.getElement(), position.AFTERBEGIN);
     });
 
     render(container, film.getElement(), position.BEFOREEND);
@@ -232,8 +233,8 @@ class PageController {
   }
 
   _onDataChange(newData, oldData) {
-    console.log(oldData);
-    console.log(newData);
+    // console.log(oldData);
+    // console.log(newData);
     const currentFilmCard = this._filmsData.find((element) => element.id === oldData.id);
     currentFilmCard.watchlist = newData.watchlist;
     currentFilmCard.watched = newData.watched;
@@ -256,6 +257,12 @@ class PageController {
     this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((item) => {
       unrender(item);
     });
+    unrender(this._menu.getElement());
+    this._generateWatchlist();
+    this._generateWatched();
+    this._generateFavorites();
+    this._menu = new Menu(this._filmsWatchlist.length, this._filmsHistory.length, this._filmsFavorites.length);
+    render(this._containerMain, this._menu.getElement(), position.AFTERBEGIN);
     this._checkRenderCards = 0;
     this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsData, this.filmsList);
     this._renderExtraCards(this.filmsListRate, this._topRated(this._filmsData, `rating`));

@@ -121,7 +121,7 @@ class StatisticController {
     let dataGenres = [];
     this._statisticData.films.forEach((element) => {
       dataFilms.push(element.numberFilms);
-      dataGenres.push(element.genre);
+      dataGenres.push(`${element.genre} ${element.numberFilms}`);
     });
 
     let ctx = this._statistic.getElement().querySelector(`.statistic__chart`).getContext(`2d`);
@@ -130,7 +130,6 @@ class StatisticController {
       data: {
         labels: dataGenres,
         datasets: [{
-          label: `films genres`,
           data: dataFilms,
           backgroundColor: [
             `#FBE44D`,
@@ -154,10 +153,8 @@ class StatisticController {
         }]
       },
       options: {
-        title: {
-          display: true,
-          fontSize: 46,
-          fontColor: `white`
+        legend: {
+          display: false,
         },
         scales: {
           xAxes: [{
@@ -177,14 +174,20 @@ class StatisticController {
           }]
         }
       },
+      title: {
+        display: false,
+        text: `DONE BY: COLORS`,
+        fontSize: 16,
+        fontColor: `#000000`
+      },
+      tooltips: {
+        mode: false,
+      },
       legend: {
         position: `left`,
         labels: {
-          fontSize: 26,
-          family: `Open Sans`,
-          fontStyle: 400,
-          fontColor: `white`,
-          boxWidth: 45,
+          display: false,
+
         }
       }
     });
