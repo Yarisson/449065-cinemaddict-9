@@ -201,6 +201,8 @@ class StatisticController {
         }
       }
     });
+
+    myChart.defaults = `Open Sans`;
   }
 
   switchStatistic(mainContainer) {
