@@ -86,8 +86,9 @@ class Popup extends AbstractComponent {
       </div>
 
       <section class="film-details__controls">
+
         <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${(this._watchlist) ? `checked` : ``}>
-        <label for="watchlist" data-control-type="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
+        <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
         <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${(this._watched) ? `checked` : ``}>
         <label for="watched" data-control-type="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>

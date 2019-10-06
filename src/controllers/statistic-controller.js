@@ -2,19 +2,19 @@ import Chart from '../../node_modules/chart.js';
 import {Statistic} from '../components/statistic';
 import {position} from '../utils.js';
 import {render} from '../utils.js';
+import {unrender} from '../utils.js';
 
 const SortHandlers = {
   'statistic': (arr) => arr.sort((a, b) => b.numberFilms - a.numberFilms)
 };
 
 class StatisticController {
-  constructor(containerMain, filmsHistory, rating) {
+  constructor(containerMain, filmsHistory, rating, filmsData) {
     this._containerMain = containerMain;
     this._filmsHistory = filmsHistory;
     this._rating = rating;
     this._statisticData = [];
-    // this._statisticData = statisticData;
-    // this._statistic = new Statistic(statisticData);
+    this._filmsData = filmsData;
   }
 
   init() {
@@ -22,7 +22,17 @@ class StatisticController {
     this._sortGenres();
     this._statistic = new Statistic(this._statisticData);
     render(this._containerMain, this._statistic.getElement(), position.BEFOREEND);
-    this._switchStatistic();
+    this._drawStatistic();
+  }
+
+  update(updateFilmsHistory, mainContainer) {
+    unrender(this._statistic.getElement());
+    this._filmsHistory = updateFilmsHistory;
+    this._getStatistic();
+    this._sortGenres();
+    this._statistic = new Statistic(this._statisticData);
+    this._containerMain = mainContainer;
+    render(this._containerMain, this._statistic.getElement(), position.AFTERBEGIN);
     this._drawStatistic();
   }
 
@@ -193,8 +203,8 @@ class StatisticController {
     });
   }
 
-  _switchStatistic() {
-    this._containerMain.querySelector(`#stats`).addEventListener(`click`, (evt) => {
+  switchStatistic(mainContainer) {
+    mainContainer.querySelector(`#stats`).addEventListener(`click`, (evt) => {
       evt.preventDefault();
       const hidden = this._statistic.getElement().classList.contains(`visually-hidden`);
       if (hidden) {

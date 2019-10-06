@@ -34,15 +34,13 @@ class MovieController {
     popupFilmControls.push(popup.getElement().querySelector(`#watchlist`));
     popupFilmControls.push(popup.getElement().querySelector(`#watched`));
     popupFilmControls.push(popup.getElement().querySelector(`#favorite`));
-    console.log(popup.getElement().querySelector(`#watchlist`));
-    console.log(popup.getElement().querySelector(`#watched`));
-
     popupFilmControls.forEach((item) => {
+
       item.addEventListener(`click`, (evt) => {
         this._getNewMokData(evt.target.id);
-        console.log(evt.target.id);
       });
     });
+
 
     popup.getElement().querySelector(`.film-details__comment-input`)
     .addEventListener(`focus`, () => {
@@ -112,22 +110,18 @@ class MovieController {
     document.addEventListener(`click`, this._closePopup(this._popup));
   }
 
-  _getNewMokData(nameOfList) {
+  _getNewMokData() {
     const formData = new FormData(this._popup.getElement().querySelector(`.film-details__inner`));
     const userRating = formData.getAll(`score`);
-    console.log(Boolean(formData.get(`favorite`)));
     const entry = {
       id: this._data.id,
-      favorite: Boolean(formData.get(`favorite`)),
-      watchlist: Boolean(formData.get(`watchlist`)),
-      watched: Boolean(formData.get(`watched`)),
+      favorite: (formData.get(`favorite`)),
+      watchlist: (formData.get(`watchlist`)),
+      watched: (formData.get(`watched`)),
       userRating: `Your rate ${userRating}`,
       comment: formData.get(`comment`),
     };
 
-    console.log(entry.favorite);
-    console.log(nameOfList);
-    entry[nameOfList] = !entry[nameOfList];
 
     if (entry.watched) {
       this._popup.getElement().querySelector(`.form-details__middle-container `).classList.remove(`visually-hidden`);

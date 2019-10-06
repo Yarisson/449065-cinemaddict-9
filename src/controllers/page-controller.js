@@ -59,10 +59,10 @@ class PageController {
     const noFilms = this._noFilms;
     render(this._containerMain, this._menu.getElement(), position.BEFOREEND);
 
-    let statisticController = new StatisticController(this._containerMain, this._filmsHistory, this._ratingData.status);
-    statisticController.init();
-    // let statisticController = new StatisticController(this._containerMain, this._statisticData);
-    // statisticController.init();
+    this._statisticController = new StatisticController(this._containerMain, this._filmsHistory, this._ratingData.status, this._filmsData);
+    this._statisticController.init();
+    this._statisticController.switchStatistic(this._containerMain);
+
     render(this._containerMain, this._sort.getElement(), position.BEFOREEND);
     render(this._containerMain, this._filmsWrapper.getElement(), position.BEFOREEND);
     render(this._containerFooter, this._footerClass.getElement(), position.BEFOREEND);
@@ -164,12 +164,15 @@ class PageController {
 
         unrender(this._menu.getElement());
         this._menu = new Menu(this._filmsWatchlist.length, this._filmsHistory.length, this._filmsFavorites.length);
+        this._statisticController.update(this._filmsHistory, this._containerMain);
         render(this._containerMain, this._menu.getElement(), position.AFTERBEGIN);
+        this._statisticController.switchStatistic(this._containerMain);
         if (currentElement.classList.contains(`film-card__controls-item--active`)) {
           currentElement.classList.remove(`film-card__controls-item--active`);
         } else {
           currentElement.classList.add(`film-card__controls-item--active`);
         }
+
       });
 
     });
@@ -195,7 +198,7 @@ class PageController {
       return;
     } else {
       for (let i = 0; i < extraFilms.length; i++) {
-        this._renderFilm(extraFilms[i], container.querySelector(`.films-list__container`));
+        this._renderFilm(extraFilms[i], container.querySelector(`.films-list__container`), extraFilms[i].id);
       }
     }
   }
@@ -233,13 +236,27 @@ class PageController {
   }
 
   _onDataChange(newData, oldData) {
-    // console.log(oldData);
-    // console.log(newData);
     const currentFilmCard = this._filmsData.find((element) => element.id === oldData.id);
     currentFilmCard.watchlist = newData.watchlist;
     currentFilmCard.watched = newData.watched;
     currentFilmCard.favorite = newData.favorite;
     currentFilmCard.userRating = newData.userRating;
+    this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((item) => {
+      unrender(item);
+    });
+    unrender(this._menu.getElement());
+    this._generateWatchlist();
+    this._generateWatched();
+    this._generateFavorites();
+
+    this._menu = new Menu(this._filmsWatchlist.length, this._filmsHistory.length, this._filmsFavorites.length);
+    this._statisticController.update(this._filmsHistory, this._containerMain);
+    render(this._containerMain, this._menu.getElement(), position.AFTERBEGIN);
+    this._statisticController.switchStatistic(this._containerMain);
+    this._checkRenderCards = 0;
+    this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsData, this.filmsList);
+    this._renderExtraCards(this.filmsListRate, this._topRated(this._filmsData, `rating`));
+    this._renderExtraCards(this.filmsListComments, this._mostCommented(this._filmsData, `comments`));
     if (newData.comment === null) {
       currentFilmCard.comments.forEach((item) => {
         if (item.id === newData.commentId) {
@@ -254,19 +271,6 @@ class PageController {
         element.id = index;
       });
     }
-    this._filmsWrapper.getElement().querySelectorAll(`.film-card`).forEach((item) => {
-      unrender(item);
-    });
-    unrender(this._menu.getElement());
-    this._generateWatchlist();
-    this._generateWatched();
-    this._generateFavorites();
-    this._menu = new Menu(this._filmsWatchlist.length, this._filmsHistory.length, this._filmsFavorites.length);
-    render(this._containerMain, this._menu.getElement(), position.AFTERBEGIN);
-    this._checkRenderCards = 0;
-    this._renderFilmCards(this._NUMBER_MORE_RENDER_CARDS, this._filmsData, this.filmsList);
-    this._renderExtraCards(this.filmsListRate, this._topRated(this._filmsData, `rating`));
-    this._renderExtraCards(this.filmsListComments, this._mostCommented(this._filmsData, `comments`));
   }
 
   _onChangeView() {
