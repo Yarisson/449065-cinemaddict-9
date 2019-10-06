@@ -18,5 +18,10 @@
   },
   "engines": {
     "node": "10"
+  },
+  "dependencies": {
+    "chart.js": "^2.8.0",
+    "moment": "^2.24.0",
+    "moment-locales-webpack-plugin": "^1.1.0"
   }
 }

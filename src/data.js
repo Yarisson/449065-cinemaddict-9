@@ -1,7 +1,8 @@
+import moment from 'moment';
+
 const NOVICE = 11;
 const FAN = 21;
 const NUMBER_OF_FILMS = 42;
-const NUMBER_OF_EXTRA_FILMS = 2;
 
 const TEXT_DESCRIPTION = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
@@ -30,19 +31,16 @@ const generateUserRating = () => {
   }
 };
 
-const getRandomYear = () => {
-  const date = new Date();
-  return date.getFullYear() - Math.round(Math.random() * 100);
+const getRandomDate = (start, end) => {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 };
 
-const getRandomMonth = () => {
-  const date = new Date();
-  return date.getMonth();
+const getFilmYear = () => {
+  return moment(getRandomDate(new Date(1919, 0, 0), new Date())).format(`DD MMMM YYYY`);
 };
 
-const getRandomDay = () => {
-  const date = new Date();
-  return date.getDate();
+const getCommentDate = () => {
+  return moment(getRandomDate(new Date(2019, 8, 1), new Date())).fromNow();
 };
 
 const getRandomDescription = (arr) => {
@@ -84,12 +82,7 @@ const getCommentaries = () => ({
     `Jacob Call`,
     `Connor McLeod`,
   ][Math.floor(Math.random() * 7)],
-  day: [
-    `2 days ago`,
-    `today`,
-    `yesterday`,
-    `3 days ago`,
-  ][Math.floor(Math.random() * 4)],
+  day: getCommentDate(),
 });
 
 const getCard = () => ({
@@ -117,16 +110,13 @@ const getCard = () => ({
     `/images/posters/santa-claus-conquers-the-martians.jpg`,
     `/images/posters/the-dance-of-life.jpg`,
     `/images/posters/the-great-flamarion.jpg`,
-    `/images/posters/popeye-meets-sinbad.jpg`,
-  ][Math.floor(Math.random() * 6)],
+    `/images/posters/the-man-with-the-golden-arm.jpg`,
+  ][Math.floor(Math.random() * 7)],
   description: [
     getRandomDescription(TEXT_DESCRIPTION)
   ],
   rating: ((Math.random() * (10 - 0)) + 0).toFixed(1),
-  year: getRandomYear(),
-  month: getRandomMonth(),
-  day: getRandomDay(),
-  numberComments: Math.round(Math.random() * 100),
+  date: getFilmYear(),
   hours: Math.round(Math.random() * 1) + 1,
   minutes: Math.round(Math.random() * 60),
   genre: [
@@ -146,31 +136,62 @@ const getCard = () => ({
 });
 
 const films = [];
+const filmsWatchlist = [];
+const filmsWatched = [];
+const filmsFavorites = [];
 
-for (let i = 0; i < NUMBER_OF_FILMS; i++) {
-  films.push(getCard());
-  films[i].id = i;
-}
-
-const extraFilms = [];
-const extraFilmsIndex = [];
-
-const generateIndexExtraFilms = () => {
-  for (let i = 0; i < NUMBER_OF_EXTRA_FILMS; i++) {
-    extraFilmsIndex.push(Math.round(Math.random() * NUMBER_OF_FILMS));
+const generateFilms = () => {
+  for (let i = 0; i < NUMBER_OF_FILMS; i++) {
+    films.push(getCard());
+    films[i].id = i;
   }
+};
 
-  extraFilmsIndex.forEach(function (element) {
-    extraFilms.push(films[element]);
+const generateFilmComments = () => {
+  films.forEach((film) => {
+    film.comments = [];
+    for (let i = 0; i < (Math.floor(Math.random() * 100)); i++) {
+      film.comments.push(getCommentaries());
+    }
   });
 };
 
-generateIndexExtraFilms();
+const generateFilmYear = () => {
+  films.forEach((film) => {
+    film.year = moment(film.date).format(`YYYY`);
+  });
+};
 
-const getExtraCards = () => ({
-  films: extraFilms,
-  number: extraFilmsIndex,
-});
+const generateWatchlist = () => {
+  films.forEach((item) => {
+    if (item.watchlist) {
+      filmsWatchlist.push(item);
+    }
+  });
+};
+
+const generateWatched = () => {
+  films.forEach((item) => {
+    if (item.watched) {
+      filmsWatched.push(item);
+    }
+  });
+};
+
+const generateFavorites = () => {
+  films.forEach((item) => {
+    if (item.favorite) {
+      filmsFavorites.push(item);
+    }
+  });
+};
+
+generateFilms();
+generateWatchlist();
+generateWatched();
+generateFavorites();
+generateFilmComments();
+generateFilmYear();
 
 const getFilmsNumber = () => {
   return films.length;
@@ -180,17 +201,11 @@ const getFilmsAll = () => ({
   allFilms: getFilmsNumber(),
 });
 
-const getMenu = () => ({
-  numberAllFilms: getFilmsAll().allFilms,
-  status: getUser().status,
-});
-
 export {getUser};
 export {getCommentaries};
 export {getCard};
 export {films};
-export {extraFilms};
-export {extraFilmsIndex};
-export {getExtraCards};
+export {filmsWatchlist};
+export {filmsWatched};
+export {filmsFavorites};
 export {getFilmsAll};
-export {getMenu};

@@ -1,14 +1,14 @@
 import {AbstractComponent} from './abstract-component.js';
 
 class Film extends AbstractComponent {
-  constructor({title, poster, description, rating, year, numberComments, hours, minutes, genre, favorite, watchlist, watched, id}) {
+  constructor({title, poster, description, rating, year, comments, hours, minutes, genre, favorite, watchlist, watched, id}) {
     super();
     this._title = title;
     this._poster = poster;
     this._description = description;
     this._rating = rating;
     this._year = year;
-    this._numberComments = numberComments;
+    this._comments = comments;
     this._hours = hours;
     this._minutes = minutes;
     this._genre = genre;
@@ -30,8 +30,8 @@ class Film extends AbstractComponent {
   </p>
   <img src="${this._poster}" alt="" name="image" class="film-card__poster">
   <p class="film-card__description" name="description">${this._description}</p>
-  <a class="film-card__comments" name="numberComments">${this._numberComments} comments</a>
-  <form class="film-card__controls">
+  <a class="film-card__comments" name="numberComments">${this._comments.length} comments</a>
+  <form class="film-card__controls" name="id">
     <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${(this._watchlist) ? `film-card__controls-item--active` : ``}" name="watchlist">Add to watchlist</button>
     <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${(this._watched) ? `film-card__controls-item--active` : ``}" name="watched">Mark as watched</button>
     <button class="film-card__controls-item button film-card__controls-item--favorite ${(this._favorite) ? `film-card__controls-item--active` : ``}" name="favorite">Mark as favorite</button>
