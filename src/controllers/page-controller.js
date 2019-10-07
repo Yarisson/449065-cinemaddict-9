@@ -23,20 +23,19 @@ const SortHandlers = {
 
 class PageController {
 
-  constructor(containerHeader, containerMain, containerFooter, ratingData, footerData, filmsData, WatchlistData, HistoryData, FavoritesData) {
+  constructor(containerHeader, containerMain, containerFooter, ratingData, filmsData) {
     this._containerMain = containerMain;
     this._containerHeader = containerHeader;
     this._containerFooter = containerFooter;
     this._rating = new Rating(ratingData);
     this._sort = new Sort();
     this._filmsWrapper = new FilmsWrapper();
-    this._footerClass = new Footer(footerData);
+    this._footerClass = new Footer(filmsData.length);
     this._filmsData = filmsData;
     this._noFilms = new NoFilms();
-    this._filmsWatchlist = WatchlistData;
-    this._filmsHistory = HistoryData;
-    this._filmsFavorites = FavoritesData;
-    this._menu = new Menu(this._filmsWatchlist.length, this._filmsHistory.length, this._filmsFavorites.length);
+    this._filmsWatchlist = [];
+    this._filmsHistory = [];
+    this._filmsFavorites = [];
     this._showMore = new ShowMore();
     this._checkRenderCards = 0;
     this._NUMBER_MORE_RENDER_CARDS = 5;
@@ -52,7 +51,15 @@ class PageController {
     this._ratingData = ratingData;
   }
 
-  init() {
+  init(filmsApiData) {
+
+    this._filmsData = filmsApiData;
+    this._generateWatchlist();
+    this._generateWatched();
+    this._generateFavorites();
+
+    this._menu = new Menu(this._filmsWatchlist.length, this._filmsHistory.length, this._filmsFavorites.length);
+
     const renderFilm = this._renderFilm;
     const filmsWrapper = this._filmsWrapper;
     const showMore = this._showMore;
