@@ -1,7 +1,7 @@
 import {AbstractComponent} from './abstract-component.js';
 
 class Film extends AbstractComponent {
-  constructor({title, poster, description, rating, year, comments, hours, minutes, genre, favorite, watchlist, watched, id}) {
+  constructor({title, poster, description, rating, year, comments, hours, minutes, genre, genres, favorite, watchlist, watched, id}) {
     super();
     this._title = title;
     this._poster = poster;
@@ -12,6 +12,7 @@ class Film extends AbstractComponent {
     this._hours = hours;
     this._minutes = minutes;
     this._genre = genre;
+    this._genres = genres;
     this._favorite = favorite;
     this._watchlist = watchlist;
     this._watched = watched;
@@ -26,7 +27,7 @@ class Film extends AbstractComponent {
   <p class="film-card__info">
     <span class="film-card__year" name="year">${this._year}</span>
     <span class="film-card__duration" name="time">${this._hours}h ${this._minutes}m</span>
-    <span class="film-card__genre" name="genre">${this._genre}</span>
+    <span class="film-card__genre" name="genre">${this._genre} ${(this._genres.length > 1) ? this._genres : this._genre}</span>
   </p>
   <img src="${this._poster}" alt="" name="image" class="film-card__poster">
   <p class="film-card__description" name="description">${this._description}</p>

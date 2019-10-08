@@ -35,7 +35,6 @@ const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
 const pageController = new PageController(header, main, footer, ratingData, filmsData);
 
 api.getFilms().then((movies) => pageController.init(movies));
-// api.getFilms().then((movies) => pageController.init(movies));
 
 // Добавляем экземпляр класс pageController и запускаем в нем метод init
 // const pageController = new PageController(header, main, footer, ratingData, footerData, filmsData, WatchlistData, HistoryData, FavoritesData);

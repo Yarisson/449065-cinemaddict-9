@@ -20,6 +20,7 @@ class StatisticController {
   init() {
     this._getStatistic();
     this._sortGenres();
+    console.log(this._statisticData);
     this._statistic = new Statistic(this._statisticData);
     render(this._containerMain, this._statistic.getElement(), position.BEFOREEND);
     this._drawStatistic();
@@ -44,7 +45,9 @@ class StatisticController {
     this._filmsHistory.forEach((element) => {
       allWatchedTimeHours = allWatchedTimeHours + element.hours;
       allWatchedTimeMinutes = allWatchedTimeMinutes + element.minutes;
-      genres.push(element.genre);
+      element.genres.forEach((item) => {
+        genres.push(item);
+      });
     });
 
     allWatchedTimeHours = allWatchedTimeHours + (parseInt(allWatchedTimeMinutes / 60, 10));
@@ -63,39 +66,48 @@ class StatisticController {
   _sortGenres() {
     const numberFilms = [];
     let numberComedy = 0;
-    let numberMystery = 0;
+    let numberSciFi = 0;
     let numberDrama = 0;
-    let numberFiction = 0;
+    let numberAction = 0;
     let numberHorror = 0;
-    let numberCrime = 0;
+    let numberThriller = 0;
     let numberAdventure = 0;
+    let numberAnimation = 0;
+    let numberFamily = 0;
 
     this._statisticData.genres.forEach((element) => {
       if (element === `Comedy`) {
         numberComedy = numberComedy + 1;
-      } else if (element === `Mystery`) {
-        numberMystery = numberMystery + 1;
+      } else if (element === `Sci-Fi`) {
+        numberSciFi = numberSciFi + 1;
       } else if (element === `Drama`) {
         numberDrama = numberDrama + 1;
-      } else if (element === `Fiction`) {
-        numberFiction = numberFiction + 1;
+      } else if (element === `Action`) {
+        numberAction = numberAction + 1;
       } else if (element === `Horror`) {
         numberHorror = numberHorror + 1;
-      } else if (element === `Crime & Gangster`) {
-        numberCrime = numberCrime + 1;
+      } else if (element === `Thriller`) {
+        numberThriller = numberThriller + 1;
       } else if (element === `Adventure`) {
         numberAdventure = numberAdventure + 1;
+      } else if (element === `Animation`) {
+        numberAnimation = numberAnimation + 1;
+      } else if (element === `Family`) {
+        numberFamily = numberFamily + 1;
       }
     });
 
     const chartFilms = [];
     numberFilms.comedy = numberComedy;
-    numberFilms.mystery = numberMystery;
+    numberFilms.scifi = numberSciFi;
     numberFilms.drama = numberDrama;
-    numberFilms.fiction = numberFiction;
+    numberFilms.action = numberAction;
     numberFilms.horror = numberHorror;
-    numberFilms.crime = numberCrime;
+    numberFilms.thriller = numberThriller;
     numberFilms.adventure = numberAdventure;
+    numberFilms.animation = numberAnimation;
+    numberFilms.family = numberFamily;
+
     let topGenre = `comedy`;
     let number = numberFilms.comedy;
     Object.entries(numberFilms);
@@ -148,9 +160,13 @@ class StatisticController {
             `#FBE44D`,
             `#FBE44D`,
             `#FBE44D`,
+            `#FBE44D`,
+            `#FBE44D`,
             `#FBE44D`
           ],
           borderColor: [
+            `#FBE44D`,
+            `#FBE44D`,
             `#FBE44D`,
             `#FBE44D`,
             `#FBE44D`,

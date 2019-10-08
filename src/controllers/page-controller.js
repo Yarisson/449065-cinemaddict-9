@@ -54,9 +54,14 @@ class PageController {
   init(filmsApiData) {
 
     this._filmsData = filmsApiData;
+    this._currentFilmsList = filmsApiData;
+
     this._generateWatchlist();
     this._generateWatched();
     this._generateFavorites();
+    console.log(this._filmsData);
+    console.log(this._filmsData[1].genre);
+
 
     this._menu = new Menu(this._filmsWatchlist.length, this._filmsHistory.length, this._filmsFavorites.length);
 

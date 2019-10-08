@@ -1,7 +1,7 @@
 import {AbstractComponent} from './abstract-component.js';
 
 class Popup extends AbstractComponent {
-  constructor({title, poster, description, rating, date, comments, hours, minutes, genre, favorite, watchlist, watched, userRating}) {
+  constructor({title, poster, description, rating, date, comments, hours, minutes, genre, genres, favorite, watchlist, watched, userRating}) {
     super();
     this._title = title;
     this._poster = poster;
@@ -12,6 +12,7 @@ class Popup extends AbstractComponent {
     this._hours = hours;
     this._minutes = minutes;
     this._genre = genre;
+    this._genres = genres;
     this._favorite = favorite;
     this._watchlist = watchlist;
     this._watched = watched;
@@ -73,9 +74,11 @@ class Popup extends AbstractComponent {
             <tr class="film-details__row">
               <td class="film-details__term">Genres</td>
               <td class="film-details__cell">
-                <span class="film-details__genre">${this._genre}</span>
-                <span class="film-details__genre">Film-Noir</span>
-                <span class="film-details__genre">Mystery</span></td>
+
+              ${(Array.from(this._genres).map((genre) => (`
+                <span class="film-details__genre">${genre}</span></td>
+                `.trim()
+  ))).join(``)}
             </tr>
           </table>
 
